@@ -1,24 +1,24 @@
-import GameTag from "./GameTag.jsx"
+import { useNavigate } from "react-router-dom";
 
-const GroupPost = ({ name, owner, members, description, tags }) => {
+const GroupPost = ({ id, name, owner, members, description, tags }) => {
+    const navigate = useNavigate();
 
-    return(
-
-        <div className = "group-post">
-            <div className = "group-card-header">
+    return (
+        <div className="group-post" onClick={() => navigate(`/group/${id}`)} style={{ cursor: "pointer" }}>
+            <div className="group-post-header">
                 <span>{name}</span>
                 <span>{owner}</span>
                 <span>Members: {members}</span>
             </div>
-            <p className = "description"> {description} </p>
-            <div className = "tags">
-                {tags.map((tag, index) => (
-                    <GameTag key = {index} text = {tag}></GameTag>
-                ))}
-            </div>
-            <button className = "join-button"> Reguest to join </button>
+            <p className="description">{description}</p>
+            <button className="join-button" onClick={(e) => {
+                e.stopPropagation(); 
+                navigate("/join-request");
+            }}>
+                Request to Join
+            </button>
         </div>
     );
-}
+};
 
-export default GroupPost
+export default GroupPost;

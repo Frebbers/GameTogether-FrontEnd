@@ -1,18 +1,19 @@
-function Header(){
+import { useNavigate } from "react-router-dom";
 
-    return(
-        <header className = "header">
+function Header() {
+    const navigate = useNavigate();
+
+    return (
+        <header className="header">
             <nav>
-                <ul className = "nav-list">
-                    <li> <a href = "#" className = "nav-element"> GameTogether </a> </li>
-                    <li> <a href = "#" className = "nav-element"> Search </a> </li>
-                    <li> <a href = "#" className = "nav-element"> Profile </a> </li>
+                <ul className="nav-list">
+                    <li><button className="nav-element" onClick={() => navigate("/")}>GameTogether</button></li>
+                    <li><button className="nav-element" onClick={() => navigate("/profile")}>Profile</button></li>
                 </ul>
             </nav>
-            <hr></hr>
+            <hr />
         </header>
     );
-
 }
 
-export default Header
+export default Header;

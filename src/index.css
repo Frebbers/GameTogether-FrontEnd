@@ -11,6 +11,33 @@ h1 {
     margin-bottom: 20px;
 }
 
+.header{
+    text-align: center;
+    padding: 20px;
+}
+
+.nav-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.nav-element{
+    text-decoration: none;
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    padding: 10px 15px;
+    border-radius: 5px;
+    transition: background 0.3s ease;
+}
+
+.nav-element:hover{
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
 .container{
     width: 50%;
     margin: auto;

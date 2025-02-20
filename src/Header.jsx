@@ -1,13 +1,12 @@
 function Header(){
 
     return(
-        <header>
-            <h1> GameTogether </h1>
+        <header className = "header">
             <nav>
-                <ul>
-                    <li> <a href = "#" > GameTogether </a> </li>
-                    <li> <a href = "#" > Search </a> </li>
-                    <li> <a href = "#" > Profile </a> </li>
+                <ul className = "nav-list">
+                    <li> <a href = "#" className = "nav-element"> GameTogether </a> </li>
+                    <li> <a href = "#" className = "nav-element"> Search </a> </li>
+                    <li> <a href = "#" className = "nav-element"> Profile </a> </li>
                 </ul>
             </nav>
             <hr></hr>

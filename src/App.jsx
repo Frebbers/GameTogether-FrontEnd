@@ -5,11 +5,12 @@ import ProfilePage from "./ProfilePage";
 import JoinRequestPage from "./JoinRequestPage";
 import GroupInfoPage from "./GroupInfoPage";
 import CreateGroupPage from "./CreateGroupPage";
+import Footer from "./Footer";
 
 function App() {
   return (
     <Router>
-      <Header />
+      <Header></Header>
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/profile" element={<ProfilePage />} />
@@ -17,6 +18,7 @@ function App() {
         <Route path="/group/:groupId" element={<GroupInfoPage />} />
         <Route path="/create" element={<CreateGroupPage />} />
       </Routes>
+      <Footer></Footer>
     </Router>
   );
 }

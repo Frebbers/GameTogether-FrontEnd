@@ -50,6 +50,29 @@ h1 {
     margin-bottom: 20px;
 }
 
+.filter {
+    display: inline-block;
+    background-color: gray;
+    border-radius: 5px;
+    padding: 0;
+}
+
+.filter select {
+    background-color:gray;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-weight: bold;
+    border-radius: 5px;
+    text-align: center;
+    appearance: none;
+}
+
+.filter:hover{
+    background-color: darkgrey;
+}
+
 button {
     background-color:  gray;
     color: white;

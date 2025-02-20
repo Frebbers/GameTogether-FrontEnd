@@ -1,4 +1,4 @@
-import GroupCard from "./GroupCard";
+import GroupPost from "./GroupPost.jsx"
 
 const GroupList = () => {
   const groups = [
@@ -19,9 +19,9 @@ const GroupList = () => {
   ];
 
   return (
-    <div className="space-y-4">
+    <div>
       {groups.map((group, index) => (
-        <GroupCard key={index} {...group} />
+        <GroupPost key={index} {...group} />
       ))}
     </div>
   );

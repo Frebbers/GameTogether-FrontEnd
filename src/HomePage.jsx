@@ -4,7 +4,7 @@ import GroupList from "./GroupList.jsx"
 const HomePage = () => {
 
     return (
-        <div className = "bg-blue-900 min-h-screen p-4">
+        <div className = "container">
             <ControlPanel></ControlPanel>
             <GroupList></GroupList>
         </div>

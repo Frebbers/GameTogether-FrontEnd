@@ -121,3 +121,11 @@ button:hover{
 .join-button:hover{
     background-color: #00cc00;
 }
+
+.ProfileImage {
+    display: block;
+    margin: auto;
+    border-radius: 80%;
+    height:auto;
+    width: auto;
+}

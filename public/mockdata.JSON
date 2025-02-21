@@ -1,0 +1,52 @@
+[
+      {
+        "name": "D&D Veterans",
+        "owner": "DM_Mike",
+        "members": "4/6",
+        "description": "A group for experienced players looking for high-level D&D campaigns. We focus on roleplay and deep storytelling.",
+        "tags": ["D&D", "Roleplay", "High-Level", "Storytelling", "Experienced"]
+      },
+      {
+        "name": "Casual One-Shots",
+        "owner": "FriendlyGM",
+        "members": "3/5",
+        "description": "Looking for casual players to join one-shot D&D adventures. Perfect for beginners!",
+        "tags": ["D&D", "Casual", "One-Shots", "Beginner-Friendly"]
+      },
+      {
+        "name": "Pathfinder Society",
+        "owner": "PathfinderGuru",
+        "members": "6/6",
+        "description": "We play Pathfinder Society adventures weekly. Join our waitlist for an open slot!",
+        "tags": ["Pathfinder", "Adventure", "Weekly", "Society Play"]
+      },
+      {
+        "name": "Shadowrun Heist Crew",
+        "owner": "MrJohnson",
+        "members": "2/5",
+        "description": "Join our cyberpunk crew for a Shadowrun campaign full of intrigue, hacking, and tactical combat.",
+        "tags": ["Shadowrun", "Cyberpunk", "Hacking", "Heist", "Tactical"]
+      },
+      {
+        "name": "Call of Cthulhu Investigators",
+        "owner": "HorrorFan42",
+        "members": "5/6",
+        "description": "A psychological horror-driven Call of Cthulhu campaign with deep mysteries and mind-bending twists.",
+        "tags": ["Call of Cthulhu", "Horror", "Mystery", "Roleplay", "Psychological"]
+      },
+      {
+        "name": "Beginner's GURPS Group",
+        "owner": "GURPSMaster",
+        "members": "3/4",
+        "description": "New to GURPS? This is a friendly group for learning the system with custom-built scenarios.",
+        "tags": ["GURPS", "Beginner-Friendly", "Custom Scenarios"]
+      },
+      {
+        "name": "Star Wars: Edge of the Empire",
+        "owner": "JediGM",
+        "members": "4/5",
+        "description": "A spacefaring adventure in the Star Wars universe. Smugglers, bounty hunters, and rebels welcome!",
+        "tags": ["Star Wars", "Sci-Fi", "Edge of the Empire", "Adventure"]
+      }
+    ]
+    

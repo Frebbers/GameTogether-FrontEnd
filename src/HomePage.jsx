@@ -1,5 +1,5 @@
 import ControlPanel from "./ControlPanal.jsx"
-import GroupList from "./GroupList.jsx"
+import GroupList from "./Group/GroupList.jsx"
 
 const HomePage = ({ openCreatePage }) => {
     return (

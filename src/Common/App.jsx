@@ -1,10 +1,10 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Header from "./Header";
-import HomePage from "./HomePage";
+import HomePage from "../HomePage";
 import ProfilePage from "./ProfilePage";
-import JoinRequestPage from "./JoinRequestPage";
-import GroupInfoPage from "./GroupInfoPage";
-import CreateGroupPage from "./CreateGroupPage";
+import JoinRequestPage from "../JoinRequestPage";
+import GroupInfoPage from "../Group/GroupInfoPage";
+import CreateGroupPage from "../Group/CreateGroupPage";
 
 function App() {
   return (

@@ -41,6 +41,11 @@ h1 {
 .container{
     width: 50%;
     margin: auto;
+    background: #0b3d91;
+    padding: 20px;
+    border-radius: 10px;
+    color: white;
+    text-align: center;
 }
 
 .control-panel {
@@ -96,7 +101,7 @@ button:hover{
     background-color: #00cc00;
 }
 
-.group-post{
+.group-post {
     background-color: #444;
     width: 100%;
     padding: 15px;
@@ -104,10 +109,12 @@ button:hover{
     margin-bottom: 20px;
 }
 
-.group-post-header{
+.group-post-header {
     display: flex;
     justify-content: space-between;
     font-weight: bold;
+    align-items: center;
+    padding: 10px;
 }
 
 .description {
@@ -117,7 +124,7 @@ button:hover{
     margin-top: 10px;
 }
 
-.tags{
+.tags {
     display: flex;
     flex-wrap: wrap;
     gap: 5px;
@@ -143,4 +150,131 @@ button:hover{
 
 .join-button:hover{
     background-color: #00cc00;
+}
+
+input, textarea {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    background: #444;
+    color: white;
+}
+
+.group-input {
+    flex: 1;
+    background: #666;
+    color: white;
+    padding: 8px;
+    border-radius: 5px;
+    border: none;
+}
+
+.group-name-input {
+    width: 30%;
+    background: #666;
+    color: white;
+    padding: 8px;
+    border-radius: 5px;
+    border: none;
+}
+
+.your-name {
+    flex-grow: 1;
+    text-align: center;
+}
+
+.max-members-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.max-members-section label {
+    font-weight: bold;
+}
+
+.max-members-input {
+    width: 50px;
+    background: #666;
+    color: white;
+    padding: 5px;
+    border-radius: 5px;
+    border: none;
+    text-align: center;
+}
+
+.member-count {
+    text-align: right;
+}
+
+.description-input {
+    background-color: #666;
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 10px;
+    width: 95%;
+    height: 80px;
+    border: none;
+    color: white;
+    resize: none; 
+}
+
+.add-button {
+    background-color: gray;
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 5px;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.add-button:hover {
+    background-color: darkgray;
+}
+
+.member-list {
+    list-style-type: none;
+    padding: 0;
+    margin-top: 10px;
+}
+
+.member-list li {
+    background: #555;
+    padding: 5px;
+    margin: 5px 0;
+}
+
+.create-button-2 {
+    background-color: #00ff00;
+    color: black;
+    font-weight: bold;
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+.create-button-2:hover {
+    background-color: #00cc00;
+}
+
+.cancel-button {
+    background-color: red;
+    color: white;
+    font-weight: bold;
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+.cancel-button:hover {
+    background-color: darkred;
 }

@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 
 const GroupInfoPage = () => {
-    const { groupId } = useParams(); // Get the group ID from the URL
+    const { groupId } = useParams();
 
     return (
         <div className="container">

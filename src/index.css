@@ -278,3 +278,10 @@ input, textarea {
 .cancel-button:hover {
     background-color: darkred;
 }
+
+.no-groups-text {
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 20px;
+}

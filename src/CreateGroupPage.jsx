@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const CreateGroupPage = () => {
+const CreateGroupPage = ({ setGroups }) => {
   const navigate = useNavigate();
   const [groupName, setGroupName] = useState("");
   const [maxMembers, setMaxMembers] = useState(10);
@@ -32,7 +32,16 @@ const CreateGroupPage = () => {
       alert("Group name cannot be empty.");
       return;
     }
-    alert("Group created successfully!");
+
+    const newGroup = {
+      name: groupName,
+      owner: "You",
+      members: `${members.length}/${maxMembers}`,
+      description: description,
+      tags: tags,
+    };
+
+    setGroups((prevGroups) => [...prevGroups, newGroup]);
     navigate("/");
   };
 

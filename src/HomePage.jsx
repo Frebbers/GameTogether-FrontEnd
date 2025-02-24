@@ -1,5 +1,5 @@
-import ControlPanel from "./ControlPanal.jsx";
-import GroupList from "./GroupList.jsx";
+import ControlPanel from "./common/ControlPanal.jsx";
+import GroupList from "./groups/GroupList.jsx";
 
 const HomePage = ({ groups }) => {
   return (

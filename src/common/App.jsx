@@ -1,12 +1,12 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useState } from "react";
-import Header from "./Header";
-import HomePage from "./HomePage";
-import ProfilePage from "./ProfilePage";
+import Header from "../common/Header";
+import HomePage from "../HomePage";
+import ProfilePage from "../profile/ProfilePage";
 import JoinRequestPage from "./JoinRequestPage";
-import GroupInfoPage from "./GroupInfoPage";
-import CreateGroupPage from "./CreateGroupPage";
-import Footer from "./Footer";
+import GroupInfoPage from "../groups/GroupInfoPage";
+import CreateGroupPage from "../groups/CreateGroupPage";
+import Footer from "../common/Footer";
 
 function App() {
   const [groups, setGroups] = useState([]);

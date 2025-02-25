@@ -100,3 +100,25 @@ button:hover{
 .create-button:hover{
     background-color: #00cc00;
 }
+
+.request-message{
+    background-color: #444;
+    width: 100%;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+
+.request-message-input{
+    background-color: #666;
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 10px;
+    width: 95%;
+    height: 80px;
+    border: none;
+    color: white;
+    resize: none; 
+}
+

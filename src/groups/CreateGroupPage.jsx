@@ -9,7 +9,7 @@ const CreateGroupPage = ({ setGroups }) => {
   const [description, setDescription] = useState("");
   const [tags, setTags] = useState([]);
 
-  const handleAddMember = () => {
+  const AddMember = () => {
     if (members.length < maxMembers) {
       const newMember = prompt("Enter member name:");
       if (newMember) {
@@ -20,14 +20,14 @@ const CreateGroupPage = ({ setGroups }) => {
     }
   };
 
-  const handleAddTag = () => {
+  const AddTag = () => {
     const newTag = prompt("Enter a tag:");
     if (newTag) {
       setTags([...tags, newTag]);
     }
   };
 
-  const handleCreateGroup = () => {
+  const CreateGroup = () => {
     if (!groupName.trim()) {
       alert("Group name cannot be empty.");
       return;
@@ -80,9 +80,7 @@ const CreateGroupPage = ({ setGroups }) => {
           placeholder="Enter Group Description"
         ></textarea>
 
-        <button className="add-button" onClick={handleAddMember}>
-          Add Member
-        </button>
+        <button className="add-button" onClick={AddMember}> Add Member </button>
 
         <ul className="member-list">
           {members.map((member, index) => (
@@ -90,9 +88,7 @@ const CreateGroupPage = ({ setGroups }) => {
           ))}
         </ul>
 
-        <button className="add-button" onClick={handleAddTag}>
-          Add Tag
-        </button>
+        <button className="add-button" onClick={AddTag}> Add Tag </button>
 
         <div className="tags">
           {tags.map((tag, index) => (
@@ -100,12 +96,8 @@ const CreateGroupPage = ({ setGroups }) => {
           ))}
         </div>
 
-        <button className="create-button-2" onClick={handleCreateGroup}>
-          Create Group
-        </button>
-        <button className="cancel-button" onClick={() => navigate(-1)}>
-          Go Back
-        </button>
+        <button className="create-button-2" onClick={CreateGroup}> Create Group </button>
+        <button className="cancel-button" onClick={() => navigate(-1)}> Go Back </button>
       </div>
     </div>
   );

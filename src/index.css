@@ -40,12 +40,16 @@ h1 {
 
 .container{
     width: 50%;
+    height: 100%;
     margin: auto;
     background: #0b3d91;
     padding: 20px;
     border-radius: 10px;
     color: white;
     text-align: center;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
 .control-panel {
@@ -120,5 +124,22 @@ button:hover{
     border: none;
     color: white;
     resize: none; 
+}
+
+.footer {
+    margin-top: auto;
+}
+
+.footer a {
+    text-decoration: none;
+}
+
+.footer p {
+    margin: 0;
+    padding: 0;
+}
+
+.ooter a:hover {
+    text-decoration: underline;
 }
 

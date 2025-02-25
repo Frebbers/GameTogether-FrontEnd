@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const JoinRequestPage = () => {
+    const navigate = useNavigate();
+    
     return (
         <div className="container">
             <h1>Join Request</h1>

@@ -18,10 +18,10 @@ function App() {
       <Routes>
         <Route path="/" element={<HomePage groups={groups} />} />
         <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/edit-profile" element={<EditProfilePage />} />
         <Route path="/join-request" element={<JoinRequestPage />} />
         <Route path="/group/:groupId" element={<GroupInfoPage />} />
         <Route path="/create" element={<CreateGroupPage setGroups={setGroups} />} />
-        <Route path="/edit-profile" element={<EditProfilePage />} />
       </Routes>
       <Footer />
     </Router>

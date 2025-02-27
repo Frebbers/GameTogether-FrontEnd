@@ -2,7 +2,6 @@ function Footer(){
 
     return(
         <footer className = "footer">
-        <hr />
            <nav>
             <ul className = "nav-list-footer">
                 <li> <a> FAQ </a> </li>

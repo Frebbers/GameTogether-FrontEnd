@@ -7,13 +7,30 @@ function Header() {
 
     return (
         <header className="header">
-            <nav>
+            <nav className="nav-container">
                 <ul className="nav-list-header">
-                    <li> <a className="nav-element" onClick={() => navigate("/")}> <img src={logo} alt="GameTogether Logo" /> </a> </li>
-                    <li> <a className="nav-element" onClick={() => navigate("/profile")}> <img src={profile} alt="Profile Image" /> </a> </li>
+
+                    <li className="logo-container"> 
+                        <a className="nav-element" onClick={() => navigate("/")}> 
+                            <img src={logo} alt="GameTogether Logo" className="logo" /> 
+                        </a> 
+                    </li>
+
+                    <li className="search-container">
+                        <input 
+                            type="text" 
+                            placeholder="Search for groups..." 
+                            className="search-bar"
+                        />
+                    </li>
+
+                    <li className="profile-container"> 
+                        <a className="nav-element" onClick={() => navigate("/profile")}> 
+                            <img src={profile} alt="Profile Image" className="profile-icon" /> 
+                        </a> 
+                    </li>
                 </ul>
             </nav>
-            <hr />
         </header>
     );
 }

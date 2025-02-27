@@ -21,19 +21,30 @@ h1 {
     left: 0;
     width: 100%;
     background-color: #1B1F3B;
-    height: 110px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 2px solid white;
 }
 
-.nav-list-header, .nav-list-footer {
+.nav-list-header {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+.nav-list-footer {
     list-style: none;
     padding: 10px;
     display: flex;
     justify-content: center;
     gap: 250px;
-}
-
-.nav-list-header :first-child {
-    margin-right: auto;
+    border-top: 2px solid white;
 }
 
 nav ul li a img {
@@ -54,6 +65,33 @@ nav ul li a img {
     display: flex;
     flex-direction: column;
     padding-top: 100px;
+}
+
+.nav-container {
+    width: 100%;
+}
+
+.logo-container {
+    flex: 1;
+    display: flex;
+    align-items: center;
+}
+
+
+.logo {
+    height: 50px;
+}
+
+.profile-container {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.profile-icon {
+    height: 40px;
+    border-radius: 50%;
 }
 
 .control-panel {
@@ -148,3 +186,25 @@ button:hover{
     text-decoration: underline;
 }
 
+.search-container {
+    flex: 2;
+    display: flex;
+    justify-content: center;
+}
+
+.search-bar {
+    width: 100%;
+    max-width: 400px;
+    padding: 10px 15px;
+    border-radius: 20px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    outline: none;
+    background-color: #2C2F33;
+    color: white;
+    text-align: center;
+}
+
+.search-bar::placeholder {
+    color: #aaa;
+}

@@ -6,6 +6,7 @@ import ProfilePage from "../profile/ProfilePage";
 import JoinRequestPage from "./JoinRequestPage";
 import GroupInfoPage from "../groups/GroupInfoPage";
 import CreateGroupPage from "../groups/CreateGroupPage";
+import EditProfilePage from "../profile/EditProfilePage";
 import Footer from "../common/Footer";
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
         <Route path="/join-request" element={<JoinRequestPage />} />
         <Route path="/group/:groupId" element={<GroupInfoPage />} />
         <Route path="/create" element={<CreateGroupPage setGroups={setGroups} />} />
+        <Route path="/edit-profile" element={<EditProfilePage />} />
       </Routes>
       <Footer />
     </Router>

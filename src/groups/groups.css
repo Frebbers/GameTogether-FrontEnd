@@ -1,5 +1,5 @@
 .group-post {
-    background-color: #444;
+    background-color: #2C2F33;
     width: 100%;
     padding: 15px;
     border-radius: 10px;
@@ -15,7 +15,7 @@
 }
 
 .description {
-    background-color: #666;
+    background-color: #4A4E54;
     padding: 10px;
     border-radius: 5px;
     margin-top: 10px;
@@ -29,13 +29,13 @@
 }
 
 .tag{
-    background-color: #888;
+    background-color: #4A4E54;
     padding: 5px 10px;
     border-radius: 5px;
 }
 
 .join-button{
-    background-color: #00ff00;
+    background-color: #32FF6A;
     color: black;
     font-weight: bold;
     width: 100%;
@@ -54,13 +54,13 @@ input, textarea {
     padding: 10px;
     border-radius: 5px;
     border: none;
-    background: #444;
+    background: #4A4E54;
     color: white;
 }
 
 .group-input {
     flex: 1;
-    background: #666;
+    background: #4A4E54;
     color: white;
     padding: 8px;
     border-radius: 5px;
@@ -69,7 +69,7 @@ input, textarea {
 
 .group-name-input {
     width: 30%;
-    background: #666;
+    background: #4A4E54;
     color: white;
     padding: 8px;
     border-radius: 5px;
@@ -95,7 +95,7 @@ input, textarea {
 
 .max-members-input {
     width: 50px;
-    background: #666;
+    background: #4A4E54;
     color: white;
     padding: 5px;
     border-radius: 5px;
@@ -108,7 +108,7 @@ input, textarea {
 }
 
 .description-input {
-    background-color: #666;
+    background-color: #4A4E54;
     padding: 10px;
     border-radius: 5px;
     margin-top: 10px;
@@ -120,7 +120,7 @@ input, textarea {
 }
 
 .add-button {
-    background-color: gray;
+    background-color: #4A4E54;
     color: white;
     border: none;
     padding: 10px;
@@ -131,7 +131,7 @@ input, textarea {
 }
 
 .add-button:hover {
-    background-color: darkgray;
+    background-color: #4A4E54;
 }
 
 .member-list {
@@ -141,13 +141,13 @@ input, textarea {
 }
 
 .member-list li {
-    background: #555;
+    background: #4A4E54;
     padding: 5px;
     margin: 5px 0;
 }
 
 .cancel-button {
-    background-color: red;
+    background-color: #D32F2F;
     color: white;
     font-weight: bold;
     width: 100%;
@@ -169,7 +169,7 @@ input, textarea {
 }
 
 .create-button-2 {
-    background-color: #00ff00;
+    background-color: #32FF6A;
     color: black;
     font-weight: bold;
     width: 100%;

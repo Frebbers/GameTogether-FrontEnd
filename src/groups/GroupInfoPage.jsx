@@ -9,7 +9,10 @@ const GroupInfoPage = () => {
         <div className="container">
             <h1>Group {groupId} Details</h1>
 
-            
+            <div className = "group-info">
+                
+
+            </div>
 
         </div>
     );

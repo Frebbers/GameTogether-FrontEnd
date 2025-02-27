@@ -1,5 +1,8 @@
 body {
-    background-color: #0b3d91;
+    min-height: 100vh;
+    margin: 0;
+    line-height: 1.6em;
+    background-color: #1B1F3B;
     font-family: Arial, sans,serif;
     color: white;
     padding: 20px;
@@ -11,38 +14,38 @@ h1 {
     margin-bottom: 20px;
 }
 
-.header{
-    text-align: center;
-    padding: 20px;
+.header {
+    position: fixed;
+    z-index: 10;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: #1B1F3B;
+    height: 110px;
 }
 
-.nav-list {
+.nav-list-header, .nav-list-footer {
     list-style: none;
-    padding: 0;
+    padding: 10px;
     display: flex;
     justify-content: center;
-    gap: 20px;
+    gap: 250px;
 }
 
-.nav-element{
-    text-decoration: none;
-    color: white;
-    font-size: 18px;
-    font-weight: bold;
-    padding: 10px 15px;
-    border-radius: 5px;
-    transition: background 0.3s ease;
+.nav-list-header :first-child {
+    margin-right: auto;
 }
 
-.nav-element:hover{
-    background-color: rgba(255, 255, 255, 0.2);
+nav ul li a img {
+    max-height: 50px;
+    width: auto;
 }
 
 .container{
     width: 50%;
     height: 100%;
     margin: auto;
-    background: #0b3d91;
+    background: #1B1F3B;
     padding: 20px;
     border-radius: 10px;
     color: white;
@@ -50,6 +53,7 @@ h1 {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    padding-top: 100px;
 }
 
 .control-panel {
@@ -61,13 +65,13 @@ h1 {
 
 .filter {
     display: inline-block;
-    background-color: gray;
+    background-color: #00E5FF;
     border-radius: 5px;
     padding: 0;
 }
 
 .filter select {
-    background-color:gray;
+    background-color: #00E5FF;
     color: white;
     border: none;
     padding: 10px 15px;
@@ -83,7 +87,7 @@ h1 {
 }
 
 button {
-    background-color:  gray;
+    background-color:  #4A4E54;;
     color: white;
     border: none;
     padding: 10px 15px;
@@ -97,7 +101,7 @@ button:hover{
 }
 
 .create-button {
-    background-color: #00ff00;
+    background-color: #32FF6A;
     color: black;
 }
 
@@ -106,7 +110,7 @@ button:hover{
 }
 
 .request-message{
-    background-color: #444;
+    background-color: #2C2F33;
     width: 100%;
     padding: 15px;
     border-radius: 10px;
@@ -115,7 +119,7 @@ button:hover{
 
 
 .request-message-input{
-    background-color: #666;
+    background-color: #4A4E54;;
     padding: 10px;
     border-radius: 5px;
     margin-top: 10px;
@@ -128,6 +132,7 @@ button:hover{
 
 .footer {
     margin-top: auto;
+    height: 50px;
 }
 
 .footer a {
@@ -139,7 +144,7 @@ button:hover{
     padding: 0;
 }
 
-.ooter a:hover {
+.footer a:hover {
     text-decoration: underline;
 }
 

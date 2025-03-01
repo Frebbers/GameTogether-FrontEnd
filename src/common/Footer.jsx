@@ -1,8 +1,16 @@
 function Footer(){
 
     return(
-        <footer>
-            <p> &copy; {new Date().getFullYear()} GameTogether </p>
+        <footer className = "footer">
+           <nav>
+            <ul className = "nav-list-footer">
+                <li> <a> FAQ </a> </li>
+                <li> <a> About </a> </li>
+                <li> &copy; {new Date().getFullYear()} GameTogether </li>
+                <li> <a> Support </a> </li>
+                <li> <a> Private Policy </a> </li>
+            </ul>
+           </nav>
         </footer>
     );
 

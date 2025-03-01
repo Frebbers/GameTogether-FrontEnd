@@ -1,17 +1,36 @@
 import { useNavigate } from "react-router-dom";
+import logo from "../images/sitelogo.png";
+import profile from "../images/profileimage.png";
 
 function Header() {
     const navigate = useNavigate();
 
     return (
         <header className="header">
-            <nav>
-                <ul className="nav-list">
-                    <li><button className="nav-element" onClick={() => navigate("/")}>GameTogether</button></li>
-                    <li><button className="nav-element" onClick={() => navigate("/profile")}>Profile</button></li>
+            <nav className="nav-container">
+                <ul className="nav-list-header">
+
+                    <li className="logo-container"> 
+                        <a className="nav-element" onClick={() => navigate("/")}> 
+                            <img src={logo} alt="GameTogether Logo" className="logo" /> 
+                        </a> 
+                    </li>
+
+                    <li className="search-container">
+                        <input 
+                            type="text" 
+                            placeholder="Search for groups..." 
+                            className="search-bar"
+                        />
+                    </li>
+
+                    <li className="profile-container"> 
+                        <a className="nav-element" onClick={() => navigate("/profile")}> 
+                            <img src={profile} alt="Profile Image" className="profile-icon" /> 
+                        </a> 
+                    </li>
                 </ul>
             </nav>
-            <hr />
         </header>
     );
 }

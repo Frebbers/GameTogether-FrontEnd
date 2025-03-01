@@ -1,5 +1,8 @@
 body {
-    background-color: #0b3d91;
+    min-height: 100vh;
+    margin: 0;
+    line-height: 1.6em;
+    background-color: #1B1F3B;
     font-family: Arial, sans,serif;
     color: white;
     padding: 20px;
@@ -11,41 +14,84 @@ h1 {
     margin-bottom: 20px;
 }
 
-.header{
-    text-align: center;
-    padding: 20px;
+.header {
+    position: fixed;
+    z-index: 10;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: #1B1F3B;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 2px solid white;
 }
 
-.nav-list {
+.nav-list-header {
     list-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
     padding: 0;
+    margin: 0;
+}
+
+.nav-list-footer {
+    list-style: none;
+    padding: 10px;
     display: flex;
     justify-content: center;
-    gap: 20px;
+    gap: 250px;
+    border-top: 2px solid white;
 }
 
-.nav-element{
-    text-decoration: none;
-    color: white;
-    font-size: 18px;
-    font-weight: bold;
-    padding: 10px 15px;
-    border-radius: 5px;
-    transition: background 0.3s ease;
-}
-
-.nav-element:hover{
-    background-color: rgba(255, 255, 255, 0.2);
+nav ul li a img {
+    max-height: 50px;
+    width: auto;
 }
 
 .container{
     width: 50%;
+    height: 100%;
     margin: auto;
-    background: #0b3d91;
+    background: #1B1F3B;
     padding: 20px;
     border-radius: 10px;
     color: white;
     text-align: center;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding-top: 100px;
+}
+
+.nav-container {
+    width: 100%;
+}
+
+.logo-container {
+    flex: 1;
+    display: flex;
+    align-items: center;
+}
+
+
+.logo {
+    height: 50px;
+}
+
+.profile-container {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.profile-icon {
+    height: 40px;
+    border-radius: 50%;
 }
 
 .control-panel {
@@ -57,13 +103,13 @@ h1 {
 
 .filter {
     display: inline-block;
-    background-color: gray;
+    background-color: #00E5FF;
     border-radius: 5px;
     padding: 0;
 }
 
 .filter select {
-    background-color:gray;
+    background-color: #00E5FF;
     color: white;
     border: none;
     padding: 10px 15px;
@@ -79,7 +125,7 @@ h1 {
 }
 
 button {
-    background-color:  gray;
+    background-color:  #4A4E54;;
     color: white;
     border: none;
     padding: 10px 15px;
@@ -93,7 +139,7 @@ button:hover{
 }
 
 .create-button {
-    background-color: #00ff00;
+    background-color: #32FF6A;
     color: black;
 }
 
@@ -102,7 +148,7 @@ button:hover{
 }
 
 .request-message{
-    background-color: #444;
+    background-color: #2C2F33;
     width: 100%;
     padding: 15px;
     border-radius: 10px;
@@ -111,7 +157,7 @@ button:hover{
 
 
 .request-message-input{
-    background-color: #666;
+    background-color: #4A4E54;;
     padding: 10px;
     border-radius: 5px;
     margin-top: 10px;
@@ -122,3 +168,43 @@ button:hover{
     resize: none; 
 }
 
+.footer {
+    margin-top: auto;
+    height: 50px;
+}
+
+.footer a {
+    text-decoration: none;
+}
+
+.footer p {
+    margin: 0;
+    padding: 0;
+}
+
+.footer a:hover {
+    text-decoration: underline;
+}
+
+.search-container {
+    flex: 2;
+    display: flex;
+    justify-content: center;
+}
+
+.search-bar {
+    width: 100%;
+    max-width: 400px;
+    padding: 10px 15px;
+    border-radius: 20px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    outline: none;
+    background-color: #2C2F33;
+    color: white;
+    text-align: center;
+}
+
+.search-bar::placeholder {
+    color: #aaa;
+}

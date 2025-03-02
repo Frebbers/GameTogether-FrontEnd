@@ -34,12 +34,13 @@ const CreateGroupPage = ({ setGroups }) => {
     }
 
     const newGroup = {
+      id: Date.now(),
       name: groupName,
       owner: "You",
-      members: `${members.length}/${maxMembers}`,
+      members: members,
       description: description,
       tags: tags,
-    };
+  };
 
     setGroups((prevGroups) => [...prevGroups, newGroup]);
     navigate("/");

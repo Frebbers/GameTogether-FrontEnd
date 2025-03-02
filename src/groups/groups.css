@@ -134,15 +134,19 @@ input, textarea {
     background-color: #4A4E54;
 }
 
-.member-list {
-    list-style-type: none;
-    padding: 0;
+.members-list {
     margin-top: 10px;
+    background: #4A4E54;
+    padding: 10px;
+    border-radius: 5px;
 }
 
-.member-list li {
-    background: #4A4E54;
-    padding: 5px;
+.members-list ul {
+    padding: 0;
+    list-style: none;
+}
+
+.members-list li {
     margin: 5px 0;
 }
 
@@ -181,4 +185,18 @@ input, textarea {
 
 .create-button-2:hover {
     background-color: #00cc00;
+}
+
+.tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 10px;
+}
+
+.tag {
+    background-color: #4A4E54;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
 }

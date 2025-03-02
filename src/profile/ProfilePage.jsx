@@ -14,8 +14,7 @@ const ProfilePage = () => {
                     src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfHlcmASZgNOAA0mtIwob78oSLwGP1PybjDQ&s" 
                     alt="Profile"
                 /> 
-                <p className="profile-details">User profile details will go here.</p>
-                <text> </text>
+                <p className="profile-details"></p>
                 <button 
                     className="edit-profile-button"
                     onClick={() => navigate('/edit-profile')}

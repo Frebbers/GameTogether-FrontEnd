@@ -15,6 +15,7 @@ const ProfilePage = () => {
                     alt="Profile"
                 /> 
                 <p className="profile-details">User profile details will go here.</p>
+                <text> </text>
                 <button 
                     className="edit-profile-button"
                     onClick={() => navigate('/edit-profile')}

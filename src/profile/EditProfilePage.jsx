@@ -23,12 +23,18 @@ const EditProfilePage = () => {
     return (
         <div className="edit-profile-container">
             <h1>Edit Profile</h1>
+                <img 
+                    className="profile-image" 
+                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfHlcmASZgNOAA0mtIwob78oSLwGP1PybjDQ&s" 
+                    alt="Profile"
+                />
+                
             <form onSubmit={handleSubmit} className="edit-profile-form">
                 <div>
-                    <label>Name:</label>
+                    <label>Username:</label>
                     <input
                         type="text"
-                        placeholder="Enter your name"
+                        placeholder="Enter your username"
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                     />

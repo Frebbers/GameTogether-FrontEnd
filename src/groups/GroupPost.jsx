@@ -8,14 +8,14 @@ const GroupPost = ({ id, name, owner, members, description, tags }) => {
             <div className="group-post-header">
                 <span>{name}</span>
                 <span>Owner: {owner}</span>
-                <span>Members: {members}</span>
+                <span>Members: {members.length}</span>
             </div>
             <p className="description">{description}</p>
 
             <div className="members-list">
                 <strong>Members:</strong>
                 <ul>
-                    {Array.isArray(members) && members.length > 0 ? (
+                    {members.length > 0 ? (
                         members.map((member, index) => <li key={index}>{member}</li>)
                     ) : (
                         <li>No members yet</li>
@@ -33,7 +33,7 @@ const GroupPost = ({ id, name, owner, members, description, tags }) => {
             </div>
 
             <button className="join-button" onClick={(e) => {
-                e.stopPropagation(); 
+                e.stopPropagation();
                 navigate("/join-request");
             }}>
                 Request to Join

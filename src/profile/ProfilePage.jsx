@@ -15,6 +15,8 @@ const ProfilePage = () => {
                     alt="Profile"
                 /> 
                 <p className="profile-details"></p>
+                <p className="profile-details">Name: {localStorage.getItem('name')}</p>
+                <p className="profile-details">Email: {localStorage.getItem('email')}</p>
                 <button 
                     className="edit-profile-button"
                     onClick={() => navigate('/edit-profile')}

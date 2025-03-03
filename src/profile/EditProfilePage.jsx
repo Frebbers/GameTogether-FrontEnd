@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
+import './ProfilePage.css';
 
 const EditProfilePage = () => {
-    const [name, setName] = useState('');
-    const [email, setEmail] = useState('');
+    const [email, setEmail] = useState("");
     const [photo, setPhoto] = useState(null);
-    const [photoURL, setPhotoURL] = useState('');
+    const [description, setDescription] = useState("");
+    const [photoURL, setPhotoURL] = useState("");
 
     const handlePhotoChange = (e) => {
         const file = e.target.files[0];
@@ -31,17 +32,21 @@ const EditProfilePage = () => {
                 
             <form onSubmit={handleSubmit} className="edit-profile-form">
                 <div>
-                    <label>Username:</label>
+
+                    <label>Description:</label>
                     <input
+                        className='description'
                         type="text"
-                        placeholder="Enter your username"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
+                        placeholder="Enter your Description"
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+
                     />
                 </div>
                 <div>
                     <label>Email:</label>
                     <input
+                        className='email'
                         type="email"
                         placeholder="Enter your email"
                         value={email}
@@ -53,9 +58,9 @@ const EditProfilePage = () => {
                     <input type="file" accept="image/*" onChange={handlePhotoChange} />
                 </div>
                 {photoURL && <img src={photoURL} alt="Profile Preview" width="100" />}
-                <button type="submit">Save</button>
-            </form>
-        </div>
+                <button type="submit">Save</button>                
+                </form>
+                </div>
     );
 };
 

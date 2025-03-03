@@ -15,10 +15,10 @@ h1 {
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: calc(100vh - 80px); /* Adjust based on navbar height */
     width: 100%;
     padding: 20px;
     background-color: transparent;
+    margin-top: 100px;
 }
 
 .profile-card {
@@ -69,7 +69,7 @@ h1 {
 
 .edit-profile-container {
     max-width: 400px;
-    margin: auto;
+    margin-top: 100px;
     padding: 20px;
     background: transparent;
     border-radius: 8px;
@@ -97,8 +97,21 @@ button {
     border: none;
     border-radius: 4px;
     cursor: pointer;
+    position: relative;
+    z-index: 10;
 }
 
 button:hover {
     background: #0056b3;
+}
+
+.username {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.description {
+    font-size: 16px;
+    margin-bottom: 10px;
 }

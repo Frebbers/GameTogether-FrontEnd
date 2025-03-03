@@ -121,6 +121,20 @@ input, textarea {
     background-color: #4A4E54;
 }
 
+.description-info {
+    margin-top: 10px;
+    background: #3A3E44;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.members-info {
+    margin-top: 10px;
+    background: #3A3E44;
+    padding: 10px;
+    border-radius: 5px;
+}
+
 .members-list {
     margin-top: 10px;
     background: #3A3E44;

@@ -21,8 +21,8 @@ const GroupInfoPage = ({ groups }) => {
 
             <div className="group-info">
                 <p><strong>Owner:</strong> {group.owner}</p>
-                <p><strong>Members:</strong> {group.members.length}/{group.maxMembers}</p>
-                <p><strong>Description:</strong> {group.description}</p>
+                <p className="members-info"><strong>Members:</strong> {group.members.length}/{group.maxMembers}</p>
+                <p className="description-info"><strong>Description:</strong> {group.description}</p>
 
                 <div className="members-list">
                     <strong>Members:</strong>

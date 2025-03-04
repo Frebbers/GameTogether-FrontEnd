@@ -16,6 +16,12 @@ function Header() {
                         </a> 
                     </li>
 
+                    <li>
+                        <a className="nav-element">
+                            D&D
+                        </a>
+                    </li>
+
                     <li className="search-container">
                         <input 
                             type="text" 
@@ -24,6 +30,12 @@ function Header() {
                         />
                     </li>
 
+                    <li>
+                        <a className="nav-element">
+                            Other Games
+                        </a>
+                    </li>
+                    
                     <li className="profile-container"> 
                         <a className="nav-element" onClick={() => navigate("/profile")}> 
                             <img src={profile} alt="Profile Image" className="profile-icon" /> 

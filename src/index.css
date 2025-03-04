@@ -186,6 +186,10 @@ button:hover{
     text-decoration: underline;
 }
 
+.header a:hover {
+    text-decoration: underline;
+}
+
 .search-container {
     flex: 2;
     display: flex;

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import './ProfilePage.css';
 
 const EditProfilePage = () => {
-    const [email, setEmail] = useState("");
+    const [tags, setTags] = useState("");
     const [photo, setPhoto] = useState(null);
     const [description, setDescription] = useState("");
     const [photoURL, setPhotoURL] = useState("");
@@ -18,7 +18,7 @@ const EditProfilePage = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         // Placeholder for form submission logic
-        console.log({ name, email, photo });
+        console.log({ description, tags, photo });
     };
 
     return (
@@ -35,7 +35,7 @@ const EditProfilePage = () => {
 
                     <label>Description:</label>
                     <input
-                        className='description'
+                        className="description"
                         type="text"
                         placeholder="Enter your Description"
                         value={description}
@@ -46,11 +46,11 @@ const EditProfilePage = () => {
                 <div>
                     <label>Email:</label>
                     <input
-                        className='email'
-                        type="email"
-                        placeholder="Enter your email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
+                        className="tag"
+                        type="tags"
+                        placeholder="Enter your tags here with ',' in between each"
+                        value={tags}
+                        onChange={(e) => setTags(e.target.value)}
                     />
                 </div>
                 <div>

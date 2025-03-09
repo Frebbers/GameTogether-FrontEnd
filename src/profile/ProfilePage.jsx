@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import './ProfilePage.css';
 
-const ProfilePage = () => {
+const ProfilePage = ({ name, email, description, tags }) => {
     const navigate = useNavigate();
 
     return (
@@ -14,9 +14,10 @@ const ProfilePage = () => {
                     src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfHlcmASZgNOAA0mtIwob78oSLwGP1PybjDQ&s" 
                     alt="Profile"
                 /> 
-                <p className="profile-details"></p>
-                <p className="profile-details">Name: {localStorage.getItem('name')}</p>
-                <p className="profile-details">Email: {localStorage.getItem('email')}</p>
+                <p className="profile-details">Name: {name || "Unknown"}</p>
+                <p className="profile-details">Email: {email || "Not provided"}</p>
+                <p className="profile-details">Description: {description || "None available"}</p>
+                <p className="profile-details">Tags: {tags || "No tags"}</p>
                 <button 
                     className="edit-profile-button"
                     onClick={() => navigate('/edit-profile')}

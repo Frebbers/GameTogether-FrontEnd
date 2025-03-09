@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import PropTypes from 'prop-types';
 import './ProfilePage.css';
 
 const ProfilePage = ({ name, email, description, tags }) => {
@@ -17,16 +18,24 @@ const ProfilePage = ({ name, email, description, tags }) => {
                 <p className="profile-details">Name: {name || "Unknown"}</p>
                 <p className="profile-details">Email: {email || "Not provided"}</p>
                 <p className="profile-details">Description: {description || "None available"}</p>
-                <p className="profile-details">Tags: {tags || "No tags"}</p>
+                <p className="profile-details">Tags: {tags && tags.length > 0 ? tags.join(', ') : "No tags"}</p>
+                
                 <button 
                     className="edit-profile-button"
-                    onClick={() => navigate('/edit-profile')}
+                    onClick={() => navigate('/edit-profile', { state: { name, email, description, tags } })}
                 >
                     Edit Profile
                 </button>
             </div>
         </div>
     );
+};
+
+ProfilePage.propTypes = {
+    name: PropTypes.string,
+    email: PropTypes.string,
+    description: PropTypes.string,
+    tags: PropTypes.arrayOf(PropTypes.string),
 };
 
 export default ProfilePage;

@@ -1,66 +1,55 @@
 import React, { useState } from 'react';
-import './ProfilePage.css';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const EditProfilePage = () => {
-    const [tags, setTags] = useState("");
-    const [photo, setPhoto] = useState(null);
-    const [description, setDescription] = useState("");
-    const [photoURL, setPhotoURL] = useState("");
+    const location = useLocation();
+    const navigate = useNavigate();
 
-    const handlePhotoChange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            setPhoto(file);
-            setPhotoURL(URL.createObjectURL(file));
-        }
+    // Retrieve the state data
+    const { name, email, description, tags } = location.state || {};
+
+    // Local state to edit the values
+    const [formData, setFormData] = useState({
+        name: name || '',
+        email: email || '',
+        description: description || '',
+        tags: tags ? tags.join(', ') : ''
+    });
+
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        // Placeholder for form submission logic
-        console.log({ description, tags, photo });
+        // Here, you can update the profile (e.g., send data to an API)
+        console.log('Updated Profile:', formData);
+        navigate(-1); // Go back to profile page
     };
 
     return (
         <div className="edit-profile-container">
             <h1>Edit Profile</h1>
-                <img 
-                    className="profile-image" 
-                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfHlcmASZgNOAA0mtIwob78oSLwGP1PybjDQ&s" 
-                    alt="Profile"
-                />
-                
-            <form onSubmit={handleSubmit} className="edit-profile-form">
-                <div>
-
-                    <label>Description:</label>
-                    <input
-                        className="description"
-                        type="text"
-                        placeholder="Enter your Description"
-                        value={description}
-                        onChange={(e) => setDescription(e.target.value)}
-
-                    />
-                </div>
-                <div>
-                    <label>Email:</label>
-                    <input
-                        className="tag"
-                        type="tags"
-                        placeholder="Enter your tags here with ',' in between each"
-                        value={tags}
-                        onChange={(e) => setTags(e.target.value)}
-                    />
-                </div>
-                <div>
-                    <label>Photo:</label>
-                    <input type="file" accept="image/*" onChange={handlePhotoChange} />
-                </div>
-                {photoURL && <img src={photoURL} alt="Profile Preview" width="100" />}
-                <button type="submit">Save</button>                
-                </form>
-                </div>
+            <form onSubmit={handleSubmit}>
+                <label>
+                    Name:
+                    <input type="text" name="name" value={formData.name} onChange={handleChange} />
+                </label>
+                <label>
+                    Email:
+                    <input type="email" name="email" value={formData.email} onChange={handleChange} />
+                </label>
+                <label>
+                    Description:
+                    <textarea name="description" value={formData.description} onChange={handleChange} />
+                </label>
+                <label>
+                    Tags (comma-separated):
+                    <input type="text" name="tags" value={formData.tags} onChange={handleChange} />
+                </label>
+                <button type="submit">Save Changes</button>
+            </form>
+        </div>
     );
 };
 

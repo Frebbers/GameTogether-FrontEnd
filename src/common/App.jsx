@@ -9,6 +9,8 @@ import CreateGroupPage from "../groups/CreateGroupPage";
 import Footer from "../common/Footer";
 import FaqPage from "../common/FaqPage";
 import AboutPage from "../common/AboutPage";
+import SupportPage from "../common/SupportPage";
+import PrivatePolicyPage from "../common/PrivatePolicyPage";
 
 function App() {
   const [groups, setGroups] = useState([]);
@@ -24,6 +26,8 @@ function App() {
         <Route path="/create" element={<CreateGroupPage setGroups={setGroups} />} />
         <Route path="/faq" element={<FaqPage />} />
         <Route path="/about" element={<AboutPage />} />
+        <Route path="/support" element={<SupportPage />} />
+        <Route path="/policy" element={<PrivatePolicyPage />} />
       </Routes>
       <Footer />
     </Router>

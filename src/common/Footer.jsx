@@ -24,13 +24,13 @@ function Footer(){
                 </li>
 
                 <li>
-                    <a className="nav-element">
+                    <a className="nav-element" onClick={() => navigate("/support")}>
                         Support
                     </a>
                 </li>
 
                 <li>
-                    <a className="nav-element">
+                    <a className="nav-element" onClick={() => navigate("/policy")}>
                         Private Policy
                     </a>
                 </li>

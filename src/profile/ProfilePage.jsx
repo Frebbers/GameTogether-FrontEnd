@@ -1,11 +1,18 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import PropTypes from 'prop-types';
 import './ProfilePage.css';
+import BASE_URL from '../../config';
 
-const ProfilePage = ({ name, email, description, tags }) => {
+const ProfilePage = () => {
     const navigate = useNavigate();
+    const [user, setUser] = useState(null);
 
+    useEffect(() => {
+        fetch(`${BASE_URL}/Users/get-profile`)
+            .then((response) => response.json())
+            .then((data) => setUser(data))
+            .catch((error) => console.error('Error:', error));
+    }, []);
     return (
         <div className="profile-container">
             <div className="profile-card">
@@ -15,27 +22,20 @@ const ProfilePage = ({ name, email, description, tags }) => {
                     src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfHlcmASZgNOAA0mtIwob78oSLwGP1PybjDQ&s" 
                     alt="Profile"
                 /> 
-                <p className="profile-details">Name: {name || "Unknown"}</p>
-                <p className="profile-details">Email: {email || "Not provided"}</p>
-                <p className="profile-details">Description: {description || "None available"}</p>
-                <p className="profile-details">Tags: {tags && tags.length > 0 ? tags.join(', ') : "No tags"}</p>
+                <p className="profile-details">Name: {user?.name || "Unknown"}</p>
+                <p className="profile-details">Age: {user?.age || "Not provided"}</p>
+                <p className="profile-details">Description: {user?.description || "None available"}</p>
+                <p className="profile-details">Region: {user?.region || "No region registered"}</p>
                 
                 <button 
                     className="edit-profile-button"
-                    onClick={() => navigate('/edit-profile', { state: { name, email, description, tags } })}
+                    onClick={() => navigate('/edit-profile', { state: user })}
                 >
                     Edit Profile
                 </button>
             </div>
         </div>
     );
-};
-
-ProfilePage.propTypes = {
-    name: PropTypes.string,
-    email: PropTypes.string,
-    description: PropTypes.string,
-    tags: PropTypes.arrayOf(PropTypes.string),
 };
 
 export default ProfilePage;

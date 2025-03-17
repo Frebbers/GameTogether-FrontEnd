@@ -10,6 +10,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Checkout repository with submodules # pull backend submodule
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+      
     - uses: actions/checkout@v4
     - name: Build the Docker image
       run: docker build ./backend --file backend/Dockerfile --tag game-together-backend:$(date +%s)

@@ -16,6 +16,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
+        with:
+          submodules: recursive
 
       - name: Set up Docker Compose
         uses: docker/setup-compose-action@v1
@@ -23,10 +25,10 @@ jobs:
           version: 'latest'
 
       - name: Build containers
-        run: /usr/bin/docker compose -f Docker-Compose.yml build 
+        run: /usr/bin/docker compose -f backend/Docker-Compose.yml build 
 
       - name: Run tests
-        run: /usr/bin/docker compose -f Docker-Compose.yml up test
+        run: /usr/bin/docker compose -f backend/Docker-Compose.yml up test
           
 
   #     - name: Docker compose tests run

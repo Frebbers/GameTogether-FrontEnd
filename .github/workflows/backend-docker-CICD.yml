@@ -1,0 +1,64 @@
+name: Backend - Docker-CICD
+
+on:
+  push:
+    branches:
+      - main
+      - repo-merge-2
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USER }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and test
+        uses: docker/build-push-action@v6
+        with:
+          target: build
+          load: true
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          platforms: linux/amd64,linux/arm64
+          push: true
+          target: final
+          tags: ${{ secrets.DOCKER_USER }}/game-together-backend:latest
+  
+  
+  deploy:
+    needs: build
+    environment: DTU Hosting
+    runs-on: ubuntu-latest
+    steps:
+      - name: print variables
+        uses: actions/github-script@v6
+        with:
+          script: |
+            console.log("SSH Host: ${{ vars.HOST }}" );
+            console.log ("SSH port: ${{ secrets.SSH_PORT }}");
+            console.log("username: ${{ secrets.SSH_USER }}");
+          
+
+
+      - name: deploying
+        uses: appleboy/ssh-action@v1.2.1
+        with:
+          host: ${{ vars.HOST }}
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          port: ${{ secrets.SSH_PORT }}
+          key: ${{ secrets.SSH_PKEY }}
+          script: |
+            docker image pull ${{ secrets.DOCKER_USER }}/game-together-backend:latest
+            docker container stop game-together-backend
+            docker container rm game-together-backend
+            docker container run -d --name game-together-backend -p 5238:5238 ${{ secrets.DOCKER_USER }}/game-together-backend

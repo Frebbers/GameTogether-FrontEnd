@@ -1,9 +1,10 @@
-name: Docker-CICD
+name: Frontend - Docker-CICD
 
 on:
   push:
     branches:
       - main
+      - repo-merge-2
 
 jobs:
   build:

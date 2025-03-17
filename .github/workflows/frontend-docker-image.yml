@@ -1,8 +1,8 @@
-name: Docker Image CI
+name: Frontend - Docker Image CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "repo-merge-2" ]
   pull_request:
     branches: [ "main" ]
 

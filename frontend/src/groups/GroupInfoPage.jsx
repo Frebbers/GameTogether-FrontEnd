@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from "react-router-dom";
 
-const GroupInfoPage = ({ groups }) => {
+const GroupInfoPage = ({ groups, setGroups }) => {
     const { groupId } = useParams();
     const navigate = useNavigate();
 
@@ -14,6 +14,11 @@ const GroupInfoPage = ({ groups }) => {
             </div>
         );
     }
+
+    const handleDelete = () => {
+        setGroups((prevGroups) => prevGroups.filter((g) => g.id !== Number(groupId)));
+        navigate("/");
+    };
 
     return (
         <div className="container">
@@ -49,6 +54,13 @@ const GroupInfoPage = ({ groups }) => {
                     onClick={() => navigate("/join-request")}
                 >
                     Request to Join
+                </button>
+
+                <button 
+                    className="delete-button" 
+                    onClick={handleDelete}
+                >
+                    Delete Group
                 </button>
 
                 <button 

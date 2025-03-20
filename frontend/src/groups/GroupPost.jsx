@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 
-const GroupPost = ({ id, name, owner, members, description, tags }) => {
+const GroupPost = ({ id, name, owner, members, maxMembers, description, tags }) => {
     const navigate = useNavigate();
 
     return (
@@ -8,7 +8,7 @@ const GroupPost = ({ id, name, owner, members, description, tags }) => {
             <div className="group-post-header">
                 <span>{name}</span>
                 <span>Owner: {owner}</span>
-                <span>Members: {members.length}</span>
+                <span>Members: {members.length}/{maxMembers}</span>
             </div>
             <p className="description">{description}</p>
 

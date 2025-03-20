@@ -1,8 +1,9 @@
 import { useNavigate } from "react-router-dom";
 import logo from "../images/sitelogo.png";
 import profile from "../images/profileimage.png";
+import ControlPanel from "./ControlPanal";
 
-function Header() {
+function Header({setFilterTag}) {
     const navigate = useNavigate();
 
     return (
@@ -11,13 +12,17 @@ function Header() {
                 <ul className="nav-list-header">
 
                     <li className="logo-container"> 
-                        <a className="nav-element" onClick={() => navigate("/")}> 
+                        <a className="nav-element" onClick={() => {
+                            navigate("/");
+                            setFilterTag("All Games");
+                        }}
+                            > 
                             <img src={logo} alt="GameTogether Logo" className="logo" /> 
                         </a> 
                     </li>
 
                     <li>
-                        <a className="nav-element">
+                        <a className="nav-element" onClick={() => setFilterTag("D&D")}>
                             D&D
                         </a>
                     </li>
@@ -31,7 +36,7 @@ function Header() {
                     </li>
 
                     <li>
-                        <a className="nav-element">
+                        <a className="nav-element" onClick={() => setFilterTag("Other Game")}>
                             Other Games
                         </a>
                     </li>

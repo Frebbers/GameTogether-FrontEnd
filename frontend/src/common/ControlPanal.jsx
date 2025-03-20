@@ -1,20 +1,16 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom"; 
+import { useNavigate } from "react-router-dom";
 
-const ControlPanel = ({ NumberOfGroups, setFilterTag }) => { 
+const ControlPanel = ({ NumberOfGroups, filterTag, setFilterTag }) => { 
     const navigate = useNavigate();
-    const [tag, setTag] = useState("All Games");
 
     function handleTagChange(event) {
-        const selectedTag = event.target.value;
-        setTag(selectedTag);
-        setFilterTag(selectedTag);
+        setFilterTag(event.target.value);
     }
 
     return (
       <div className="control-panel">
         <div className="filter">
-          <select value={tag} onChange={handleTagChange}>
+          <select value={filterTag} onChange={handleTagChange}>
             <option value="All Games">All Games</option>
             <option value="D&D">D&D</option>
             <option value="Other Game">Other Game</option>

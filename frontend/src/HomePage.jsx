@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Header from "./common/Header";
 import ControlPanel from "./common/ControlPanal.jsx";
 import GroupList from "./groups/GroupList.jsx";
 import './groups/groups.css';
@@ -8,9 +9,11 @@ const HomePage = ({ groups }) => {
 
   return (
     <div className="container">
+      <Header setFilterTag={setFilterTag} />
+
       <h1>Available Groups</h1>
       
-      <ControlPanel NumberOfGroups={groups.length} setFilterTag={setFilterTag} />
+      <ControlPanel NumberOfGroups={groups.length} filterTag={filterTag} setFilterTag={setFilterTag} />
 
       {groups.length > 0 ? (
         <GroupList groups={groups} filterTag={filterTag} />

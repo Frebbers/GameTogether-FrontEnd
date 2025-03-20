@@ -19,10 +19,10 @@ function App() {
     <Router>
       <Header />
       <Routes>
-        <Route path="/" element={<HomePage groups={groups} />} />
+        <Route path="/" element={<HomePage groups={groups} setGroups={setGroups} />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/join-request" element={<JoinRequestPage />} />
-        <Route path="/group/:groupId" element={<GroupInfoPage groups={groups} />} />
+        <Route path="/group/:groupId" element={<GroupInfoPage groups={groups} setGroups={setGroups} />} />
         <Route path="/create" element={<CreateGroupPage setGroups={setGroups} />} />
         <Route path="/faq" element={<FaqPage />} />
         <Route path="/about" element={<AboutPage />} />

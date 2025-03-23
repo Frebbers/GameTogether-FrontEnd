@@ -1,5 +1,5 @@
 const BASE_URL = "https://localhost:7191/api";
-const AUTH_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIzIiwiZW1haWwiOiJhZHJpYW5iYWJhMTIwN0BnbWFpbC5jb20iLCJuYmYiOjE3NDI3MjQ0MTAsImV4cCI6MTc0MjczMTYxMCwiaWF0IjoxNzQyNzI0NDEwLCJpc3MiOiJHYW1lVG9nZXRoZXIiLCJhdWQiOiJHYW1lVG9nZXRoZXJBUFAifQ.gw15xKjl1Wy0IukPL24VyJ_fUrEUhwcOYhXDme8Gam0";
+const AUTH_TOKEN = "insert token here";
 
 
 export { BASE_URL, AUTH_TOKEN };

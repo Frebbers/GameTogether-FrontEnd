@@ -1,41 +1,60 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import './ProfilePage.css';
-import BASE_URL from '../../config';
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { BASE_URL, AUTH_TOKEN } from "../../config";
 
-const ProfilePage = () => {
-    const navigate = useNavigate();
-    const [user, setUser] = useState(null);
+
+const UserProfilePage = () => {
+    const [name, setName] = useState(null);
+    const [region, setRegion] = useState(null);
+    const [profilePicture, setProfilePicture] = useState(null);
+    const [description, setDescription] = useState(null);
+
 
     useEffect(() => {
-        fetch(`${BASE_URL}/Users/get-profile`)
-            .then((response) => response.json())
-            .then((data) => setUser(data))
-            .catch((error) => console.error('Error:', error));
+        const fetchData = async () => {
+            try {
+                const response = await fetch('/api/Users/get-profile', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${AUTH_TOKEN}`,
+                    },
+                });
+    
+                if (!response.ok) {
+                    const text = await response.text(); // get raw text for debugging
+                    console.error('Server Error:', response.status, text);
+                    throw new Error('Failed to fetch profile data');
+                }
+    
+                const data = await response.json();
+    
+                setName(data.name);
+                setRegion(data.region);
+                setProfilePicture(data.profilePicture);
+                setDescription(data.description);
+            } catch (error) {
+                console.error('Fetch error:', error);
+            }
+        };
+    
+        fetchData();
     }, []);
     return (
         <div className="profile-container">
-            <div className="profile-card">
-                <h1 className="profile-title">User Profile</h1>
-                <img 
-                    className="profile-image" 
-                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfHlcmASZgNOAA0mtIwob78oSLwGP1PybjDQ&s" 
-                    alt="Profile"
-                /> 
-                <p className="profile-details">Name: {user?.name || "Unknown"}</p>
-                <p className="profile-details">Age: {user?.age || "Not provided"}</p>
-                <p className="profile-details">Description: {user?.description || "None available"}</p>
-                <p className="profile-details">Region: {user?.region || "No region registered"}</p>
-                
-                <button 
-                    className="edit-profile-button"
-                    onClick={() => navigate('/edit-profile', { state: user })}
-                >
-                    Edit Profile
-                </button>
+            <h1>User Profile</h1>
+            <div className="profile-details">
+                <div className="profile-picture">
+                    <img src={profilePicture} alt="Profile" />
+                </div>
+                <div className="profile-details">
+                    <h2>{name}</h2>
+                    <p>{description}</p>
+                    <p>{region}</p>
+                </div>
             </div>
         </div>
     );
 };
 
-export default ProfilePage;
+export default UserProfilePage;

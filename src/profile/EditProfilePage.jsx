@@ -1,16 +1,18 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { BASE_URL, AUTH_TOKEN } from '../../config';
 
 const EditProfilePage = () => {
     const location = useLocation();
     const navigate = useNavigate();
-    const { name, email, description, tags } = location.state || {};
+    const { name, age, region, profilePicture, description, tags } = location.state || {};
 
     const [formData, setFormData] = useState({
-        name: name || '',
-        email: email || '',
-        description: description || '',
+        name: name || "",
+        age: age || "",
+        region: region || "",
+        profilePicture: profilePicture || "",
+        description: description || "",
         tags: tags ? tags.join(', ') : ''
     });
 
@@ -27,8 +29,9 @@ const EditProfilePage = () => {
                 },
                 body: JSON.stringify({
                     name: formData.name,
-                    description: formData.description,
-                    tags: formData.tags.split(',').map(tag => tag.trim())
+                    region: formData.region,
+                    profilePicture: formData.profilePicture,
+                    description: formData.description
                 })
             });
 
@@ -46,10 +49,11 @@ const EditProfilePage = () => {
             <h1>Edit Profile</h1>
             <form onSubmit={handleSubmit}>
                 <label>Name: <input type="text" name="name" value={formData.name} onChange={handleChange} /></label>
+                <label>Age: <input type="number" name="age" value={formData.age} onChange={handleChange} /></label>
                 <label>Description: <textarea name="description" value={formData.description} onChange={handleChange} /></label>
-                <label>Region: <input type="region" name="region" value={formData.email} onChange={handleChange} /></label>
-                <label>Tags: <input type="text" name="tags" value={formData.tags} onChange={handleChange} /></label>
-                <button type="submit">Save Changes</button>
+                <label>Region: <input type="text" name="region" value={formData.email} onChange={handleChange} /></label>
+                <button onClick={() => navigate('/profile')} type="submit">Save Changes </button>
+                    
             </form>
         </div>
     );

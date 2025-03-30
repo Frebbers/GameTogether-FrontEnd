@@ -42,6 +42,7 @@ function Header({setFilterTag}) {
                     </li>
                     
                     <li className="profile-container"> 
+                    <button onClick={() => localStorage.removeItem("token")}>Logout</button>
                         <a className="nav-element" onClick={() => navigate("/profile")}> 
                             <img src={profile} alt="Profile Image" className="profile-icon" /> 
                         </a> 

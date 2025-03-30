@@ -1,4 +1,29 @@
-const API_BASE = "/api";
+const API_BASE = "http://localhost:5238/api";
+
+/**
+ * Sends a registration request to the server.
+ * @param {string} email
+ * @param {string} password
+ * @returns {Promise<Object>} Response data with message.
+ */
+export const register = async (email, password) => {
+    const response = await fetch(`${API_BASE}/auth/register`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+    });
+    console.log(response.body);
+
+    if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Registration failed.");
+    }
+
+    return await response.json();
+};
 
 /**
  * Sends a login request to the server.
@@ -23,32 +48,6 @@ export const login = async (email, password) => {
 
     return await response.json();
 };
-
-/**
- * Sends a registration request to the server.
- * @param {string} email
- * @param {string} password
- * @returns {Promise<Object>} Response data with message.
- */
-export const register = async (email, password) => {
-    const response = await fetch(`${API_BASE}/auth/register`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "Accept": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-    });
-
-    if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Registration failed.");
-    }
-
-    return await response.json();
-};
-
-
 
 /**
  * Creates a new session.

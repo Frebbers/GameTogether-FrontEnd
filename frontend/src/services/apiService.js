@@ -51,17 +51,17 @@ export const login = async (email, password) => {
 
 /**
  * Creates a new session.
- * @param {string} token 
  * @param {Object} sessionData
  */
-export const createSession = async (token, sessionData) => {
+export const createSession = async (sessionData) => {
+    const token = localStorage.getItem("token")
     const response = await fetch(`${API_BASE}/Sessions/create`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${token}`,
         },
-        body: JSON.stringify({ sessionData }),
+        body: JSON.stringify(sessionData),
     });
 
     if (!response.ok) {
@@ -75,10 +75,10 @@ export const createSession = async (token, sessionData) => {
 
 /**
  * Joins an existing session.
- * @param {string} token 
  * @param {sessionId} sessionId
  */
-export const joinSession = async (token, sessionId) => {
+export const joinSession = async (sessionId) => {
+    const token = localStorage.getItem("token")
     const response = await fetch(`${API_BASE}/Sessions/${sessionId}/join`, {
         method: "POST",
         headers: {
@@ -96,10 +96,10 @@ export const joinSession = async (token, sessionId) => {
 
 /**
  * Leaves an existing session.
- * @param {string} token 
  * @param {sessionId} sessionId
  */
-export const leaveSession = async (token, sessionId) => {
+export const leaveSession = async (sessionId) => {
+    const token = localStorage.getItem("token")
     const response = await fetch(`${API_BASE}/Sessions/${sessionId}/leave`, {
         method: "POST",
         headers: {
@@ -110,6 +110,28 @@ export const leaveSession = async (token, sessionId) => {
     if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.error || "Failed to leave session.");
+    }
+
+    return await response.json();
+};
+
+/**
+ * Fetch all existing sessions from the server.
+ * @returns {Promise<Array>} Array of group objects
+ */
+export const fetchSessions = async () => {
+    const token = localStorage.getItem("token")
+    const response = await fetch(`${API_BASE}/Sessions`, {
+        method: "GET",
+        headers: {
+            "Accept": "application/json",
+            "Authorization": `Bearer ${token}`
+        }
+    });
+
+    if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to fetch sesesions.");
     }
 
     return await response.json();

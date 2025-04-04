@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { createSession } from "../services/apiService";
 
 const predefinedTags = ["D&D", "Other Game"];
 
@@ -28,24 +29,30 @@ const CreateGroupPage = ({ setGroups }) => {
     );
   };
 
-  const CreateGroup = () => {
+  const CreateGroup = async () => {
     if (!groupName.trim()) {
       alert("Group name cannot be empty.");
       return;
     }
 
-    const newGroup = {
-      id: Date.now(),
-      name: groupName,
-      owner: "You",
-      members: members,
+    const sessionData = {
+      title: groupName,
+      isVisible: true,
+      ageRange: "0 - 99",
       maxMembers: maxMembers,
       description: description,
       tags: tags,
+      // Add members wtf?
     };
 
-    setGroups((prevGroups) => [...prevGroups, newGroup]);
-    navigate("/");
+    try{
+      const group = await createSession(sessionData)
+      setGroups((prevGroups) => [...prevGroups, group])
+      navigate("/")
+    } catch (error) {
+      console.error("Error creating group:", error);
+      alert("Failed to create group. Please try again")
+    }
   };
 
   return (

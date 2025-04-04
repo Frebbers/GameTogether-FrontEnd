@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Header from "./common/Header";
-import ControlPanel from "./common/ControlPanal.jsx";
+import ControlPanel from "./common/ControlPanel.jsx";
 import GroupList from "./groups/GroupList.jsx";
 import LoginForm from "./common/LoginForm.jsx";
 import RegisterForm from "./common/RegisterForm.jsx";
@@ -8,31 +8,51 @@ import './groups/groups.css';
 
 const HomePage = ({ groups }) => {
   const [filterTag, setFilterTag] = useState("All Games");
-  const [registered, setRegistered] = useState(false);
+  const [showRegister, setShowRegister] = useState(false);
   const [token, setToken] = useState(localStorage.getItem("token") || null);
+  const [groupCount, setGroupCount] = useState(0);
 
   return (
     <div className="container">
-
       <Header setFilterTag={setFilterTag} />
 
-      {!registered && !token ? (
-        <RegisterForm onRegisterSuccess={() => setRegistered(true)} /> 
-      ) : !token ? (
-        <LoginForm onLoginSuccess={(token) => setToken(token)} />
+      {!token ? (
+        <>
+          {showRegister ? (
+            <>
+              <RegisterForm
+                onRegisterSuccess={() => setShowRegister(false)}
+              />
+              <p>
+                Already have an account?{" "}
+                <button onClick={() => setShowRegister(false)}>Log In</button>
+              </p>
+            </>
+          ) : (
+            <>
+              <LoginForm onLoginSuccess={(token) => setToken(token)} />
+              <p>
+                Don't have an account?{" "}
+                <button onClick={() => setShowRegister(true)}>Register</button>
+              </p>
+            </>
+          )}
+        </>
       ) : (
         <>
+          <h1>Available Groups</h1>
 
-      <h1>Available Groups</h1>
-      
-      <ControlPanel NumberOfGroups={groups.length} filterTag={filterTag} setFilterTag={setFilterTag} />
+          <ControlPanel
+            NumberOfGroups={groupCount}
+            filterTag={filterTag}
+            setFilterTag={setFilterTag}
+          />
 
-      {groups.length > 0 ? (
-        <GroupList groups={groups} filterTag={filterTag} />
-      ) : (
-        <p className="no-groups-text">No available groups</p>
-      )}
-      </>
+          <GroupList
+            filterTag={filterTag}
+            onGroupCountChange={setGroupCount}
+          />
+        </>
       )}
     </div>
   );

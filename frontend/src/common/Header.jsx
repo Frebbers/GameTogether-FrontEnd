@@ -1,7 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import logo from "../images/sitelogo.png";
 import profile from "../images/profileimage.png";
-import ControlPanel from "./ControlPanal";
 
 function Header({setFilterTag}) {
     const navigate = useNavigate();
@@ -42,11 +41,20 @@ function Header({setFilterTag}) {
                     </li>
                     
                     <li className="profile-container"> 
-                    <button onClick={() => localStorage.removeItem("token")}>Logout</button>
+                        <button
+                            onClick={() => {
+                                localStorage.removeItem("token");
+                            }}
+                            className="nav-element"
+                        >
+                            Logout
+                        </button>
+
                         <a className="nav-element" onClick={() => navigate("/profile")}> 
                             <img src={profile} alt="Profile Image" className="profile-icon" /> 
                         </a> 
                     </li>
+
                 </ul>
             </nav>
         </header>

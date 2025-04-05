@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 const predefinedTags = ["D&D", "Other Game"];
@@ -10,6 +10,23 @@ const CreateGroupPage = ({ setGroups }) => {
   const [members, setMembers] = useState([]);
   const [description, setDescription] = useState("");
   const [tags, setTags] = useState([]);
+  const [username, setUsername] = useState(""); // Default while fetching
+
+  useEffect(() => {
+    // Simulated API call to fetch the username
+    const fetchUsername = async () => {
+      try {
+        const response = await fetch("/api/Users/get-profile"); // Replace with your actual API endpoint
+        const data = await response.json();
+        setUsername(data.name);
+      } catch (error) {
+        console.error("Failed to fetch username", error);
+        setUsername("Unknown"); // Fallback in case of error
+      }
+    };
+
+    fetchUsername();
+  }, []);
 
   const AddMember = () => {
     if (members.length < maxMembers) {
@@ -37,7 +54,7 @@ const CreateGroupPage = ({ setGroups }) => {
     const newGroup = {
       id: Date.now(),
       name: groupName,
-      owner: "You",
+      owner: username,
       members: members,
       maxMembers: maxMembers,
       description: description,
@@ -61,7 +78,7 @@ const CreateGroupPage = ({ setGroups }) => {
             onChange={(e) => setGroupName(e.target.value)}
             placeholder="Enter Group Name"
           />
-          <span className="your-name">(Your Name)</span>
+          <span className="your-name">{username}</span>
           <span className="member-count">Members: {members.length}/{maxMembers}</span>
         </div>
 

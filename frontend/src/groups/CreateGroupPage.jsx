@@ -16,7 +16,14 @@ const CreateGroupPage = ({ setGroups }) => {
     // Simulated API call to fetch the username
     const fetchUsername = async () => {
       try {
-        const response = await fetch("/api/Users/get-profile"); // Replace with your actual API endpoint
+        const token = ""
+
+        const response = await fetch("/api/Users/get-profile", {
+          headers: {
+            "accept": "*/*",
+            "Authorization": `Bearer ${token}`
+          }
+        });        
         const data = await response.json();
         setUsername(data.name);
       } catch (error) {

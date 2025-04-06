@@ -138,6 +138,28 @@ export const fetchSessions = async () => {
 };
 
 /**
+ * Fetches the user's sessions.
+ * @returns {Promise<Array>} Array of user's sessions
+ */
+export const fetchUserSessions = async () => {
+    const token = localStorage.getItem("token")
+    const response = await fetch(`${API_BASE}/Sessions/user`, {
+        method: "GET",
+        headers: {
+            "Accept": "application/json",
+            "Authorization": `Bearer ${token}`
+        }
+    });
+
+    if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to fetch user's sessions.");
+    }
+
+    return await response.json();
+}
+
+/**
  * Fetches the user's profile data.
  * @returns {Promise<Object>} User profile data
  */

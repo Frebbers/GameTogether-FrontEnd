@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import GroupPost from "./GroupPost.jsx";
 import { fetchSessions } from "../services/apiService.js";
 
-const GroupList = ({ filterTag, onGroupCountChange }) => {
+const GroupList = ({ filterTag, onGroupCountChange, searchTerm }) => {
   const [sessions, setSessions] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -18,15 +18,18 @@ const GroupList = ({ filterTag, onGroupCountChange }) => {
       });
   }, []);
 
-  const filteredSessions = sessions
+  const filteredSessions = sessions.filter((session) => {
+    const matchesTag =
+      filterTag === "All Games" ||
+      session.tags?.some((tag) => tag.toLowerCase() === filterTag.toLowerCase());
 
-  /*
-  const filteredSessions = filterTag === "All Games"
-    ? sessions
-    : sessions.filter(session =>
-        session.tags?.some(tag => tag.toLowerCase() === filterTag.toLowerCase())
-      );
-  */
+    //Searches on title and description and can be expanded to include other properties
+    const matchesSearch =
+      session.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      session.description?.toLowerCase().includes(searchTerm.toLowerCase());
+
+    return matchesTag && matchesSearch;
+  });
 
   // Notify parent of group count
   useEffect(() => {

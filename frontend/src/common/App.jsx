@@ -13,12 +13,12 @@ import PrivatePolicyPage from "../common/PrivatePolicyPage";
 
 function App() {
   const [groups, setGroups] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
 
   return (
     <Router>
-      <Header />
       <Routes>
-        <Route path="/" element={<HomePage groups={groups} setGroups={setGroups} />} />
+        <Route path="/" element={<HomePage groups={groups} setGroups={setGroups} searchTerm={searchTerm} setSearchTerm={setSearchTerm} />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/group/:groupId" element={<GroupInfoPage groups={groups} setGroups={setGroups} />} />
         <Route path="/create" element={<CreateGroupPage setGroups={setGroups} />} />

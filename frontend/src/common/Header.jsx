@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import logo from "../images/sitelogo.png";
 import profile from "../images/profileimage.png";
 
-function Header({setFilterTag}) {
+function Header({setSearchTerm, searchTerm, setFilterTag}) {
     const navigate = useNavigate();
 
     return (
@@ -27,10 +27,12 @@ function Header({setFilterTag}) {
                     </li>
 
                     <li className="search-container">
-                        <input 
-                            type="text" 
-                            placeholder="Search for groups..." 
+                        <input
+                            type="text"
+                            placeholder="Search for groups..."
                             className="search-bar"
+                            value={searchTerm}
+                            onInput={(e) => setSearchTerm(e.target.value)}
                         />
                     </li>
 

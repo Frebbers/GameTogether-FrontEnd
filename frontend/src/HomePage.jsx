@@ -6,7 +6,7 @@ import LoginForm from "./common/LoginForm.jsx";
 import RegisterForm from "./common/RegisterForm.jsx";
 import './groups/groups.css';
 
-const HomePage = ({ groups }) => {
+const HomePage = ({ groups, searchTerm, setSearchTerm }) => {
   const [filterTag, setFilterTag] = useState("All Games");
   const [showRegister, setShowRegister] = useState(false);
   const [token, setToken] = useState(localStorage.getItem("token") || null);
@@ -14,7 +14,7 @@ const HomePage = ({ groups }) => {
 
   return (
     <div className="container">
-      <Header setFilterTag={setFilterTag} />
+      <Header setFilterTag={setFilterTag} setSearchTerm={setSearchTerm} searchTerm={searchTerm} />
 
       {!token ? (
         <>
@@ -51,6 +51,7 @@ const HomePage = ({ groups }) => {
           <GroupList
             filterTag={filterTag}
             onGroupCountChange={setGroupCount}
+            searchTerm={searchTerm}
           />
         </>
       )}

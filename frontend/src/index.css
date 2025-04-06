@@ -87,6 +87,7 @@ nav ul li a img {
     display: flex;
     justify-content: flex-end;
     align-items: center;
+    flex-direction: column;
 }
 
 .profile-icon {
@@ -103,7 +104,7 @@ nav ul li a img {
 
 .filter {
     display: inline-block;
-    background-color: #00E5FF;
+    background-color: #2C2F33;
     border-radius: 5px;
     padding: 0;
 }

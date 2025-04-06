@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {fetchUserProfile} from "../services/apiService.js";
+import "./ProfilePage.css";
 
 
 const UserProfilePage = () => {

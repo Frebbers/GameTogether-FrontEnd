@@ -115,6 +115,7 @@ export const leaveSession = async (sessionId) => {
     return await response.json();
 };
 
+
 /**
  * Fetch all existing sessions from the server.
  * @returns {Promise<Array>} Array of group objects

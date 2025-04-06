@@ -21,19 +21,6 @@
     margin-top: 10px;
 }
 
-.tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 5px;
-    margin-top: 10px;
-}
-
-.tag{
-    background-color: #4A4E54;
-    padding: 5px 10px;
-    border-radius: 5px;
-}
-
 .join-button{
     background-color: #32FF6A;
     color: black;
@@ -134,15 +121,33 @@ input, textarea {
     background-color: #4A4E54;
 }
 
-.member-list {
-    list-style-type: none;
-    padding: 0;
+.description-info {
     margin-top: 10px;
+    background: #3A3E44;
+    padding: 10px;
+    border-radius: 5px;
 }
 
-.member-list li {
-    background: #4A4E54;
-    padding: 5px;
+.members-info {
+    margin-top: 10px;
+    background: #3A3E44;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.members-list {
+    margin-top: 10px;
+    background: #3A3E44;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.members-list ul {
+    padding: 0;
+    list-style: none;
+}
+
+.members-list li {
     margin: 5px 0;
 }
 
@@ -181,4 +186,49 @@ input, textarea {
 
 .create-button-2:hover {
     background-color: #00cc00;
+}
+
+.tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 10px;
+}
+
+.tag {
+    background-color: #32a852;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+.group-info {
+    padding: 20px;
+    background: #4A4E54;
+    border-radius: 10px;
+    margin-top: 20px;
+}
+
+.join-button, .back-button {
+    background-color: #32FF6A;
+    color: black;
+    font-weight: bold;
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+.join-button:hover {
+    background-color: #00cc00;
+}
+
+.back-button {
+    background-color: #D32F2F;
+    color: white;
+}
+
+.back-button:hover {
+    background-color: darkred;
 }

@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+const predefinedTags = ["D&D", "Other Game"];
+
 const CreateGroupPage = ({ setGroups }) => {
   const navigate = useNavigate();
   const [groupName, setGroupName] = useState("");
@@ -20,11 +22,10 @@ const CreateGroupPage = ({ setGroups }) => {
     }
   };
 
-  const AddTag = () => {
-    const newTag = prompt("Enter a tag:");
-    if (newTag) {
-      setTags([...tags, newTag]);
-    }
+  const toggleTag = (tag) => {
+    setTags((prevTags) =>
+      prevTags.includes(tag) ? prevTags.filter((t) => t !== tag) : [...prevTags, tag]
+    );
   };
 
   const CreateGroup = () => {
@@ -34,9 +35,11 @@ const CreateGroupPage = ({ setGroups }) => {
     }
 
     const newGroup = {
+      id: Date.now(),
       name: groupName,
       owner: "You",
-      members: `${members.length}/${maxMembers}`,
+      members: members,
+      maxMembers: maxMembers,
       description: description,
       tags: tags,
     };
@@ -88,7 +91,20 @@ const CreateGroupPage = ({ setGroups }) => {
           ))}
         </ul>
 
-        <button className="add-button" onClick={AddTag}> Add Tag </button>
+        <div className="tags">
+          <strong>Select Tags:</strong>
+          <div className="tag-options">
+            {predefinedTags.map((tag) => (
+              <button
+                key={tag}
+                className={`tag-option ${tags.includes(tag) ? "selected" : ""}`}
+                onClick={() => toggleTag(tag)}
+              >
+                {tags.includes(tag) ? `✔ ${tag}` : tag}
+              </button>
+            ))}
+          </div>
+        </div>
 
         <div className="tags">
           {tags.map((tag, index) => (

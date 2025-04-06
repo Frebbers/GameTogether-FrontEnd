@@ -8,6 +8,10 @@ import GroupInfoPage from "../groups/GroupInfoPage";
 import CreateGroupPage from "../groups/CreateGroupPage";
 import EditProfilePage from "../profile/EditProfilePage";
 import Footer from "../common/Footer";
+import FaqPage from "../common/FaqPage";
+import AboutPage from "../common/AboutPage";
+import SupportPage from "../common/SupportPage";
+import PrivatePolicyPage from "../common/PrivatePolicyPage";
 
 function App() {
   const [groups, setGroups] = useState([]);
@@ -20,8 +24,12 @@ function App() {
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/edit-profile" element={<EditProfilePage />} />
         <Route path="/join-request" element={<JoinRequestPage />} />
-        <Route path="/group/:groupId" element={<GroupInfoPage />} />
+        <Route path="/group/:groupId" element={<GroupInfoPage groups={groups} />} />
         <Route path="/create" element={<CreateGroupPage setGroups={setGroups} />} />
+        <Route path="/faq" element={<FaqPage />} />
+        <Route path="/about" element={<AboutPage />} />
+        <Route path="/support" element={<SupportPage />} />
+        <Route path="/policy" element={<PrivatePolicyPage />} />
       </Routes>
       <Footer />
     </Router>

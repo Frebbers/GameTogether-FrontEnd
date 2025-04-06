@@ -45,7 +45,7 @@ import { useState } from 'react';
                         <label>Age: <input type="number" name="age" value={formData.age} onChange={handleChange} /></label>
                         <label>Description: <textarea name="description" value={formData.description} onChange={handleChange} /></label>
                         <label>Region: <input type="text" name="region" value={formData.region} onChange={handleChange} /></label>
-                        <button onClick={() => navigate('/profile')} type="submit">Save Changes</button>
+                        <button type="submit">Save Changes</button>
                     </form>
                 </div>
             );

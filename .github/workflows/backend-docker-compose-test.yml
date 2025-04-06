@@ -1,0 +1,44 @@
+name: Backend - Run Test Service
+
+on:
+  push:
+    branches:
+      - main
+      - docker-testing
+      - repo-merge-2
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          submodules: recursive
+
+      - name: Set up Docker Compose
+        uses: docker/setup-compose-action@v1
+        with:
+          version: 'latest'
+
+      - name: Build containers
+        run: /usr/bin/docker compose -f backend/Docker-Compose.yml build 
+
+      - name: Run tests
+        run: /usr/bin/docker compose -f backend/Docker-Compose.yml up test
+          
+
+  #     - name: Docker compose tests run
+  # # You may pin to the exact commit or the version.
+  # # uses: cloudposse/github-action-docker-compose-test-run@885bb157bac4a43ff80c24bc4df852635e348a03
+  #       uses: cloudposse/github-action-docker-compose-test-run@main
+  #       with:
+  #         # Docker compose file
+  #         file: Docker-Compose.yml
+  #         # Service run tests inside
+  #         service: test
+  #         # Command to run tests
+  #         command: run-tests.sh

@@ -1,0 +1,249 @@
+.group-post {
+    background-color: #2C2F33;
+    width: 100%;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.group-post-header {
+    display: flex;
+    justify-content: space-between;
+    font-weight: bold;
+    align-items: center;
+    padding: 10px;
+}
+
+.description {
+    background-color: #4A4E54;
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+.join-button{
+    background-color: #32FF6A;
+    color: black;
+    font-weight: bold;
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+.join-button:hover{
+    background-color: #00cc00;
+}
+
+input, textarea {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    background: #4A4E54;
+    color: white;
+}
+
+.group-input {
+    flex: 1;
+    background: #4A4E54;
+    color: white;
+    padding: 8px;
+    border-radius: 5px;
+    border: none;
+}
+
+.group-name-input {
+    width: 30%;
+    background: #4A4E54;
+    color: white;
+    padding: 8px;
+    border-radius: 5px;
+    border: none;
+}
+
+.your-name {
+    flex-grow: 1;
+    text-align: center;
+}
+
+.max-members-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.max-members-section label {
+    font-weight: bold;
+}
+
+.max-members-input {
+    width: 50px;
+    background: #4A4E54;
+    color: white;
+    padding: 5px;
+    border-radius: 5px;
+    border: none;
+    text-align: center;
+}
+
+.member-count {
+    text-align: right;
+}
+
+.description-input {
+    background-color: #4A4E54;
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 10px;
+    width: 95%;
+    height: 80px;
+    border: none;
+    color: white;
+    resize: none; 
+}
+
+.add-button {
+    background-color: #4A4E54;
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 5px;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.add-button:hover {
+    background-color: #4A4E54;
+}
+
+.description-info {
+    margin-top: 10px;
+    background: #3A3E44;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.members-info {
+    margin-top: 10px;
+    background: #3A3E44;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.members-list {
+    margin-top: 10px;
+    background: #3A3E44;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.members-list ul {
+    padding: 0;
+    list-style: none;
+}
+
+.members-list li {
+    margin: 5px 0;
+}
+
+.cancel-button {
+    background-color: #D32F2F;
+    color: white;
+    font-weight: bold;
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+.cancel-button:hover {
+    background-color: darkred;
+}
+
+.no-groups-text {
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 20px;
+}
+
+.create-button-2 {
+    background-color: #32FF6A;
+    color: black;
+    font-weight: bold;
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+.create-button-2:hover {
+    background-color: #00cc00;
+}
+
+.tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 10px;
+}
+
+.tag {
+    background-color: #32a852;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+.group-info {
+    padding: 20px;
+    background: #4A4E54;
+    border-radius: 10px;
+    margin-top: 20px;
+}
+
+.join-button, .back-button {
+    background-color: #32FF6A;
+    color: black;
+    font-weight: bold;
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+.join-button:hover {
+    background-color: #00cc00;
+}
+
+.back-button {
+    background-color: #D32F2F;
+    color: white;
+}
+
+.back-button:hover {
+    background-color: darkred;
+}
+
+.delete-button {
+    background-color: #D32F2F;
+    color: white;
+    font-weight: bold;
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+.delete-button:hover {
+    background-color: darkred;
+}

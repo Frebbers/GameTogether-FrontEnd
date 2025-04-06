@@ -1,4 +1,4 @@
-const API_BASE = "http://localhost:5238/api";
+const API_BASE = "http://localhost:5000/api";
 
 /**
  * Sends a registration request to the server.
@@ -136,3 +136,25 @@ export const fetchSessions = async () => {
 
     return await response.json();
 };
+
+/**
+ * Fetches the user's profile data.
+ * @returns {Promise<Object>} User profile data
+ */
+export const fetchUserProfile = async () => {
+    const token = localStorage.getItem("token")
+    const response = await fetch(`${API_BASE}/Users/get-profile`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+        }
+    });
+
+    if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to fetch profile data.");
+    }
+
+    return await response.json();
+}

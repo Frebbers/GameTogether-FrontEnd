@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { BASE_URL, AUTH_TOKEN } from "../../config";
+import {fetchUserProfile} from "../services/apiService.js";
 
 
 const UserProfilePage = () => {
@@ -15,23 +15,8 @@ const UserProfilePage = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch('/Users/get-profile', {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${AUTH_TOKEN}`,
-                    },  
-                });
-    
-                if (!response.ok) {
-                    const text = await response.text(); // get raw text for debugging
-                    console.error('Server Error:', response.status, text);
-                    throw new Error('Failed to fetch profile data');
-                }
-    
-                const data = await JSON.parse(response)
+                const data = await fetchUserProfile()
                 console.log(data);
-    
                 setName(data.name);
                 console.log(data.name);
                 setRegion(data.region);
@@ -42,7 +27,7 @@ const UserProfilePage = () => {
                 console.error('Fetch error:', error);
             }
         };
-    
+
         fetchData();
     }, []);
     return (

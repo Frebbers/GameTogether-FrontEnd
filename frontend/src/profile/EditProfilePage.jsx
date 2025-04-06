@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { BASE_URL, AUTH_TOKEN } from '../../config';
+import { BASE_URL, AUTH_TOKEN } from '../../../config.js';
 
 const EditProfilePage = () => {
     const location = useLocation();

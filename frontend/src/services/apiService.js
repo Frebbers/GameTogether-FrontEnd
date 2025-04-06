@@ -158,3 +158,27 @@ export const fetchUserProfile = async () => {
 
     return await response.json();
 }
+
+/**
+ * Updates the user's profile data.
+ * @param {Object} profileData
+ * @returns {Promise<Object>} Updated profile data
+ */
+export const updateUserProfile = async (profileData) => {
+    const token = localStorage.getItem("token")
+    const response = await fetch(`${API_BASE}/Users/update-profile`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+        },
+        body: profileData.body
+    });
+
+    if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to update profile.");
+    }
+
+    return await response.json();
+}

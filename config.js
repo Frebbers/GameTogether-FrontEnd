@@ -1,4 +1,4 @@
-const BASE_URL = "https://localhost:7191/api";
+const BASE_URL = "https://localhost:5000/api";
 const AUTH_TOKEN = "insert token here";
 
 

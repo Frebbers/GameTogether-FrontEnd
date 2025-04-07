@@ -34,10 +34,10 @@ const UserProfilePage = () => {
     }, []);
 
     return (
-        <div className="profile-container">
+        <div className="profile-card">
             <h1>User Profile</h1>
             <div className="profile-details">
-                <div className="profile-picture">
+                <div className="profile-image">
                     <img src={profilePicture} alt="Profile" />
                 </div>
                 <div className="profile-info">
@@ -45,7 +45,7 @@ const UserProfilePage = () => {
                     <p>{description}</p>
                     <p>{region}</p>
                     <p>{age}</p>
-                    <button onClick={() => navigate('/edit-profile')}>Edit Profile</button>
+                    <button className = "edit-profile-button" onClick={() => navigate('/edit-profile')}>Edit Profile</button>
                 </div>
                 <div className="profile-groups">
                     <h2>My Groups</h2>

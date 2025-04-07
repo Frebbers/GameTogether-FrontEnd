@@ -39,15 +39,35 @@ import { useState } from 'react';
 
             return (
                 <div className="edit-profile-container">
-                    <h1>Edit Profile</h1>
+                <h1>Edit Profile</h1>
+                    <div className="profile-picture-preview">
+                        <img src="/images/profileimage.png" alt="Profile Preview" />
+                    </div>
+            
+                <div className="edit-profile-content">
                     <form onSubmit={handleSubmit}>
-                        <label>Name: <input type="text" name="name" value={formData.name} onChange={handleChange} /></label>
-                        <label>Age: <input type="number" name="age" value={formData.age} onChange={handleChange} /></label>
-                        <label>Description: <textarea name="description" value={formData.description} onChange={handleChange} /></label>
-                        <label>Region: <input type="text" name="region" value={formData.region} onChange={handleChange} /></label>
-                        <button type="submit">Save Changes</button>
+                        <label>
+                            Name:
+                            <input type="text" name="name" value={formData.name} onChange={handleChange} />
+                        </label>
+                        <label>
+                            Age:
+                            <input type="number" name="age" value={formData.age} onChange={handleChange} />
+                        </label>
+                        <label>
+                            Description:
+                            <textarea name="description" value={formData.description} onChange={handleChange} />
+                        </label>
+                        <label>
+                            Region:
+                            <input type="text" name="region" value={formData.region} onChange={handleChange} />
+                        </label>
+                        <button className= "edit-profile-button" type="submit">Save Changes</button>
                     </form>
+            
                 </div>
+            </div>
+            
             );
         };
 

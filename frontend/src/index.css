@@ -36,6 +36,8 @@ h1 {
     width: 100%;
     padding: 0;
     margin: 0;
+    height: fit-content;
+    gap: px;
 }
 
 .nav-list-footer {
@@ -48,8 +50,9 @@ h1 {
 }
 
 nav ul li a img {
-    max-height: 50px;
+    max-height: 50;
     width: auto;
+    margin-top: 20px;
 }
 
 .container{
@@ -87,7 +90,8 @@ nav ul li a img {
     display: flex;
     justify-content: flex-end;
     align-items: center;
-    flex-direction: column;
+    flex-direction: column-reverse;
+    margin-top: 0px;
 }
 
 .profile-icon {

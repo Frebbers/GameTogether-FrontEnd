@@ -45,7 +45,7 @@ function Header({setFilterTag}) {
                             onClick={() => {
                                 localStorage.removeItem("token");
                             }}
-                            className="nav-element"
+                            className="profile-button"
                         >
                             Logout
                         </button>

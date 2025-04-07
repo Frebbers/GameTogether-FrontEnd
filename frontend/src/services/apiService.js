@@ -1,4 +1,4 @@
-const API_BASE = "http://localhost:5000/api";
+const API_BASE = "http://localhost:5238/api";
 
 /**
  * Sends a registration request to the server.
@@ -160,6 +160,28 @@ export const fetchUserSessions = async () => {
 }
 
 /**
+ * Fetches the user's sessions.
+ * @returns {Object}  Array of user's sessions
+ */
+export const fetchSessionById = async (sessionId) => {
+    const token = localStorage.getItem("token")
+    const response = await fetch(`${API_BASE}/Sessions/${sessionId}`, {
+        method: "GET",
+        headers: {
+            "Accept": "application/json",
+            "Authorization": `Bearer ${token}`
+        }
+    });
+
+    if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to fetch session.");
+    }
+
+    return await response.json();
+}
+
+/**
  * Fetches the user's profile data.
  * @returns {Promise<Object>} User profile data
  */
@@ -180,6 +202,29 @@ export const fetchUserProfile = async () => {
 
     return await response.json();
 }
+
+/**
+ * Fetches the user's profile data.
+ * @returns {Promise<Object>} User profile data
+ */
+export const fetchUserProfileById = async (userId) => {
+    const token = localStorage.getItem("token")
+    const response = await fetch(`${API_BASE}/Users/${userId}/profile`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+        }
+    });
+
+    if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to fetch profile data for given user.");
+    }
+
+    return await response.json();
+}
+
 
 /**
  * Updates the user's profile data.

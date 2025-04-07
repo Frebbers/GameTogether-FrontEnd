@@ -1,14 +1,73 @@
 import { useParams, useNavigate } from "react-router-dom";
+import { fetchSessionById, fetchUserProfileById } from "../services/apiService";
+import { useEffect, useState } from "react";
+import styles from "./GroupInfoPage.module.css"
 
 const GroupInfoPage = ({ groups, setGroups }) => {
     const { groupId } = useParams();
+    const { ownerId } = useParams();
     const navigate = useNavigate();
+    const [group, setGroup] = useState("");
+    const [owner, setOwner] = useState("");
+    const [memberProfiles, setMemberProfiles] = useState({});
+    const [loading, setLoading] = useState(true);
 
-    const group = groups.find((g) => g.id === Number(groupId));
+
+    
+    useEffect(() => {
+        fetchSessionById(groupId)
+        .then((data) => {
+            setGroup(data);
+            setLoading(false);
+        })
+        .catch((error) => {
+            console.error("Failed to fetch session:", error);
+            setLoading(false);
+        });
+    }, []);
+    
+    useEffect(() => {
+        fetchUserProfileById(ownerId)
+        .then((data) => {
+            setOwner(data);
+            setLoading(false);
+        })
+        .catch((error) => {
+            console.error("Failed to fetch owner profile:", error);
+            setLoading(false);
+        });
+    }, []);
+
+    useEffect(() => {
+        if (!group?.members) return;
+    
+        const fetchProfiles = async () => {
+          const promises = group.members.map(async (member) => {
+            try {
+              const profile = await fetchUserProfileById(member.userId);
+              return { userId: member.userId, profile };
+            } catch (err) {
+              console.error(`Failed to fetch profile for user ${member.userId}`, err);
+              return null;
+            }
+          });
+    
+          const results = await Promise.all(promises);
+          const profilesById = {};
+          results.forEach((res) => {
+            if (res) profilesById[res.userId] = res.profile;
+          });
+    
+          setMemberProfiles(profilesById);
+        };
+    
+        fetchProfiles();
+      }, [group.members]);
+
 
     if (!group) {
         return (
-            <div className="container">
+            <div className="">
                 <h1>Group Not Found</h1>
                 <button className="back-button" onClick={() => navigate("/")}>Go Back</button>
             </div>
@@ -21,56 +80,47 @@ const GroupInfoPage = ({ groups, setGroups }) => {
     };
 
     return (
-        <div className="container">
+        <div className={styles.container}>
             <h1>{group.name}</h1>
 
-            <div className="group-info">
-                <p><strong>Owner:</strong> {group.owner}</p>
-                <p className="members-info"><strong>Members:</strong> {group.members.length}/{group.maxMembers}</p>
-                <p className="description-info"><strong>Description:</strong> {group.description}</p>
-
-                <div className="members-list">
-                    <strong>Members:</strong>
-                    <ul>
-                        {group.members.length > 0 ? (
-                            group.members.map((member, index) => <li key={index}>{member}</li>)
-                        ) : (
-                            <li>No members yet</li>
-                        )}
-                    </ul>
-                </div>
-
-                <div className="tags">
+            <div className={styles.groupBody}>
+                <div className={styles.info}>
+                    <p><strong>Owner:</strong> {owner.name}</p>
+                    <p className=""><strong>Members:</strong> {group.members.length}/{group.maxMembers}</p>
+                    <p className=""><strong>Description:</strong> {group.description}</p>
+                    <div className={styles.tags}>
                     <strong>Tags:</strong>
                     {group.tags.length > 0 ? (
                         group.tags.map((tag, index) => <span key={index} className="tag">{tag}</span>)
                     ) : (
-                        <span className="tag">No tags</span>
+                        <span className="">No tags</span>
                     )}
                 </div>
+                </div>
+            
+                <div className={styles.members}>
+                        <strong>Members:</strong>
+                        {group.members.map((member) => {
+                            const profile = memberProfiles[member.userId];
+                            return (
+                            <div key={member.userId}>
+                                {profile ? (
+                                <div className={styles.profileCard}>
+                                    <strong>Name: {profile.name}</strong>
+                                    <span>Age: {profile.age}</span>
+                                    <span>Description: {profile.description}</span>
+                                </div>
+                                ) : (
+                                <span>Loading profile for {member.name}...</span>
+                                )}
+                            </div>
+                            );
+                        })}
+                    </div>
 
-                <button 
-                    className="join-button" 
-                    onClick={() => navigate("/join-request")}
-                >
-                    Request to Join
-                </button>
-
-                <button 
-                    className="delete-button" 
-                    onClick={handleDelete}
-                >
-                    Delete Group
-                </button>
-
-                <button 
-                    className="back-button" 
-                    onClick={() => navigate("/")}
-                >
-                    Go Back
-                </button>
+                
+                </div>
             </div>
-        </div>
     );
 };
 

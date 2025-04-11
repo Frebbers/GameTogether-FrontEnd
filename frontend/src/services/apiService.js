@@ -50,36 +50,37 @@ export const login = async (email, password) => {
 };
 
 /**
- * Creates a new session.
- * @param {Object} sessionData
+ * Creates a new group.
+ * @param {Object} groupData
+ * @returns {Promise<Object>} Response message from the server.
  */
-export const createSession = async (sessionData) => {
+export const createGroup = async (groupData) => {
     const token = localStorage.getItem("token")
-    const response = await fetch(`${API_BASE}/Sessions/create`, {
+    const response = await fetch(`${API_BASE}/Groups/create`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${token}`,
         },
-        body: JSON.stringify(sessionData),
+        body: JSON.stringify(groupData),
     });
 
     if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to create session.");
+        throw new Error(errorData.error || "Failed to create group.");
     }
 
     return await response.json();
 };
 
-
 /**
- * Joins an existing session.
- * @param {sessionId} sessionId
+ * Joins an existing group.
+ * @param {number} groupId
+ * @returns {Promise<Object>} Response message from the server.
  */
-export const joinSession = async (sessionId) => {
+export const joinGroup = async (groupId) => {
     const token = localStorage.getItem("token")
-    const response = await fetch(`${API_BASE}/Sessions/${sessionId}/join`, {
+    const response = await fetch(`${API_BASE}/Groups/${groupId}/join`, {
         method: "POST",
         headers: {
             "Authorization": `Bearer ${token}`,
@@ -88,20 +89,21 @@ export const joinSession = async (sessionId) => {
 
     if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to join session.");
+        throw new Error(errorData.error || "Failed to join group.");
     }
 
     return await response.json();
 };
 
 /**
- * Leaves an existing session.
- * @param {sessionId} sessionId
+ * Leaves an existing group.
+ * @param {number} groupId
+ * @returns {Promise<Object>} Response message from the server.
  */
-export const leaveSession = async (sessionId) => {
+export const leaveGroup = async (groupId) => {
     const token = localStorage.getItem("token")
-    const response = await fetch(`${API_BASE}/Sessions/${sessionId}/leave`, {
-        method: "POST",
+    const response = await fetch(`${API_BASE}/Groups/${groupId}/leave`, {
+        method: "DELETE",
         headers: {
             "Authorization": `Bearer ${token}`,
         }
@@ -109,19 +111,19 @@ export const leaveSession = async (sessionId) => {
 
     if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to leave session.");
+        throw new Error(errorData.error || "Failed to leave group.");
     }
 
     return await response.json();
 };
 
 /**
- * Fetch all existing sessions from the server.
+ * Fetch all existing groups from the server.
  * @returns {Promise<Array>} Array of group objects
  */
-export const fetchSessions = async () => {
+export const fetchGroups = async () => {
     const token = localStorage.getItem("token")
-    const response = await fetch(`${API_BASE}/Sessions`, {
+    const response = await fetch(`${API_BASE}/Groups`, {
         method: "GET",
         headers: {
             "Accept": "application/json",
@@ -131,7 +133,7 @@ export const fetchSessions = async () => {
 
     if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to fetch sesesions.");
+        throw new Error(errorData.error || "Failed to fetch groups.");
     }
 
     return await response.json();

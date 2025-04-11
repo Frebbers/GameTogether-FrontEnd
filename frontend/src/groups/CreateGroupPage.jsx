@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { createSession } from "../services/apiService";
+import { createGroup } from "../services/apiService";
 
 const predefinedTags = ["D&D", "Other Game"];
 
@@ -35,7 +35,7 @@ const CreateGroupPage = ({ setGroups }) => {
       return;
     }
 
-    const sessionData = {
+    const groupData = {
       title: groupName,
       isVisible: true,
       ageRange: "0 - 99",
@@ -46,7 +46,7 @@ const CreateGroupPage = ({ setGroups }) => {
     };
 
     try{
-      const group = await createSession(sessionData)
+      const group = await createGroup(groupData)
       setGroups((prevGroups) => [...prevGroups, group])
       navigate("/")
     } catch (error) {

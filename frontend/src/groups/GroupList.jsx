@@ -1,52 +1,48 @@
 import { useEffect, useState } from "react";
 import GroupPost from "./GroupPost.jsx";
-import { fetchSessions } from "../services/apiService.js";
+import { fetchGroups } from "../services/apiService.js";
 
 const GroupList = ({ filterTag, onGroupCountChange }) => {
-  const [sessions, setSessions] = useState([]);
+  const [groups, setGroups] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchSessions()
+    fetchGroups()
       .then((data) => {
-        setSessions(data);
+        setGroups(data);
         setLoading(false);
       })
       .catch((error) => {
-        console.error("Failed to fetch sessions:", error);
+        console.error("Failed to fetch groups:", error);
         setLoading(false);
       });
   }, []);
 
-  const filteredSessions = sessions
-
-  /*
-  const filteredSessions = filterTag === "All Games"
-    ? sessions
-    : sessions.filter(session =>
-        session.tags?.some(tag => tag.toLowerCase() === filterTag.toLowerCase())
+  const filteredGroups = filterTag === "All Games"
+    ? groups
+    : groups.filter(group =>
+        group.tags?.some(tag => tag.toLowerCase() === filterTag.toLowerCase())
       );
-  */
 
   // Notify parent of group count
   useEffect(() => {
     if (onGroupCountChange) {
-      onGroupCountChange(filteredSessions.length);
+      onGroupCountChange(filteredGroups.length);
     }
-  }, [filteredSessions, onGroupCountChange]);
+  }, [filteredGroups, onGroupCountChange]);
 
   if (loading) {
-    return <p>Loading sessions...</p>;
+    return <p>Loading groups...</p>;
   }
 
   return (
     <div>
-      {filteredSessions.length > 0 ? (
-        filteredSessions.map((session) => (
-          <GroupPost key={session.id} {...session} />
+      {filteredGroups.length > 0 ? (
+        filteredGroups.map((group) => (
+          <GroupPost key={group.id} {...group} />
         ))
       ) : (
-        <p className="no-groups-text">No sessions found for this category.</p>
+        <p className="no-groups-text">No groups found for this category.</p>
       )}
     </div>
   );

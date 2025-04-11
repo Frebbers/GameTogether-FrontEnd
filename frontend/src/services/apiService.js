@@ -117,6 +117,7 @@ export const leaveGroup = async (groupId) => {
     return await response.json();
 };
 
+
 /**
  * Fetch all existing groups from the server.
  * @returns {Promise<Array>} Array of group objects

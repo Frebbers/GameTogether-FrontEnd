@@ -1,4 +1,4 @@
-const API_BASE = "http://localhost:5000/api";
+const API_BASE = "http://localhost:5238/api";
 
 /**
  * Sends a registration request to the server.
@@ -144,7 +144,7 @@ export const fetchGroups = async () => {
  * Fetches the user's sessions.
  * @returns {Promise<Array>} Array of user's sessions
  */
-export const fetchUserSessions = async () => {
+export const fetchUserGroups = async () => {
     const token = localStorage.getItem("token")
     const response = await fetch(`${API_BASE}/Sessions/user`, {
         method: "GET",

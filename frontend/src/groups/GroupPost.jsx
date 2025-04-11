@@ -1,7 +1,21 @@
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import SimpleDialog from "../common/RequestJoinDialog";
+import RequestJoinDialog from "../common/RequestJoinDialog";
+
 
 const GroupPost = ({ id, title, ownerId, members, maxMembers, description, tags }) => {
     const navigate = useNavigate();
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+    const openDialog = (e) => {
+        e.stopPropagation();
+        setIsDialogOpen(true);
+    };
+
+    const closeDialog = () => {
+        setIsDialogOpen(false);
+    };
 
     return (
         <div
@@ -41,15 +55,10 @@ const GroupPost = ({ id, title, ownerId, members, maxMembers, description, tags 
                 )}
             </div>
 
-            <button
-                className="join-button"
-                onClick={(e) => {
-                    e.stopPropagation();
-                    navigate("/join-request");
-                }}
-            >
+            <button onClick={openDialog}>
                 Request to Join
             </button>
+            {isDialogOpen && <RequestJoinDialog sessionId={id} onClose={closeDialog} />}
         </div>
     );
 };

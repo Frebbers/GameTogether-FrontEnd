@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {fetchUserProfile, fetchUserSessions} from "../services/apiService.js";
+import {fetchUserProfile, fetchUserGroups} from "../services/apiService.js";
 import "./ProfilePage.css";
 
 
@@ -23,7 +23,7 @@ const UserProfilePage = () => {
                 setDescription(userData.description);
                 setAge(userData.age);
 
-                const groups = await fetchUserSessions();
+                const groups = await fetchUserGroups();
                 setMyGroups(groups);
             } catch (error) {
                 console.error('Fetch error:', error);

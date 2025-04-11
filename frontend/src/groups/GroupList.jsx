@@ -1,32 +1,32 @@
 import { useEffect, useState } from "react";
 import GroupPost from "./GroupPost.jsx";
-import { fetchSessions } from "../services/apiService.js";
+import { fetchGroups } from "../services/apiService.js";
 
 const GroupList = ({ filterTag, onGroupCountChange, searchTerm }) => {
-  const [sessions, setSessions] = useState([]);
+  const [groups, setGroups] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchSessions()
+    fetchGroups()
       .then((data) => {
-        setSessions(data);
+        setGroups(data);
         setLoading(false);
       })
       .catch((error) => {
-        console.error("Failed to fetch sessions:", error);
+        console.error("Failed to fetch groups:", error);
         setLoading(false);
       });
   }, []);
 
-  const filteredSessions = sessions.filter((session) => {
+  const filteredGroups = groups.filter((group) => {
     const matchesTag =
       filterTag === "All Games" ||
-      session.tags?.some((tag) => tag.toLowerCase() === filterTag.toLowerCase());
+      group.tags?.some((tag) => tag.toLowerCase() === filterTag.toLowerCase());
 
     //Searches on title and description and can be expanded to include other properties
     const matchesSearch =
-      session.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      session.description?.toLowerCase().includes(searchTerm.toLowerCase());
+      group.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      group.description?.toLowerCase().includes(searchTerm.toLowerCase());
 
     return matchesTag && matchesSearch;
   });
@@ -34,22 +34,22 @@ const GroupList = ({ filterTag, onGroupCountChange, searchTerm }) => {
   // Notify parent of group count
   useEffect(() => {
     if (onGroupCountChange) {
-      onGroupCountChange(filteredSessions.length);
+      onGroupCountChange(filteredGroups.length);
     }
-  }, [filteredSessions, onGroupCountChange]);
+  }, [filteredGroups, onGroupCountChange]);
 
   if (loading) {
-    return <p>Loading sessions...</p>;
+    return <p>Loading groups...</p>;
   }
 
   return (
     <div>
-      {filteredSessions.length > 0 ? (
-        filteredSessions.map((session) => (
-          <GroupPost key={session.id} {...session} />
+      {filteredGroups.length > 0 ? (
+        filteredGroups.map((group) => (
+          <GroupPost key={group.id} {...group} />
         ))
       ) : (
-        <p className="no-groups-text">No sessions found for this category.</p>
+        <p className="no-groups-text">No groups found for this category.</p>
       )}
     </div>
   );

@@ -1,0 +1,29 @@
+.dialog-container {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.dialog-box {
+    background: #2C2F33;
+    padding: 20px;
+    border-radius: 10px;
+    width: 300px;
+    text-align: center;
+    color: white;
+}
+
+.dialog-error {
+    color: red;
+    margin-top: 10px;
+}
+
+.dialog-actions {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-around;
+}

@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { createSession } from "../services/apiService";
+import { createGroup } from "../services/apiService";
 
 const predefinedTags = ["D&D", "Other Game"];
 
@@ -11,6 +11,21 @@ const CreateGroupPage = ({ setGroups }) => {
   const [members, setMembers] = useState([]);
   const [description, setDescription] = useState("");
   const [tags, setTags] = useState([]);
+  const [userName, setUserName] = useState("");
+
+  // get username from API
+  useEffect(() => {
+    const getUser = async () => {
+      try {
+        const user = await fetchUserProfile();
+        setUserName(user.name);
+      } catch (error) {
+        console.error("Error fetching user:", error);
+      }
+    };
+
+    getUser();
+  }, []);
 
   const AddMember = () => {
     if (members.length < maxMembers) {
@@ -35,7 +50,7 @@ const CreateGroupPage = ({ setGroups }) => {
       return;
     }
 
-    const sessionData = {
+    const groupData = {
       title: groupName,
       isVisible: true,
       ageRange: "0 - 99",
@@ -46,7 +61,7 @@ const CreateGroupPage = ({ setGroups }) => {
     };
 
     try{
-      const group = await createSession(sessionData)
+      const group = await createGroup(groupData)
       setGroups((prevGroups) => [...prevGroups, group])
       navigate("/")
     } catch (error) {
@@ -68,7 +83,7 @@ const CreateGroupPage = ({ setGroups }) => {
             onChange={(e) => setGroupName(e.target.value)}
             placeholder="Enter Group Name"
           />
-          <span className="your-name">(Your Name)</span>
+          <span className="your-name">{userName}</span>
           <span className="member-count">Members: {members.length}/{maxMembers}</span>
         </div>
 

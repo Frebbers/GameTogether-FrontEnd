@@ -3,6 +3,7 @@ import { useState } from "react";
 import Header from "../common/Header";
 import HomePage from "../HomePage";
 import ProfilePage from "../profile/ProfilePage";
+import EditProfilePage from "../profile/EditProfilePage";
 import GroupInfoPage from "../groups/GroupInfoPage";
 import CreateGroupPage from "../groups/CreateGroupPage";
 import Footer from "../common/Footer";

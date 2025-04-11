@@ -1,18 +1,18 @@
 import React, { useState } from 'react';
 import { useNavigate } from "react-router-dom";
-import { joinSession } from '../services/apiService';
+import { joinGroup } from '../services/apiService';
 import styles from './RequestJoinDialog.module.css';
 
-const RequestJoinDialog = ({ sessionId, onClose }) => {
+const RequestJoinDialog = ({ groupId, onClose }) => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const handleJoinSession = async () => {
+  const handleJoinGroup = async () => {
     setError("");
 
     try {
-      await joinSession(sessionId);
-      console.log("Joined session", sessionId);
+      await joinGroup(groupId);
+      console.log("Joined group", groupId);
       onClose();
     } catch (err) {
       setError(err.message);
@@ -22,8 +22,8 @@ const RequestJoinDialog = ({ sessionId, onClose }) => {
   return (
     <div className={styles['dialog-container']}>
       <div className={styles['dialog-box']} onClick={(e) => e.stopPropagation()}>
-        <h2>Join Session</h2>
-        <p>Do you want to join session #{sessionId}?</p>
+        <h2>Join Group</h2>
+        <p>Do you want to join session #{groupId}?</p>
 
         {error && <p className={styles['dialog-error']}>{error}</p>}
 
@@ -34,7 +34,7 @@ const RequestJoinDialog = ({ sessionId, onClose }) => {
           }}>Cancel</button>
           <button onClick={async () => {
             try {
-              await handleJoinSession();
+              await handleJoinGroup();
               onClose();
               navigate("/");
               window.location.reload(); //No idea how else i should rerender the UI

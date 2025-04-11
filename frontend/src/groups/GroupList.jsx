@@ -3,7 +3,7 @@ import GroupPost from "./GroupPost.jsx";
 import { fetchGroups } from "../services/apiService.js";
 
 const GroupList = ({ filterTag, onGroupCountChange, searchTerm }) => {
-  const [sessions, setSessions] = useState([]);
+  const [groups, setGroups] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -18,15 +18,15 @@ const GroupList = ({ filterTag, onGroupCountChange, searchTerm }) => {
       });
   }, []);
 
-  const filteredSessions = sessions.filter((session) => {
+  const filteredGroups = groups.filter((group) => {
     const matchesTag =
       filterTag === "All Games" ||
-      session.tags?.some((tag) => tag.toLowerCase() === filterTag.toLowerCase());
+      group.tags?.some((tag) => tag.toLowerCase() === filterTag.toLowerCase());
 
     //Searches on title and description and can be expanded to include other properties
     const matchesSearch =
-      session.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      session.description?.toLowerCase().includes(searchTerm.toLowerCase());
+      group.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      group.description?.toLowerCase().includes(searchTerm.toLowerCase());
 
     return matchesTag && matchesSearch;
   });

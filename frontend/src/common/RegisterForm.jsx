@@ -3,6 +3,7 @@ import { register } from "../services/apiService";
 
 const RegisterForm = ({ onRegisterSuccess }) => {
     const [email, setEmail] = useState("");
+    const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
@@ -27,7 +28,7 @@ const RegisterForm = ({ onRegisterSuccess }) => {
         }
 
         try {
-            const data = await register(email, password);
+            const data = await register(email, username, password);
             setSuccess(data.message || "Registration successful!");
 
             setTimeout(() => onRegisterSuccess(), 1500);
@@ -40,6 +41,7 @@ const RegisterForm = ({ onRegisterSuccess }) => {
         <div className="register-container">
             <h2>Register</h2>
             <form onSubmit={handleRegister}>
+                <input type="username" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} required />
                 <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required />
                 <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required />
                 {error && <p className="error-text">{error}</p>}

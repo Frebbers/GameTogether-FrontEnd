@@ -35,13 +35,15 @@ const GroupPost = ({ id, title, ownerId, members, maxMembers, description, tags 
                 <strong>Members:</strong>
                 <ul>
                     {members?.length > 0 ? (
-                        members.map((member) => (
-                            <li key={member.userId}>{member.name}</li>
+                        members.map((member, index) => (
+                        <li key={member.userId || index}>
+                            {member.username || "Unnamed Member"}
+                        </li>
                         ))
                     ) : (
                         <li>No members yet</li>
                     )}
-                </ul>
+                    </ul>
             </div>
 
             <div className="tags">

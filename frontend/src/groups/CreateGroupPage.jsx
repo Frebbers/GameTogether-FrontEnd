@@ -6,27 +6,25 @@ const predefinedTags = ["D&D", "Other Game"];
 
 const CreateGroupPage = ({ setGroups }) => {
   const navigate = useNavigate();
+  const [userName, setUserName] = useState("");
   const [groupName, setGroupName] = useState("");
   const [maxMembers, setMaxMembers] = useState(10);
   const [members, setMembers] = useState([]);
   const [description, setDescription] = useState("");
   const [tags, setTags] = useState([]);
-  const [userName, setUserName] = useState("");
 
-  // get username from API
   useEffect(() => {
-    const getUser = async () => {
+    const fetchUser = async () => {
       try {
-        const user = await fetchUserProfile();
-        setUserName(user.name);
-      } catch (error) {
-        console.error("Error fetching user:", error);
+        setUserName(user.username);
+      } catch (err) {
+        console.error("Failed to fetch user", err);
       }
     };
-
-    getUser();
+  
+    fetchUser();
   }, []);
-
+  
   const AddMember = () => {
     if (members.length < maxMembers) {
       const newMember = prompt("Enter member name:");
@@ -57,7 +55,6 @@ const CreateGroupPage = ({ setGroups }) => {
       maxMembers: maxMembers,
       description: description,
       tags: tags,
-      // Add members wtf?
     };
 
     try{

@@ -3,17 +3,18 @@ const API_BASE = "http://localhost:5238/api";
 /**
  * Sends a registration request to the server.
  * @param {string} email
+ * @param {string} username
  * @param {string} password
  * @returns {Promise<Object>} Response data with message.
  */
-export const register = async (email, password) => {
+export const register = async (email, username, password) => {
     const response = await fetch(`${API_BASE}/auth/register`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
             "Accept": "application/json",
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, username, password }),
     });
     console.log(response.body);
 

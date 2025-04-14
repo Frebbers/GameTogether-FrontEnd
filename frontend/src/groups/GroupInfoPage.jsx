@@ -33,7 +33,9 @@ const GroupInfoPage = ({ groups, setGroups }) => {
                     <strong>Members:</strong>
                     <ul>
                         {group.members.length > 0 ? (
-                            group.members.map((member, index) => <li key={index}>{member}</li>)
+                            group.members.map((member, index) => (
+                                <li key={member.userId || index}>{member.username || "Unnamed Member"}</li>
+                              ))                              
                         ) : (
                             <li>No members yet</li>
                         )}

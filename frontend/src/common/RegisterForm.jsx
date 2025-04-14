@@ -8,32 +8,24 @@ const RegisterForm = ({ onRegisterSuccess }) => {
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
 
-    const isPasswordValid = (pwd) => {
-        return (
-            pwd.length >= 8 &&
-            /[A-Z]/.test(pwd) &&
-            /[a-z]/.test(pwd) &&
-            /[0-9]/.test(pwd)
-        );
-    };
-
     const handleRegister = async (e) => {
         e.preventDefault();
         setError("");
         setSuccess("");
-
-        if (!isPasswordValid(password)) {
-            setError("Password must be at least 8 characters long and include uppercase, lowercase, and a number.");
-            return;
-        }
-
+    
         try {
             const data = await register(email, username, password);
             setSuccess(data.message || "Registration successful!");
-
             setTimeout(() => onRegisterSuccess(), 1500);
         } catch (err) {
-            setError(err.message);
+            // Try to get the detailed error from the backend response
+            if (err.response && err.response.data) {
+                setError(err.response.data || "Registration failed. Please try again.");
+            } else if (err.message) {
+                setError(err.message);
+            } else {
+                setError("An unknown error occurred.");
+            }
         }
     };
 

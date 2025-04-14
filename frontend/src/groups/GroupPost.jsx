@@ -1,9 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import SimpleDialog from "../common/RequestJoinDialog";
 import RequestJoinDialog from "../common/RequestJoinDialog";
-import { fetchProfile } from "../services/apiService";
-
 
 const GroupPost = ({ id, title, ownerId, members, maxMembers, description, tags }) => {
     const navigate = useNavigate();
@@ -19,19 +16,12 @@ const GroupPost = ({ id, title, ownerId, members, maxMembers, description, tags 
         setIsDialogOpen(false);
     };
 
-    // get username from API
     useEffect(() => {
-    const getOwner = async () => {
-        try {
-        const owner = await fetchProfile(ownerId);
-        setOwnerName(owner.name);
-        } catch (error) {
-        console.error("Error fetching user:", error);
+        if(members?.length > 0){
+            const owner = members.find((m => m.userId == ownerId));
+            setOwnerName(owner?.username || "No Username");
         }
-    };
-
-    getOwner();
-    }, []);
+    })
 
     return (
         <div

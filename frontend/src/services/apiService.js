@@ -1,4 +1,4 @@
-const API_BASE = "http://localhost:5238/api";
+const API_BASE = "https://localhost:7191/api";
 
 /**
  * Sends a registration request to the server.
@@ -16,15 +16,16 @@ export const register = async (email, username, password) => {
         },
         body: JSON.stringify({ email, username, password }),
     });
-    console.log(response.body);
+
+    const message = await response.text();
 
     if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Registration failed.");
+        throw new Error(message.replace(/^"|"$/g, ''));
     }
 
-    return await response.json();
+    return { message }; 
 };
+
 
 /**
  * Sends a login request to the server.

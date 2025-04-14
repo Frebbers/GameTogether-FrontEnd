@@ -1,12 +1,14 @@
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SimpleDialog from "../common/RequestJoinDialog";
 import RequestJoinDialog from "../common/RequestJoinDialog";
+import { fetchProfile } from "../services/apiService";
 
 
 const GroupPost = ({ id, title, ownerId, members, maxMembers, description, tags }) => {
     const navigate = useNavigate();
     const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [ownerName, setOwnerName] = useState("");
 
     const openDialog = (e) => {
         e.stopPropagation();
@@ -17,6 +19,20 @@ const GroupPost = ({ id, title, ownerId, members, maxMembers, description, tags 
         setIsDialogOpen(false);
     };
 
+    // get username from API
+    useEffect(() => {
+    const getOwner = async () => {
+        try {
+        const owner = await fetchProfile(ownerId);
+        setOwnerName(owner.name);
+        } catch (error) {
+        console.error("Error fetching user:", error);
+        }
+    };
+
+    getOwner();
+    }, []);
+
     return (
         <div
             className="group-post"
@@ -25,7 +41,7 @@ const GroupPost = ({ id, title, ownerId, members, maxMembers, description, tags 
         >
             <div className="group-post-header">
                 <span>{title}</span>
-                <span>Owner ID: {ownerId}</span>
+                <span>Owner: {ownerName}</span>
                 <span>Members: {members?.length ?? 0}/{maxMembers}</span>
             </div>
 

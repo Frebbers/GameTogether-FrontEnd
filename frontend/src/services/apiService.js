@@ -20,7 +20,7 @@ export const register = async (email, username, password) => {
     const message = await response.text();
 
     if (!response.ok) {
-        throw new Error(message.replace(/^"|"$/g, ''));
+        throw new Error(message.replace(/^"|"$/g, ));
     }
 
     return { message }; 
@@ -44,8 +44,7 @@ export const login = async (email, password) => {
     });
 
     if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Login failed.");
+        throw new Error("Failed to login. Please try again");
     }
 
     return await response.json();

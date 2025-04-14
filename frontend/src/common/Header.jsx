@@ -46,6 +46,7 @@ function Header({setSearchTerm, searchTerm, setFilterTag}) {
                         <button
                             onClick={() => {
                                 localStorage.removeItem("token");
+                                window.location.href = "/";
                             }}
                             className="profile-button"
                         >

@@ -1,28 +1,28 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import Header from "./common/Header";
 import ControlPanel from "./common/ControlPanel.jsx";
 import GroupList from "./groups/GroupList.jsx";
 import LoginForm from "./common/LoginForm.jsx";
 import RegisterForm from "./common/RegisterForm.jsx";
 import './groups/groups.css';
+import { AuthContext } from "./context/AuthContext";
 
-const HomePage = ({ groups, searchTerm, setSearchTerm }) => {
+const HomePage = ({ searchTerm, setSearchTerm }) => {
   const [filterTag, setFilterTag] = useState("All Games");
   const [showRegister, setShowRegister] = useState(false);
-  const [token, setToken] = useState(localStorage.getItem("token") || null);
   const [groupCount, setGroupCount] = useState(0);
+
+  const { isLoggedIn } = useContext(AuthContext);
 
   return (
     <div className="container">
       <Header setFilterTag={setFilterTag} setSearchTerm={setSearchTerm} searchTerm={searchTerm} />
 
-      {!token ? (
+      {!isLoggedIn ? (
         <>
           {showRegister ? (
             <>
-              <RegisterForm
-                onRegisterSuccess={() => setShowRegister(false)}
-              />
+              <RegisterForm onRegisterSuccess={() => setShowRegister(false)} />
               <p>
                 Already have an account?{" "}
                 <button onClick={() => setShowRegister(false)}>Log In</button>
@@ -30,7 +30,7 @@ const HomePage = ({ groups, searchTerm, setSearchTerm }) => {
             </>
           ) : (
             <>
-              <LoginForm onLoginSuccess={(token) => setToken(token)} />
+              <LoginForm />
               <p>
                 Don't have an account?{" "}
                 <button onClick={() => setShowRegister(true)}>Register</button>

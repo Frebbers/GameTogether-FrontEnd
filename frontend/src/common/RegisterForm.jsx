@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { register } from "../services/apiService";
+import { register } from "../services/ApiService";
 
 const RegisterForm = ({ onRegisterSuccess }) => {
     const [email, setEmail] = useState("");

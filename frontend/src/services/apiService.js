@@ -185,6 +185,28 @@ export const fetchUserProfile = async () => {
 }
 
 /**
+ * Fetches the profile data of a given user.
+ * @returns {Promise<Object>} User profile data
+ */
+export const fetchProfile = async (userId) => {
+    const token = localStorage.getItem("token")
+    const response = await fetch(`${API_BASE}/Users/${userId}/profile`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+        }
+    });
+
+    if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || `Failed to fetch profile data of user ${userId}.`);
+    }
+
+    return await response.json();
+}
+
+/**
  * Updates the user's profile data.
  * @param {Object} profileData
  * @returns {Promise<Object>} Updated profile data

@@ -164,6 +164,28 @@ export const fetchUserGroups = async () => {
 }
 
 /**
+ * Fetches a group by its ID.
+ * @returns {Promise<Object>} group data. 
+*/
+export const fetchGroupById = async (groupId) => {
+    const token = localStorage.getItem("token")
+    const response = await fetch(`${API_BASE}/Groups/${groupId}`, {
+        method: "GET",
+        headers: {
+            "Accept": "application/json",
+            "Authorization": `Bearer ${token}`
+        }
+    });
+
+    if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || `Failed to fetch group of ID ${groupId}`);
+    }
+
+    return await response.json();
+}
+
+/**
  * Fetches the user's profile data.
  * @returns {Promise<Object>} User profile data
  */

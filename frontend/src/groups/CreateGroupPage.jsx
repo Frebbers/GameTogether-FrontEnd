@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { createGroup } from "../services/ApiService";
+import { createGroup, fetchUserProfile } from "../services/ApiService";
 
 const predefinedTags = ["D&D", "Other Game"];
 
@@ -16,6 +16,7 @@ const CreateGroupPage = ({ setGroups }) => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
+        const user = await fetchUserProfile();
         setUserName(user.username);
       } catch (err) {
         console.error("Failed to fetch user", err);

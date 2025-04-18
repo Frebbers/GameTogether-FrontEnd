@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { fetchGroupById, fetchProfile } from "../services/apiService";
+import { fetchGroupById, fetchProfile } from "../services/ApiService";
 import { useEffect, useState } from "react";
+import RequestJoinDialog from "../common/RequestJoinDialog";
 import styles from "./GroupInfoPage.module.css"
 
 const GroupInfoPage = ({ groups, setGroups }) => {
@@ -11,8 +12,16 @@ const GroupInfoPage = ({ groups, setGroups }) => {
     const [owner, setOwner] = useState("");
     const [memberProfiles, setMemberProfiles] = useState({});
     const [loading, setLoading] = useState(true);
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
 
+    const openDialog = (e) => {
+        e.stopPropagation();
+        setIsDialogOpen(true);
+    };
 
+    const closeDialog = () => {
+        setIsDialogOpen(false);
+    };
     
     useEffect(() => {
         fetchGroupById(groupId)
@@ -80,52 +89,49 @@ const GroupInfoPage = ({ groups, setGroups }) => {
     };
 
     return (
-        <div className={styles.container}>
-            <h1>{group.name}</h1>
-
-            <div className={styles.groupBody}>
-                <div className={styles.info}>
-                    <p className=""><strong>Members ({group.members.length+group.nonUserMembers.length}/{group.maxMembers}):</strong></p>
-                    {group.nonUserMembers.map(member => {
-                        return (<span>{member}</span>)
-                    })}
-                    {group.members.map(member => {
-                        return (<span>{member.username} {member.userId == ownerId ? ((<i style={{color:"yellow"}} className="fa-solid fa-star">(Owner)</i>)) : (<></>) }</span>)
-                    })}
-                    <p className=""><strong>Description:</strong> {group.description}</p>
-                    <div className={styles.tags}>
-                    <strong>Tags:</strong>
-                    {group.tags.length > 0 ? (
-                        group.tags.map((tag, index) => <span key={index} className="tag">{tag}</span>)
-                    ) : (
-                        <span className="">No tags</span>
-                    )}
-                </div>
-                </div>
-            
-                <div className={styles.members}>
-                        <strong>Members:</strong>
-                        {group.members.map((member) => {
-                            const profile = memberProfiles[member.userId];
-                            return (
-                            <div key={member.userId}>
-                                {profile ? (
-                                <div className={styles.profileCard}>
-                                    <span>Age: {profile.age}</span>
-                                    <strong>Name: {member.username} {member.userId == ownerId ? ((<i style={{color:"yellow"}} className="fa-solid fa-star">(Owner)</i>)) : (<></>) } </strong>
-                                    <span>Description: {profile.description}</span>
-                                </div>
-                                ) : (
-                                <span>Loading profile for {member.username}...</span>
-                                )}
-                            </div>
-                            );
-                        })}
-                    </div>
-
-                
+        <div className={styles["group-info"]}>
+            <div className={styles["header"]}>
+                <h2 className={styles["title"]}>{group.title}</h2>
+                <div className={styles["header-right"]}>
+                    <span className={styles["age-range"]}>Age range: {group.ageRange} </span>
+                    <span className={styles["tags"]}>
+                            Tags:
+                            {group.tags?.length > 0 ? (
+                                group.tags.map((tag, index) => (
+                                    <span key={index} className="tag">{tag}</span>
+                                ))
+                            ) : (
+                                <span className="tag">No tags</span>
+                            )}
+                    </span>
                 </div>
             </div>
+
+            <div className={styles["group-info-content"]}>
+                <div className={`${styles.panel} ${styles["left-panel"]}`}>
+                    <p className={styles["description"]}>{group.description}</p>
+                </div>
+
+                <div className={`${styles.panel} ${styles["right-panel"]}`}>
+                        <p className=""><strong>Members ({group.members.length+group.nonUserMembers.length}/{group.maxMembers}):</strong></p>
+
+                        {group.members.map(member => {
+                            return (<div>{member.username} {member.userId == ownerId ? ((<i style={{color:"yellow"}} className="fa-solid fa-star">(Owner)</i>)) : (<></>) }</div>)
+                        })}
+
+                        {group.nonUserMembers.map(member => {
+                            return (<div>{member}</div>)
+                        })}
+                    </div>
+            </div>
+
+            <div className={styles["footer-info"]}>
+                <button onClick={openDialog}>
+                    Request to Join
+                </button>
+                {isDialogOpen && <RequestJoinDialog sessionId={groupId} onClose={closeDialog} />}
+            </div>
+        </div>
     );
 };
 

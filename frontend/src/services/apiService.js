@@ -147,7 +147,7 @@ export const fetchGroups = async () => {
  */
 export const fetchUserGroups = async () => {
     const token = localStorage.getItem("token")
-    const response = await fetch(`${API_BASE}/Sessions/user`, {
+    const response = await fetch(`${API_BASE}/Groups/user`, {
         method: "GET",
         headers: {
             "Accept": "application/json",

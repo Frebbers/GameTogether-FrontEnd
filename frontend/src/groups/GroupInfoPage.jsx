@@ -85,8 +85,13 @@ const GroupInfoPage = ({ groups, setGroups }) => {
 
             <div className={styles.groupBody}>
                 <div className={styles.info}>
-                    <p><strong>Owner:</strong> {owner.username}</p>
-                    <p className=""><strong>Members:</strong> {group.members.length}/{group.maxMembers}</p>
+                    <p className=""><strong>Members ({group.members.length+group.nonUserMembers.length}/{group.maxMembers}):</strong></p>
+                    {group.nonUserMembers.map(member => {
+                        return (<span>{member}</span>)
+                    })}
+                    {group.members.map(member => {
+                        return (<span>{member.username} {member.userId == ownerId ? ((<i style={{color:"yellow"}} className="fa-solid fa-star">(Owner)</i>)) : (<></>) }</span>)
+                    })}
                     <p className=""><strong>Description:</strong> {group.description}</p>
                     <div className={styles.tags}>
                     <strong>Tags:</strong>
@@ -106,8 +111,8 @@ const GroupInfoPage = ({ groups, setGroups }) => {
                             <div key={member.userId}>
                                 {profile ? (
                                 <div className={styles.profileCard}>
-                                    <strong>Name: {profile.username}</strong>
                                     <span>Age: {profile.age}</span>
+                                    <strong>Name: {member.username} {member.userId == ownerId ? ((<i style={{color:"yellow"}} className="fa-solid fa-star">(Owner)</i>)) : (<></>) } </strong>
                                     <span>Description: {profile.description}</span>
                                 </div>
                                 ) : (

@@ -1,6 +1,6 @@
 import { useState } from 'react';
         import { useLocation, useNavigate } from 'react-router-dom';
-        import { updateUserProfile } from "../services/apiService.js";
+        import { updateUserProfile } from "../services/ApiService.js";
 
         const EditProfilePage = () => {
             const location = useLocation();

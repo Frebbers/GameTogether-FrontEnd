@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import GroupPost from "./GroupPost.jsx";
-import { fetchGroups } from "../services/apiService.js";
+import { fetchGroups } from "../services/ApiService.js";
 
 const GroupList = ({ filterTag, onGroupCountChange, searchTerm }) => {
   const [groups, setGroups] = useState([]);

@@ -1,29 +1,31 @@
-const API_BASE = "http://localhost:5238/api";
+const API_BASE = "https://localhost:7191/api";
 
 /**
  * Sends a registration request to the server.
  * @param {string} email
+ * @param {string} username
  * @param {string} password
  * @returns {Promise<Object>} Response data with message.
  */
-export const register = async (email, password) => {
+export const register = async (email, username, password) => {
     const response = await fetch(`${API_BASE}/auth/register`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
             "Accept": "application/json",
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, username, password }),
     });
-    console.log(response.body);
+
+    const message = await response.text();
 
     if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Registration failed.");
+        throw new Error(message.replace(/^"|"$/g, ));
     }
 
-    return await response.json();
+    return { message }; 
 };
+
 
 /**
  * Sends a login request to the server.
@@ -42,8 +44,7 @@ export const login = async (email, password) => {
     });
 
     if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Login failed.");
+        throw new Error("Failed to login. Please try again");
     }
 
     return await response.json();
@@ -163,28 +164,6 @@ export const fetchUserGroups = async () => {
 }
 
 /**
- * Fetches the user's sessions.
- * @returns {Object}  Array of user's sessions
- */
-export const fetchSessionById = async (sessionId) => {
-    const token = localStorage.getItem("token")
-    const response = await fetch(`${API_BASE}/Groups/${sessionId}`, {
-        method: "GET",
-        headers: {
-            "Accept": "application/json",
-            "Authorization": `Bearer ${token}`
-        }
-    });
-
-    if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to fetch session.");
-    }
-
-    return await response.json();
-}
-
-/**
  * Fetches the user's profile data.
  * @returns {Promise<Object>} User profile data
  */
@@ -207,10 +186,10 @@ export const fetchUserProfile = async () => {
 }
 
 /**
- * Fetches the user's profile data.
+ * Fetches the profile data of a given user.
  * @returns {Promise<Object>} User profile data
  */
-export const fetchUserProfileById = async (userId) => {
+export const fetchProfile = async (userId) => {
     const token = localStorage.getItem("token")
     const response = await fetch(`${API_BASE}/Users/${userId}/profile`, {
         method: "GET",
@@ -222,12 +201,11 @@ export const fetchUserProfileById = async (userId) => {
 
     if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to fetch profile data for given user.");
+        throw new Error(errorData.error || `Failed to fetch profile data of user ${userId}.`);
     }
 
     return await response.json();
 }
-
 
 /**
  * Updates the user's profile data.

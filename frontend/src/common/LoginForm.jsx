@@ -1,21 +1,23 @@
-import { useState } from "react";
-import { login } from "../services/apiService";
+import { useState, useContext } from "react";
+import { login as apiLogin } from "../services/ApiService"; 
+import { AuthContext } from "../context/AuthContext";
 
-const LoginForm = ({ onLoginSuccess }) => {
+const LoginForm = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
+
+    const { login } = useContext(AuthContext);
 
     const handleLogin = async (e) => {
         e.preventDefault();
         setError("");
 
         try {
-            const data = await login(email, password);
-            localStorage.setItem("token", data.token);
-            onLoginSuccess(data.token);
+            const data = await apiLogin(email, password); 
+            login(data.token);                        
         } catch (err) {
-            setError(err.message);
+            setError(err.message || "Login failed.");
         }
     };
 

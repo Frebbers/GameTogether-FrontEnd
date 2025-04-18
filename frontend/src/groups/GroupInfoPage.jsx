@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { fetchSessionById, fetchUserProfileById } from "../services/apiService";
+import { fetchGroupById, fetchProfile } from "../services/apiService";
 import { useEffect, useState } from "react";
 import styles from "./GroupInfoPage.module.css"
 
@@ -15,7 +15,7 @@ const GroupInfoPage = ({ groups, setGroups }) => {
 
     
     useEffect(() => {
-        fetchSessionById(groupId)
+        fetchGroupById(groupId)
         .then((data) => {
             setGroup(data);
             setLoading(false);
@@ -27,7 +27,7 @@ const GroupInfoPage = ({ groups, setGroups }) => {
     }, []);
     
     useEffect(() => {
-        fetchUserProfileById(ownerId)
+        fetchProfile(ownerId)
         .then((data) => {
             setOwner(data);
             setLoading(false);
@@ -44,7 +44,7 @@ const GroupInfoPage = ({ groups, setGroups }) => {
         const fetchProfiles = async () => {
           const promises = group.members.map(async (member) => {
             try {
-              const profile = await fetchUserProfileById(member.userId);
+              const profile = await fetchProfile(member.userId);
               return { userId: member.userId, profile };
             } catch (err) {
               console.error(`Failed to fetch profile for user ${member.userId}`, err);
@@ -85,7 +85,7 @@ const GroupInfoPage = ({ groups, setGroups }) => {
 
             <div className={styles.groupBody}>
                 <div className={styles.info}>
-                    <p><strong>Owner:</strong> {owner.name}</p>
+                    <p><strong>Owner:</strong> {owner.username}</p>
                     <p className=""><strong>Members:</strong> {group.members.length}/{group.maxMembers}</p>
                     <p className=""><strong>Description:</strong> {group.description}</p>
                     <div className={styles.tags}>
@@ -106,12 +106,12 @@ const GroupInfoPage = ({ groups, setGroups }) => {
                             <div key={member.userId}>
                                 {profile ? (
                                 <div className={styles.profileCard}>
-                                    <strong>Name: {profile.name}</strong>
+                                    <strong>Name: {profile.username}</strong>
                                     <span>Age: {profile.age}</span>
                                     <span>Description: {profile.description}</span>
                                 </div>
                                 ) : (
-                                <span>Loading profile for {member.name}...</span>
+                                <span>Loading profile for {member.username}...</span>
                                 )}
                             </div>
                             );

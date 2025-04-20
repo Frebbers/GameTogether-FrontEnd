@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {fetchUserProfile, fetchUserGroups} from "../services/ApiService.js";
+import Header from "../common/Header.jsx";
 import "./ProfilePage.css";
 
 
@@ -34,30 +35,28 @@ const UserProfilePage = () => {
     }, []);
 
     return (
-        <div className="profile-card">
-            <h1>User Profile</h1>
+        <div>
+            <Header />
+            <div className="profile-card">
             <div className="profile-details">
+                    <h2>{name}</h2>
+                    <h4><p>{"How old am i?: "+ age}</p></h4>
+                    <h4><p>{"Region: "+ region}</p></h4>
                 <div className="profile-image">
                     <img src={profilePicture} alt="Profile" />
                 </div>
-                <div className="profile-info">
-                    <h2>{name}</h2>
                     <p>{description}</p>
-                    <p>{region}</p>
-                    <p>{age}</p>
-                    <button className = "edit-profile-button" onClick={() => navigate('/edit-profile')}>Edit Profile</button>
-                </div>
-                <div className="profile-groups">
+                    <div className="profile-groups">
                     <h2>My Groups</h2>
-                    {myGroups.map((session) => (
-                        <div key={session.id} className="group-post">
-                            <h3>{session.title}</h3>
-                            <p>Owner ID: {session.ownerId}</p>
-                            <p>Members: {session.members?.length ?? 0}/{session.maxMembers}</p>
-                            <p>{session.description}</p>
+                    {myGroups.map((group) => (
+                        <div key={group.id} className="group-post">
+                            <h3>{group.title}</h3>
+                            <p>Owner ID: {group.ownerId}</p>
+                            <p>Members: {group.members?.length ?? 0}/{group.maxMembers}</p>
+                            <p>{group.description}</p>
                             <div className="tags">
-                                {session.tags?.length > 0 ? (
-                                    session.tags.map((tag, index) => (
+                                {group.tags?.length > 0 ? (
+                                    group.tags.map((tag, index) => (
                                         <span key={index} className="tag">{tag}</span>
                                     ))
                                 ) : (
@@ -66,9 +65,12 @@ const UserProfilePage = () => {
                             </div>
                         </div>
                     ))}
+                    <button className = "edit-profile-button" onClick={() => navigate('/edit-profile')}>Edit Profile</button>
                 </div>
             </div>
         </div>
+        </div>
+
     );
 };
 

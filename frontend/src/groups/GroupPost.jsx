@@ -26,7 +26,7 @@ const GroupPost = ({ id, title, ownerId, members, maxMembers, description, tags 
     return (
         <div
             className="group-post"
-            onClick={() => navigate(`/group/${id}`)}
+            onClick={() => navigate(`/group/${id}/${ownerId}`)}
             style={{ cursor: "pointer" }}
         >
             <div className="group-post-header">

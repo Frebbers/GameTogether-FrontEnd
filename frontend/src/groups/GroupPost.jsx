@@ -19,19 +19,19 @@ const GroupPost = ({ id, title, ownerId, members, maxMembers, description, tags 
     useEffect(() => {
         if(members?.length > 0){
             const owner = members.find((m => m.userId == ownerId));
-            setOwnerName(owner?.username || "No Username");
+            setOwnerName(owner?.username+"" || "No Username");
         }
     })
 
     return (
         <div
             className="group-post"
-            onClick={() => navigate(`/group/${id}`)}
+            onClick={() => navigate(`/group/${id}/${ownerId}`)}
             style={{ cursor: "pointer" }}
         >
             <div className="group-post-header">
-                <span>{title}</span>
-                <span>Owner: {ownerName}</span>
+                <span>Group name: {title}</span>
+                <span>Owner: {ownerName} </span>
                 <span>Members: {members?.length ?? 0}/{maxMembers}</span>
             </div>
 
@@ -56,7 +56,7 @@ const GroupPost = ({ id, title, ownerId, members, maxMembers, description, tags 
                 <strong>Tags:</strong>
                 {tags?.length > 0 ? (
                     tags.map((tag, index) => (
-                        <span key={index} className="tag">{tag}</span>
+                        <span key={index} className="group-post-tags">{tag}</span>
                     ))
                 ) : (
                     <span className="tag">No tags</span>

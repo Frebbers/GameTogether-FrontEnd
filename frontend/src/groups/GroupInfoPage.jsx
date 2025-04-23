@@ -1,14 +1,82 @@
 import { useParams, useNavigate } from "react-router-dom";
+import { fetchGroupById, fetchProfile } from "../services/ApiService";
+import { useEffect, useState } from "react";
+import RequestJoinDialog from "../common/RequestJoinDialog";
+import styles from "./GroupInfoPage.module.css"
 
 const GroupInfoPage = ({ groups, setGroups }) => {
     const { groupId } = useParams();
+    const { ownerId } = useParams();
     const navigate = useNavigate();
+    const [group, setGroup] = useState("");
+    const [owner, setOwner] = useState("");
+    const [memberProfiles, setMemberProfiles] = useState({});
+    const [loading, setLoading] = useState(true);
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-    const group = groups.find((g) => g.id === Number(groupId));
+    const openDialog = (e) => {
+        e.stopPropagation();
+        setIsDialogOpen(true);
+    };
+
+    const closeDialog = () => {
+        setIsDialogOpen(false);
+    };
+    
+    useEffect(() => {
+        fetchGroupById(groupId)
+        .then((data) => {
+            setGroup(data);
+            setLoading(false);
+        })
+        .catch((error) => {
+            console.error("Failed to fetch session:", error);
+            setLoading(false);
+        });
+    }, []);
+    
+    useEffect(() => {
+        fetchProfile(ownerId)
+        .then((data) => {
+            setOwner(data);
+            setLoading(false);
+        })
+        .catch((error) => {
+            console.error("Failed to fetch owner profile:", error);
+            setLoading(false);
+        });
+    }, []);
+
+    useEffect(() => {
+        if (!group?.members) return;
+    
+        const fetchProfiles = async () => {
+          const promises = group.members.map(async (member) => {
+            try {
+              const profile = await fetchProfile(member.userId);
+              return { userId: member.userId, profile };
+            } catch (err) {
+              console.error(`Failed to fetch profile for user ${member.userId}`, err);
+              return null;
+            }
+          });
+    
+          const results = await Promise.all(promises);
+          const profilesById = {};
+          results.forEach((res) => {
+            if (res) profilesById[res.userId] = res.profile;
+          });
+    
+          setMemberProfiles(profilesById);
+        };
+    
+        fetchProfiles();
+      }, [group.members]);
+
 
     if (!group) {
         return (
-            <div className="container">
+            <div className="">
                 <h1>Group Not Found</h1>
                 <button className="back-button" onClick={() => navigate("/")}>Go Back</button>
             </div>
@@ -21,56 +89,47 @@ const GroupInfoPage = ({ groups, setGroups }) => {
     };
 
     return (
-        <div className="container">
-            <h1>{group.name}</h1>
+        <div className={styles["group-info"]}>
+            <div className={styles["header"]}>
+                <h2 className={styles["title"]}>{group.title}</h2>
+                <div className={styles["header-right"]}>
+                    <span className={styles["age-range"]}>Age range: {group.ageRange} </span>
+                    <span className={styles["tags"]}>
+                            Tags:
+                            {group.tags?.length > 0 ? (
+                                group.tags.map((tag, index) => (
+                                    <span key={index} className="tag">{tag}</span>
+                                ))
+                            ) : (
+                                <span className="tag">No tags</span>
+                            )}
+                    </span>
+                </div>
+            </div>
 
-            <div className="group-info">
-                <p><strong>Owner:</strong> {group.owner}</p>
-                <p className="members-info"><strong>Members:</strong> {group.members.length}/{group.maxMembers}</p>
-                <p className="description-info"><strong>Description:</strong> {group.description}</p>
-
-                <div className="members-list">
-                    <strong>Members:</strong>
-                    <ul>
-                        {group.members.length > 0 ? (
-                            group.members.map((member, index) => (
-                                <li key={member.userId || index}>{member.username || "Unnamed Member"}</li>
-                              ))                              
-                        ) : (
-                            <li>No members yet</li>
-                        )}
-                    </ul>
+            <div className={styles["group-info-content"]}>
+                <div className={`${styles.panel} ${styles["left-panel"]}`}>
+                    <p className={styles["description"]}>{group.description}</p>
                 </div>
 
-                <div className="tags">
-                    <strong>Tags:</strong>
-                    {group.tags.length > 0 ? (
-                        group.tags.map((tag, index) => <span key={index} className="tag">{tag}</span>)
-                    ) : (
-                        <span className="tag">No tags</span>
-                    )}
-                </div>
+                <div className={`${styles.panel} ${styles["right-panel"]}`}>
+                        <p className=""><strong>Members ({group.members.length+group.nonUserMembers.length}/{group.maxMembers}):</strong></p>
 
-                <button 
-                    className="join-button" 
-                    onClick={() => navigate("/join-request")}
-                >
+                        {group.members.map(member => {
+                            return (<div>{member.username} {member.userId == ownerId ? ((<i style={{color:"yellow"}} className="fa-solid fa-star">(Owner)</i>)) : (<></>) }</div>)
+                        })}
+
+                        {group.nonUserMembers.map(member => {
+                            return (<div>{member}</div>)
+                        })}
+                    </div>
+            </div>
+
+            <div className={styles["footer-info"]}>
+                <button onClick={openDialog}>
                     Request to Join
                 </button>
-
-                <button 
-                    className="delete-button" 
-                    onClick={handleDelete}
-                >
-                    Delete Group
-                </button>
-
-                <button 
-                    className="back-button" 
-                    onClick={() => navigate("/")}
-                >
-                    Go Back
-                </button>
+                {isDialogOpen && <RequestJoinDialog sessionId={groupId} onClose={closeDialog} />}
             </div>
         </div>
     );

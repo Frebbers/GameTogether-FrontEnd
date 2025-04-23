@@ -1,9 +1,9 @@
 .group-post {
-    background-color: #2C2F33;
-    width: 100%;
-    padding: 15px;
-    border-radius: 10px;
-    margin-bottom: 20px;
+    background-color: #6e6e6e;
+    width: wrapcontent;
+    padding: 2%;
+    border-radius: 1rem;
+    margin-bottom: 5%;
 }
 
 .group-post-header {
@@ -12,8 +12,17 @@
     font-weight: bold;
     align-items: center;
     padding: 10px;
+    gap: 1rem;
 }
 
+.group-post-tags {
+    margin: 0%;
+    font-size: 100%;
+    font-weight: bold;
+    color: black;
+    background-color: #32FF6A;
+    border-radius: 0.5rem;
+}
 .description {
     background-color: #4A4E54;
     padding: 10px;

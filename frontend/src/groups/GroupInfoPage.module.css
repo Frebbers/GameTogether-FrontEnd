@@ -1,0 +1,88 @@
+.group-info {
+    background-color: #2C2F33;
+    width: 100%;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    font-weight: bold;
+    align-items: center;
+    padding: 1px;
+}
+
+.title {
+    
+}
+
+.header-right {
+    display: flex;
+    flex-direction: row;
+    gap: 15px; /* Adjust the gap between age range and tags */
+    justify-content: flex-end; /* Align the content to the right */
+    text-align: right; /* Ensure text within tags/age range is aligned to the right */
+    align-items: center;
+}
+
+.members {
+    display: flex;
+    flex-direction: column;
+    gap:8px;
+    align-items: center;
+}
+
+.group-info-content {
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+    margin-top: 15px;
+    flex-wrap: wrap;
+}
+
+.panel {
+    background: #3A3E44;
+    padding: 10px;
+    border-radius: 5px;
+    color: white;
+}
+
+.left-panel {
+    flex: 2;
+    min-width: 250px;
+}
+
+.right-panel {
+    flex: 1;
+    min-width: 200px;
+}
+
+.description {
+    background: transparent;
+    padding: 0;
+    border-radius: 0;
+    margin: 0;
+    color: inherit;
+}
+
+.footer-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+}
+
+.tags {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.age-range {
+    margin-left: 10px;
+}

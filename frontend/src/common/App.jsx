@@ -23,7 +23,7 @@ function App() {
         <Route path="/" element={<HomePage groups={groups} setGroups={setGroups} searchTerm={searchTerm} setSearchTerm={setSearchTerm} />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/edit-profile" element={<EditProfilePage />} />
-        <Route path="/group/:groupId" element={<GroupInfoPage groups={groups} setGroups={setGroups} />} />
+        <Route path="/group/:groupId/:ownerId" element={<GroupInfoPage groups={groups} setGroups={setGroups} />} />
         <Route path="/create" element={<CreateGroupPage setGroups={setGroups} />} />
         <Route path="/faq" element={<FaqPage />} />
         <Route path="/about" element={<AboutPage />} />

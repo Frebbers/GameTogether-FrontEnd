@@ -1,12 +1,14 @@
 import { createContext, useState, useEffect, useCallback } from "react";
 import { useIdleLogoutTimer } from "../hooks/useIdleLogoutTimer";
-
-const IDLE_LOGOUT_TIME = 30 * 60 * 1000 // 30 minutes
+import Dialog from "../components/Dialog";
 
 export const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
   const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem("token"));
+  const [showWarning, setShowWarning] = useState(false);
+  const [showLoggedOut, setShowLoggedOut] = useState(false);
+  const [idleSignal, setIdleSignal] = useState(0);
 
   const login = (token) => {
     localStorage.setItem("token", token);
@@ -16,13 +18,32 @@ export function AuthProvider({ children }) {
   const logout = useCallback(() => {
     localStorage.removeItem("token");
     setIsLoggedIn(false);
+    setShowWarning(false);
   }, []);
 
-  useIdleLogoutTimer(isLoggedIn, () => {
-    alert("Logged out due to inactivity.");
-    logout();
-    window.location.href = "/";
-  }, IDLE_LOGOUT_TIME);
+  const cancelLogout = () => {
+    setShowWarning(false);
+    setIdleSignal(prev => prev + 1);
+  };
+
+  const handleLoggedOutClose = () => {
+    setShowLoggedOut(false);
+  };
+
+  useEffect(() => {
+    setShowWarning(false);
+  }, [idleSignal]);
+
+  useIdleLogoutTimer(
+    isLoggedIn,
+    () => {
+      setShowLoggedOut(true);
+      logout();
+    },
+    undefined,                
+    () => setShowWarning(true), 
+    setIdleSignal          
+  );
 
   useEffect(() => {
     const checkToken = () => setIsLoggedIn(!!localStorage.getItem("token"));
@@ -33,6 +54,23 @@ export function AuthProvider({ children }) {
   return (
     <AuthContext.Provider value={{ isLoggedIn, login, logout }}>
       {children}
+
+      {showWarning && (
+        <Dialog
+          title="Inactive Warning"
+          message={`You will be logged out in 5 seconds due to inactivity.`}
+          onClose={cancelLogout}
+        />
+      )}
+
+      {showLoggedOut && (
+        <Dialog
+          title="Logged Out"
+          message="You have been logged out due to inactivity."
+          onClose={handleLoggedOutClose}
+          actions={<button onClick={handleLoggedOutClose}>OK</button>}
+        />
+      )}
     </AuthContext.Provider>
   );
 }

@@ -4,9 +4,9 @@ import { useContext, useCallback, useState } from "react";
 import Header from "../common/Header";
 import HomePage from "../HomePage";
 import ProfilePage from "../profile/ProfilePage";
-import EditProfilePage from "../profile/EditProfilePage";
 import GroupInfoPage from "../groups/GroupInfoPage";
 import CreateGroupPage from "../groups/CreateGroupPage";
+import EditProfilePage from "../profile/EditProfilePage";
 import Footer from "../common/Footer";
 import FaqPage from "../common/FaqPage";
 import AboutPage from "../common/AboutPage";
@@ -25,7 +25,7 @@ function App() {
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/edit-profile" element={<EditProfilePage />} />
         <Route path="/join-request" element={<RequestJoinDialog />} />
-        <Route path="/group/:groupId/:ownerId" element={<GroupInfoPage groups={groups} setGroups={setGroups} />} />
+        <Route path="/group/:groupId" element={<GroupInfoPage groups={groups} setGroups={setGroups} />} />
         <Route path="/create" element={<CreateGroupPage setGroups={setGroups} />} />
         <Route path="/faq" element={<FaqPage />} />
         <Route path="/about" element={<AboutPage />} />

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from "react-router-dom";
-import { joinGroup } from '../services/ApiService';
 import styles from './RequestJoinDialog.module.css';
+import { joinGroup } from '../services/apiService';
 
 const RequestJoinDialog = ({ groupId, onClose }) => {
   const [error, setError] = useState("");

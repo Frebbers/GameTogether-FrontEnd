@@ -1,5 +1,5 @@
 .group-post {
-    background-color: #6e6e6e;
+    background-color: #2C2F33;
     width: wrapcontent;
     padding: 2%;
     border-radius: 1rem;
@@ -16,11 +16,14 @@
 }
 
 .group-post-tags {
-    margin: 0%;
+    display: flex;
+    margin: 0.2rem;
+    flex-wrap: wrap;
     font-size: 100%;
     font-weight: bold;
     color: black;
     background-color: #32FF6A;
+    border: 1px solid black;
     border-radius: 0.5rem;
 }
 .description {
@@ -199,9 +202,13 @@ input, textarea {
 
 .tags {
     display: flex;
+    justify-content: center;
+    box-sizing: border-box;
     flex-wrap: wrap;
-    gap: 5px;
-    margin-top: 10px;
+    flex-flow: column;
+    gap: 0.5rem;
+    margin-top: 1rem;
+
 }
 
 .tag {

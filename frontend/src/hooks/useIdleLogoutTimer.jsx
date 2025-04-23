@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 
-const DEFAULT_TIME = 10 * 1000; // 10 seconds
-const WARNING_TIME = 5 * 1000;  // 5 seconds before logout
+const DEFAULT_TIME = 30 * 60 * 1000; // 30 minutes
+const WARNING_TIME = 5 * 60 * 1000;  // 5 minutes before logout
 
 export function useIdleLogoutTimer(
   isLoggedIn,

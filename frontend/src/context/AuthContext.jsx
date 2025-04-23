@@ -58,7 +58,7 @@ export function AuthProvider({ children }) {
       {showWarning && (
         <Dialog
           title="Inactive Warning"
-          message={`You will be logged out in 5 seconds due to inactivity.`}
+          message={`You will be logged out in 5 minutes due to inactivity.`}
           onClose={cancelLogout}
         />
       )}

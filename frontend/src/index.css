@@ -59,6 +59,8 @@ nav ul li a img {
     width: 50%;
     height: 100%;
     margin: auto;
+    margin-bottom: 5%;
+    margin-top: 10%;
     background: #1B1F3B;
     padding: 20px;
     border-radius: 10px;
@@ -68,6 +70,8 @@ nav ul li a img {
     display: flex;
     flex-direction: column;
     padding-top: 100px;
+    border: black 2px fill;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
 .nav-container {

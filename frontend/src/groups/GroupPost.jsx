@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import RequestJoinDialog from "../common/RequestJoinDialog";
+import Dialog from "../components/Dialog";
+import { joinGroup } from "../services/apiService";
 
 const GroupPost = ({ id, title, ownerId, members, maxMembers, description, tags }) => {
     const navigate = useNavigate();
@@ -17,11 +18,11 @@ const GroupPost = ({ id, title, ownerId, members, maxMembers, description, tags 
     };
 
     useEffect(() => {
-        if(members?.length > 0){
+        if (members?.length > 0) {
             const owner = members.find((m => m.userId == ownerId));
-            setOwnerName(owner?.username+"" || "No Username");
+            setOwnerName(owner?.username || "No Username");
         }
-    })
+    }, [members, ownerId]);
 
     return (
         <div
@@ -42,14 +43,14 @@ const GroupPost = ({ id, title, ownerId, members, maxMembers, description, tags 
                 <ul>
                     {members?.length > 0 ? (
                         members.map((member, index) => (
-                        <li key={member.userId || index}>
-                            {member.username || "Unnamed Member"}
-                        </li>
+                            <li key={member.userId || index}>
+                                {member.username || "Unnamed Member"}
+                            </li>
                         ))
                     ) : (
                         <li>No members yet</li>
                     )}
-                    </ul>
+                </ul>
             </div>
 
             <div className="tags">
@@ -63,10 +64,29 @@ const GroupPost = ({ id, title, ownerId, members, maxMembers, description, tags 
                 )}
             </div>
 
-            <button onClick={openDialog}>
-                Request to Join
-            </button>
-            {isDialogOpen && <RequestJoinDialog sessionId={id} onClose={closeDialog} />}
+            <button onClick={openDialog}>Request to Join</button>
+            {isDialogOpen && (
+                <Dialog
+                    title="Join Group"
+                    message={`Do you want to join session #${id}?`}
+                    onClose={closeDialog}
+                    actions={
+                        <>
+                            <button onClick={closeDialog}>Cancel</button>
+                            <button onClick={async () => {
+                                try {
+                                    await joinGroup(id);
+                                    closeDialog();
+                                    navigate("/");
+                                    window.location.reload();
+                                } catch (err) {
+                                    alert(err.message);
+                                }
+                            }}>Confirm</button>
+                        </>
+                    }
+                />
+            )}
         </div>
     );
 };

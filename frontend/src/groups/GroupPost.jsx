@@ -60,7 +60,7 @@ const GroupPost = ({ id, title, ownerId, members, maxMembers, description, tags 
                         <span key={index} className="group-post-tags">{tag}</span>
                     ))
                 ) : (
-                    <span className="tag">No tags</span>
+                    <span className="group-post-tags">No tags</span>
                 )}
             </div>
 

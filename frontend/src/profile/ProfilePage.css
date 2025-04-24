@@ -12,18 +12,14 @@ h1 {
 }
 
 .profile-card {
-    padding-top: 5%;
     border-radius: 1%;
-    box-shadow: 0 1.5% 3% rgba(0, 0, 0, 0.2);
     text-align: center;
-    max-width: wrap-content;
-    width: 100%;
-    background: white;
+    width: 50%;
+    background: #424c90;
     color: black;
     display: grid;
     margin: auto;
-    margin-top: 4%;
-    box-sizing: content-box;
+    margin-top: 14%;
 }
 .profile-group {
     display: flex;
@@ -55,11 +51,23 @@ h1 {
     object-fit: cover;
     margin-bottom: 15px;
     margin: auto;
+    display: block;
+    margin-top: 5%;
+    display: inline-block;
+}
+
+.profile-description {
+    font-size: 16px;
+    color: #666;
+    margin-bottom: 15px;
+    text-align: center;
+    justify-content: center;
+    columns: 12rem;
 }
 
 .profile-details {
     font-size: 16px;
-    color: #666;
+    color: #ffffff;
     margin-bottom: 15px;
 }
 
@@ -73,7 +81,7 @@ h1 {
 }
 
 .profile-button {
-    background-color:  #007bff;;
+    background-color:  #007bff;
     color: white;
     border: 1px solid #ffffff;
     padding: 5px 15px;
@@ -155,4 +163,12 @@ button:hover {
 .description {
     font-size: 16px;
     margin-bottom: 10px;
+}
+
+.profile-group-info{
+    font-size: 16px;
+    margin-bottom: 10px;
+    color: white;
+    text-align: center;
+    margin-top: 1%;
 }

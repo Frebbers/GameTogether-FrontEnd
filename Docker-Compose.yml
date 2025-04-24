@@ -1,0 +1,82 @@
+x-common-env: &common-env
+  ASPNETCORE_ENVIRONMENT: ${ENVIRONMENT:-Development}
+  ConnectionStrings__DefaultConnection: ${CONNECTION_STRING}
+  JwtSettings__SecretKey: ${JWT_SECRET}
+  JwtSettings__Issuer: "GameTogether"
+  JwtSettings__Audience: "GameTogetherApp"
+  EmailSettings__VerificationUrl: ${EMAIL_VERIFICATION_URL}
+  EmailSettings__SmtpServer: ${SMTP_SERVER}
+  EmailSettings__Port: ${SMTP_PORT}
+  EmailSettings__SenderEmail: ${SENDER_EMAIL}
+  EmailSettings__SenderPassword: ${SENDER_PASSWORD}
+
+services:
+  # Frontend (React + Nginx)
+  frontend:
+    build:
+      context: ./frontend  # Path to the frontend directory
+      dockerfile: Dockerfile  # Dockerfile for the frontend
+    ports:
+      - "443:443"  # Expose HTTPS port for frontend
+    depends_on:
+      - api  # Ensure the backend is up before starting the frontend
+    environment:
+      - NODE_ENV=production  # Set environment to production for React
+    networks:
+      - app-network
+
+  # Backend (ASP.NET Core)
+  api:
+    build:
+      context: ./backend  # Path to the backend directory
+      dockerfile: Dockerfile
+      args:
+        - ENVIRONMENT=${ENVIRONMENT:-Development}
+    ports: ["5000:8080", "7191:7191"]  # Expose backend API on port 5000 (or adjust as needed)
+    depends_on:
+      mysql:
+        condition: service_healthy  # Make sure MySQL is available before starting the backend
+      migrate:
+        condition: service_completed_successfully
+    environment: *common-env
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/healthz"]
+      interval: 10s
+      timeout: 5s
+      retries: 2
+    networks:
+      - app-network
+
+  # MySQL Database (optional, if your backend requires it)
+  mysql:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+    ports: ["3306:3306"]  # Expose MySQL port 3306
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 10s
+      retries: 2
+    networks:
+      - app-network
+
+  # Migration service to run migrations
+  migrate:
+    build:
+      context: ./backend
+      target: build  # Build target for migrations
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment: *common-env
+    working_dir: /src
+    command: >
+      sh -c "dotnet ef database update --project GameTogetherAPI/GameTogetherAPI.csproj --startup-project GameTogetherAPI/GameTogetherAPI.csproj"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

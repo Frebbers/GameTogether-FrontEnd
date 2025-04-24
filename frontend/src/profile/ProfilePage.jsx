@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {fetchUserProfile, fetchUserGroups} from "../services/ApiService.js";
+import {fetchUserProfile, fetchUserGroups} from "../services/apiService.js";
 import Header from "../common/Header.jsx";
 import "./ProfilePage.css";
 

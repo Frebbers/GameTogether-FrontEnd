@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { createGroup, fetchUserProfile } from "../services/ApiService";
+import { createGroup, fetchUserProfile } from "../services/apiService";
 
 const predefinedTags = ["D&D", "Other Game"];
 

@@ -1,6 +1,6 @@
 .group-post {
-    background-color: #2C2F33;
-    width: wrapcontent;
+    background-color: #2e3565;
+    width: 90%;
     padding: 2%;
     border-radius: 1rem;
     margin-bottom: 5%;
@@ -208,14 +208,15 @@ input, textarea {
     flex-flow: column;
     gap: 0.5rem;
     margin-top: 1rem;
+    min-width: 30%;
 
 }
 
 .tag {
     background-color: #32a852;
     color: white;
-    padding: 5px 10px;
-    border-radius: 5px;
+    padding: 0.1rem 0.1rem;
+    border-radius: 1rem;
 }
 
 .group-info {

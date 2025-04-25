@@ -10,8 +10,8 @@ x-common-env: &common-env
   EmailSettings__SenderEmail: ${SENDER_EMAIL}
   EmailSettings__SenderPassword: ${SENDER_PASSWORD}
   ASPNETCORE_URLS: ${ASPNETCORE_URLS}
-  ASPNETCORE_Kestrel__Certificates__Default__Path: ${ASPNETCORE_Kestrel__Certificates__Default__Path}
-  ASPNETCORE_Kestrel__Certificates__Default__Password: ${ASPNETCORE_Kestrel__Certificates__Default__Password}
+  ASPNETCORE_Kestrel__Certificates__Default__Path: "/https/aspnet-dev.pfx"
+  ASPNETCORE_Kestrel__Certificates__Default__Password: ${DB_PASSWORD:-rekt123}
 
 services:
   # Frontend (React + Nginx)
@@ -41,6 +41,8 @@ services:
         condition: service_healthy  # Make sure MySQL is available before starting the backend
       migrate:
         condition: service_completed_successfully
+      cert-generator:
+        condition: service_completed_successfully
     environment: *common-env
     volumes:
       - ./backend/certs:/https:ro
@@ -67,6 +69,21 @@ services:
     networks:
       - app-network
 
+  cert-generator:
+    build:
+      context: .
+      target: build
+    environment:
+      - DB_PASSWORD=${DB_PASSWORD:-rekt123}
+    working_dir: /src
+    command: >
+      sh -c "mkdir -p /certs &&
+      dotnet dev-certs https --clean &&
+      dotnet dev-certs https --trust &&
+      dotnet dev-certs https -ep /certs/aspnet-dev.pfx -p ${DB_PASSWORD:-rekt123} &&
+      chmod 644 /certs/aspnet-dev.pfx &&
+      echo 'Certificate generated successfully' > /certs/cert-complete"
+
   # Migration service to run migrations
   migrate:
     build:
@@ -75,6 +92,8 @@ services:
     depends_on:
       mysql:
         condition: service_healthy
+      cert-generator:
+        condition: service_completed_successfully
     environment: *common-env
     working_dir: /src
     command: >

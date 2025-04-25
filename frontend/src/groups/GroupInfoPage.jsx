@@ -1,8 +1,9 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { fetchGroupById, fetchProfile, joinGroup } from "../services/apiService";
+import { AcceptUserIntoGroup, fetchGroupById, fetchProfile, joinGroup, RejectUserFromGroup } from "../services/apiService";
 import { useEffect, useState } from "react";
 import Dialog from "../components/Dialog";
 import styles from "./GroupInfoPage.module.css";
+import { jwtDecode } from 'jwt-decode';
 
 const GroupInfoPage = ({ groups, setGroups }) => {
     const { groupId } = useParams();
@@ -13,20 +14,33 @@ const GroupInfoPage = ({ groups, setGroups }) => {
     const [memberProfiles, setMemberProfiles] = useState({});
     const [loading, setLoading] = useState(true);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [isPendingDialogOpen, setIsPendingDialogOpen] = useState(false);
+    const claims = jwtDecode(localStorage.getItem('token'));
+    const isGroupOwner = claims.nameid === ownerId;
 
     const openDialog = (e) => {
         e.stopPropagation();
         setIsDialogOpen(true);
     };
 
+    const openPendingDialog = (e) => {
+        e.stopPropagation();
+        setIsPendingDialogOpen(true);
+    };
+
     const closeDialog = () => {
         setIsDialogOpen(false);
+    };
+
+    const closePendingDialog = () => {
+        setIsPendingDialogOpen(false);
     };
 
     useEffect(() => {
         fetchGroupById(groupId)
             .then((data) => {
                 setGroup(data);
+                console.log(data.members);
                 setLoading(false);
             })
             .catch((error) => {
@@ -106,26 +120,25 @@ const GroupInfoPage = ({ groups, setGroups }) => {
                 </div>
             </div>
 
-            <div className={styles["group-info-content"]}>
-                <div className={`${styles.panel} ${styles["left-panel"]}`}>
-                    <p className={styles["description"]}>{group.description}</p>
-                </div>
+            <div className={`${styles.panel} ${styles["right-panel"]}`}>
+            <p><strong>Members ({group.members.filter(m => m.groupStatus === 1).length + group.nonUserMembers.length}/{group.maxMembers}):</strong></p>
 
-                <div className={`${styles.panel} ${styles["right-panel"]}`}>
-                    <p><strong>Members ({group.members.length + group.nonUserMembers.length}/{group.maxMembers}):</strong></p>
-                    {group.members.map(member => (
-                        <div key={member.userId}>
-                            {member.username}
-                            {member.userId == ownerId && (
-                                <i style={{ color: "yellow" }} className="fa-solid fa-star">(Owner)</i>
+            {group.members.filter(m => m.groupStatus === 1).map(member => {
+                const isOwner = Number(member.userId) === Number(ownerId);
+                    return (
+                        <div key={member.userId} className={styles.memberRow}>
+                            <span>{member.username}</span>
+                            {isOwner && (
+                                <i style={{ color: "yellow", marginLeft: "0.5rem" }} className="fa-solid fa-star">(Owner)</i>
                             )}
                         </div>
-                    ))}
-                    {group.nonUserMembers.map((member, index) => (
-                        <div key={index}>{member}</div>
-                    ))}
-                </div>
-            </div>
+                    );
+            })}
+
+            {group.nonUserMembers.map((member, index) => (
+                <div key={index}>{member}</div>
+            ))}
+        </div>
 
             <div className={styles["footer-info"]}>
                 <button onClick={openDialog}>Request to Join</button>
@@ -154,9 +167,48 @@ const GroupInfoPage = ({ groups, setGroups }) => {
                         }
                     />
                 )}
-            </div>
-        </div>
-    );
-};
+
+        {isGroupOwner && (
+            <button onClick={openPendingDialog}>Pending Users</button>
+        )}
+                    {isPendingDialogOpen && (
+                        <Dialog
+                            title="Pending Users"
+                            message={group.members
+                                .filter(m => m.groupStatus === 0)
+                                .map(member => (
+                                  <span key={member.userId}>{member.username}
+                                  <button onClick={async () => {
+                                        try {
+                                            await AcceptUserIntoGroup(groupId, member.userId);
+                                            const updatedGroup = await fetchGroupById(groupId);
+                                            setGroup(updatedGroup);
+                                        } catch (err) {
+                                            alert(err.message);
+                                        }
+                                    }}>Accept</button>
+                                  <button onClick={async () => {
+                                        try {
+                                            const reponse = await RejectUserFromGroup(groupId, member.userId);
+                                            const updatedGroup = await fetchGroupById(groupId);
+                                            setGroup(updatedGroup);
+                                        } catch (err) {
+                                            alert(err.message);
+                                        }
+                                    }}>Reject</button>
+                                  </span>
+                                ))}
+                            onClose={closePendingDialog}
+                            actions={
+                                <>
+                                    <button onClick={closePendingDialog}>Cancel</button>
+                                </>
+                            }
+                        />
+                    )}
+                    </div>
+                </div>
+            );
+        };
 
 export default GroupInfoPage;

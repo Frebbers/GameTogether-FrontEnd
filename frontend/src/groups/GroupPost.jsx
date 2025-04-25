@@ -33,7 +33,7 @@ const GroupPost = ({ id, title, ownerId, members, maxMembers, description, tags 
             <div className="group-post-header">
                 <span>Group name: {title}</span>
                 <span>Owner: {ownerName} </span>
-                <span>Members: {members?.length ?? 0}/{maxMembers}</span>
+                <span>Members: {members?.filter(m => m.groupStatus === 1).length ?? 0}/{maxMembers}</span>
             </div>
 
             <p className="description">{description}</p>
@@ -42,11 +42,16 @@ const GroupPost = ({ id, title, ownerId, members, maxMembers, description, tags 
                 <strong>Members:</strong>
                 <ul>
                     {members?.length > 0 ? (
-                        members.map((member, index) => (
-                            <li key={member.userId || index}>
-                                {member.username || "Unnamed Member"}
-                            </li>
-                        ))
+                        members.map((member, index) => {
+                            if (member.groupStatus === 1) {
+                                return (
+                                    <li key={member.userId || index}>
+                                        {member.username || "Unnamed Member"}
+                                    </li>
+                                );
+                            }
+                            return null;
+                        })
                     ) : (
                         <li>No members yet</li>
                     )}

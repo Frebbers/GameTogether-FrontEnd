@@ -1,4 +1,4 @@
-const API_BASE = "https://localhost:7191/api";
+const API_BASE = "/api";
 
 /**
  * Sends a registration request to the server.

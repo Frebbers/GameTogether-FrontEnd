@@ -19,26 +19,17 @@ const HomePage = ({ searchTerm, setSearchTerm }) => {
       <Header setFilterTag={setFilterTag} setSearchTerm={setSearchTerm} searchTerm={searchTerm} />
 
       {!isLoggedIn ? (
-        <>
-          {showRegister ? (
-            <>
-              <RegisterForm onRegisterSuccess={() => setShowRegister(false)} />
-              <p>
-                Already have an account?{" "}
-                <button onClick={() => setShowRegister(false)}>Log In</button>
-              </p>
-            </>
-          ) : (
-            <>
-              <LoginForm />
-              <p>
-                Don't have an account?{" "}
-                <button onClick={() => setShowRegister(true)}>Register</button>
-              </p>
-            </>
-          )}
-        </>
-      ) : (
+    <>
+    {showRegister ? (
+      <RegisterForm
+        onRegisterSuccess={() => setShowRegister(false)}
+        onShowLogin={() => setShowRegister(false)}
+      />
+    ) : (
+      <LoginForm onShowRegister={() => setShowRegister(true)} />
+    )}
+  </>
+) : (
         <>
           <h1>Available Groups</h1>
 

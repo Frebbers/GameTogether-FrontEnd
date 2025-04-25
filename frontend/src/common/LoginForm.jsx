@@ -3,7 +3,7 @@ import { login as apiLogin } from "../services/apiService";
 import { AuthContext } from "../context/AuthContext";
 import background from "../images/background.png";
 
-const LoginForm = () => {
+const LoginForm = ({ onShowRegister }) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
@@ -24,7 +24,7 @@ const LoginForm = () => {
 
     return (
         <div
-            className="login-background"
+            className="container"
             style={{
                 backgroundImage: `url(${background})`,
                 backgroundSize: "cover",
@@ -32,7 +32,9 @@ const LoginForm = () => {
                 height: "100vh",
                 display: "flex",
                 alignItems: "center",
-                justifyContent: "center"
+                justifyContent: "center",
+                flexDirection: "column",
+                color: "white",
             }}
         >
             <div className="login-box">
@@ -55,6 +57,11 @@ const LoginForm = () => {
                     {error && <p className="error-text">{error}</p>}
                     <button type="submit">Login</button>
                 </form>
+
+                <p>
+                    Don’t have an account?{" "}
+                    <button onClick={onShowRegister}>Register</button>
+                </p>
             </div>
         </div>
     );

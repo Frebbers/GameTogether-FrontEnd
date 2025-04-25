@@ -8,7 +8,7 @@ const LaunchingPage = (setFilterTag) => {
     const navigate = useNavigate();
     return (
         <div
-        className="launching-page-container"
+        className="container"
         style={{
           backgroundImage: `url(${background})`,
           backgroundSize: 'cover',

@@ -1,6 +1,7 @@
 import { useState, useContext } from "react";
 import { login as apiLogin } from "../services/apiService"; 
 import { AuthContext } from "../context/AuthContext";
+import background from "../images/background.png";
 
 const LoginForm = () => {
     const [email, setEmail] = useState("");
@@ -22,26 +23,39 @@ const LoginForm = () => {
     };
 
     return (
-        <div className="login-container">
-            <h2>Login</h2>
-            <form onSubmit={handleLogin}>
-                <input
-                    type="email"
-                    placeholder="Email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                />
-                <input
-                    type="password"
-                    placeholder="Password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                />
-                {error && <p className="error-text">{error}</p>}
-                <button type="submit">Login</button>
-            </form>
+        <div
+            className="login-background"
+            style={{
+                backgroundImage: `url(${background})`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+                height: "100vh",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center"
+            }}
+        >
+            <div className="login-box">
+                <h2>Login</h2>
+                <form onSubmit={handleLogin}>
+                    <input
+                        type="email"
+                        placeholder="Email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                    />
+                    <input
+                        type="password"
+                        placeholder="Password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                    />
+                    {error && <p className="error-text">{error}</p>}
+                    <button type="submit">Login</button>
+                </form>
+            </div>
         </div>
     );
 };

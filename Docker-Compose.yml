@@ -9,6 +9,9 @@ x-common-env: &common-env
   EmailSettings__Port: ${SMTP_PORT}
   EmailSettings__SenderEmail: ${SENDER_EMAIL}
   EmailSettings__SenderPassword: ${SENDER_PASSWORD}
+  ASPNETCORE_URLS: ${ASPNETCORE_URLS}
+  ASPNETCORE_Kestrel__Certificates__Default__Path: ${ASPNETCORE_Kestrel__Certificates__Default__Path}
+  ASPNETCORE_Kestrel__Certificates__Default__Password: ${ASPNETCORE_Kestrel__Certificates__Default__Password}
 
 services:
   # Frontend (React + Nginx)
@@ -39,8 +42,10 @@ services:
       migrate:
         condition: service_completed_successfully
     environment: *common-env
+    volumes:
+      - ./backend/certs:/https:ro
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/healthz"]
+      test: ["CMD", "curl", "-f", "http://localhost:7191/healthz"]
       interval: 10s
       timeout: 5s
       retries: 2
@@ -74,6 +79,8 @@ services:
     working_dir: /src
     command: >
       sh -c "dotnet ef database update --project GameTogetherAPI/GameTogetherAPI.csproj --startup-project GameTogetherAPI/GameTogetherAPI.csproj"
+    volumes:
+      - ./backend/certs:/https:ro
     networks:
       - app-network
 

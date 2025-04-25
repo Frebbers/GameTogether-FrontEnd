@@ -1,5 +1,5 @@
 x-common-env: &common-env
-  ASPNETCORE_ENVIRONMENT: ${ENVIRONMENT:-Development}
+  ASPNETCORE_ENVIRONMENT: ${ENVIRONMENT}
   ConnectionStrings__DefaultConnection: ${CONNECTION_STRING}
   JwtSettings__SecretKey: ${JWT_SECRET}
   JwtSettings__Issuer: "GameTogether"
@@ -12,6 +12,7 @@ x-common-env: &common-env
   ASPNETCORE_URLS: ${ASPNETCORE_URLS}
   ASPNETCORE_Kestrel__Certificates__Default__Path: "/https/aspnet-dev.pfx"
   ASPNETCORE_Kestrel__Certificates__Default__Password: ${DB_PASSWORD:-rekt123}
+  FrontendBaseUrl: ${FRONTEND_BASE_URL}
 
 services:
   # Frontend (React + Nginx)
@@ -25,32 +26,6 @@ services:
       - api  # Ensure the backend is up before starting the frontend
     environment:
       - NODE_ENV=production  # Set environment to production for React
-    networks:
-      - app-network
-
-  # Backend (ASP.NET Core)
-  api:
-    build:
-      context: ./backend  # Path to the backend directory
-      dockerfile: Dockerfile
-      args:
-        - ENVIRONMENT=${ENVIRONMENT:-Development}
-    ports: ["5000:8080", "7191:7191"]  # Expose backend API on port 5000 (or adjust as needed)
-    depends_on:
-      mysql:
-        condition: service_healthy  # Make sure MySQL is available before starting the backend
-      migrate:
-        condition: service_completed_successfully
-      cert-generator:
-        condition: service_completed_successfully
-    environment: *common-env
-    volumes:
-      - ./backend/certs:/https:ro
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:7191/healthz"]
-      interval: 10s
-      timeout: 5s
-      retries: 2
     networks:
       - app-network
 
@@ -71,24 +46,54 @@ services:
 
   cert-generator:
     build:
-      context: .
+      context: ./backend
       target: build
     environment:
-      - DB_PASSWORD=${DB_PASSWORD:-rekt123}
+      - DB_PASSWORD=${DB_PASSWORD}
     working_dir: /src
     command: >
       sh -c "mkdir -p /certs &&
       dotnet dev-certs https --clean &&
       dotnet dev-certs https --trust &&
-      dotnet dev-certs https -ep /certs/aspnet-dev.pfx -p ${DB_PASSWORD:-rekt123} &&
+      dotnet dev-certs https -ep /certs/aspnet-dev.pfx -p ${DB_PASSWORD} &&
       chmod 644 /certs/aspnet-dev.pfx &&
       echo 'Certificate generated successfully' > /certs/cert-complete"
+    volumes:
+      - certs-volume:/certs
+
+# Backend (ASP.NET Core)
+  api:
+    build:
+      context: ./backend  # Path to the backend directory
+      dockerfile: Dockerfile
+      args:
+        - ENVIRONMENT=${ENVIRONMENT}
+    ports: ["5000:8080", "7191:7191"]
+    depends_on:
+      mysql:
+        condition: service_healthy
+      cert-generator:
+        condition: service_completed_successfully
+      migrate:
+        condition: service_completed_successfully
+    environment: *common-env
+    volumes:
+      - certs-volume:/https:ro
+    healthcheck:
+      test: ["CMD", "curl", "-f", "https://localhost:7191/healthz"]
+      interval: 10s
+      timeout: 5s
+      retries: 2
+    networks:
+      - app-network
 
   # Migration service to run migrations
   migrate:
     build:
       context: ./backend
-      target: build  # Build target for migrations
+      args:
+        - ENVIRONMENT=${ENVIRONMENT}
+      target: build
     depends_on:
       mysql:
         condition: service_healthy
@@ -99,9 +104,12 @@ services:
     command: >
       sh -c "dotnet ef database update --project GameTogetherAPI/GameTogetherAPI.csproj --startup-project GameTogetherAPI/GameTogetherAPI.csproj"
     volumes:
-      - ./backend/certs:/https:ro
+      - certs-volume:/https:ro
     networks:
       - app-network
+
+volumes:
+  certs-volume:
 
 networks:
   app-network:

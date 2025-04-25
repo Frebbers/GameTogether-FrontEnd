@@ -2,6 +2,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useContext, useCallback, useState } from "react";
 import Header from "../common/Header";
+import LaunchingPage from "../common/LaunchingPage";
 import HomePage from "../HomePage";
 import ProfilePage from "../profile/ProfilePage";
 import GroupInfoPage from "../groups/GroupInfoPage";
@@ -19,8 +20,10 @@ function App() {
 
   return (
     <Router>
+      <Header />
       <Routes>
-        <Route path="/" element={<HomePage groups={groups} setGroups={setGroups} searchTerm={searchTerm} setSearchTerm={setSearchTerm} />} />
+        <Route path="/" element={<LaunchingPage />} />
+        <Route path="/HomePage" element={<HomePage groups={groups} setGroups={setGroups} searchTerm={searchTerm} setSearchTerm={setSearchTerm} />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/edit-profile" element={<EditProfilePage />} />
         <Route path="/group/:groupId/:ownerId" element={<GroupInfoPage groups={groups} setGroups={setGroups} />} />

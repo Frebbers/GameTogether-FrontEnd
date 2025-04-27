@@ -65,8 +65,8 @@ import { useState } from 'react';
                             Region:
                             <input type="text" name="region" value={formData.region} onChange={handleChange} />
                         </label>
-                        <button className= "edit-profile-button" type="submit">Save Changes</button>
                     </form>
+                        <button className= "save-changes-button" type="submit">Save Changes</button>
             
                 </div>
             </div>

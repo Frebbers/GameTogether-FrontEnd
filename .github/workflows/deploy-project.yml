@@ -1,0 +1,42 @@
+name: Deploy Project
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    - name: Create .env.prod file
+      run: |
+        touch .env.prod
+        echo "ENVIRONMENT=Production" >> .env.prod
+        echo "FRONTEND_BASE_URL=${{ secrets.FRONTEND_BASE_URL }}" >> .env.prod
+        echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env.prod
+        echo "DB_NAME=${{ secrets.DB_NAME }}" >> .env.prod
+        # ...
+
+#    - name: Set up SSL certificate
+
+    - name: Deploy to server
+      uses: appleboy/ssh-action@v1.2.1
+      with:
+        host: ${{ vars.HOST }}
+        username: ${{ secrets.SSH_USER }}
+        password: ${{ secrets.SSH_PASSWORD }}
+        port: ${{ secrets.SSH_PORT }}
+        key: ${{ secrets.SSH_PKEY }}
+        script: |
+          docker compose down
+          git pull https://github.com/Frebbers/GameTogether-FrontEnd --recurse-submodules
+          docker compose up -d --build
+          

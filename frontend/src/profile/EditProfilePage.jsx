@@ -1,6 +1,7 @@
 import { useState } from 'react';
         import { useLocation, useNavigate } from 'react-router-dom';
         import { updateUserProfile } from "../services/apiService.js";
+        import Header from "../common/Header"; 
 
         const EditProfilePage = () => {
             const location = useLocation();
@@ -38,6 +39,8 @@ import { useState } from 'react';
             };
 
             return (
+                <div>
+            <Header />
                 <div className="edit-profile-container">
                 <h1>Edit Profile</h1>
                     <div className="profile-picture-preview">
@@ -67,6 +70,8 @@ import { useState } from 'react';
             
                 </div>
             </div>
+            </div>
+            
             
             );
         };

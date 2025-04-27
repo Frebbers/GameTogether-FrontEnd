@@ -42,10 +42,42 @@ h1 {
     color: #333;
     margin-bottom: 10px;
 }
+.profile-header {
+    position: relative;
+    display: flex;
+    justify-content: center; /* center the username */
+    align-items: center;
+    width: 100%;
+    padding: 1rem;
+}
+
+.username-title {
+    top: 65%;
+    margin: 0;
+    font-size: 2rem;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%); /* perfectly center */
+}
+
+.edit-profile-button {
+    position: absolute;
+    right: 11rem;
+    top: 1rem;
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 0.625rem 0.9375rem;
+    border-radius: 0.3125rem;
+    cursor: pointer;
+    transition: background 0.3s;
+    font-size: 1rem;
+}
+
 
 .profile-image {
-    width: 100px;
-    height: 100px;
+    width: 10rem;
+    height: 10rem;
     border-radius: 50%;
     border: 3px solid #ccc;
     object-fit: cover;
@@ -95,11 +127,12 @@ h1 {
     background: #007bff;
     color: white;
     border: none;
-    margin-top: 5%;
-    padding: 10px 15px;
-    border-radius: 5px;
+    padding: 0.625rem 0.9375rem;
+    border-radius: 0.3125rem; 
     cursor: pointer;
     transition: background 0.3s;
+    font-size: 1rem;
+    margin-right: -20%;
 }
 
 .edit-profile-button:hover {

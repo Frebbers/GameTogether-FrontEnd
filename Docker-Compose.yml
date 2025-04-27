@@ -44,23 +44,6 @@ services:
     networks:
       - app-network
 
-  cert-generator:
-    build:
-      context: ./backend
-      target: build
-    environment:
-      - DB_PASSWORD=${DB_PASSWORD}
-    working_dir: /src
-    command: >
-      sh -c "mkdir -p /certs &&
-      dotnet dev-certs https --clean &&
-      dotnet dev-certs https --trust &&
-      dotnet dev-certs https -ep /certs/aspnet-dev.pfx -p ${DB_PASSWORD} &&
-      chmod 644 /certs/aspnet-dev.pfx &&
-      echo 'Certificate generated successfully' > /certs/cert-complete"
-    volumes:
-      - certs-volume:/certs
-
 # Backend (ASP.NET Core)
   api:
     build:
@@ -72,13 +55,11 @@ services:
     depends_on:
       mysql:
         condition: service_healthy
-      cert-generator:
-        condition: service_completed_successfully
       migrate:
         condition: service_completed_successfully
     environment: *common-env
     volumes:
-      - certs-volume:/https:ro
+      - ./backend/certs:/https:ro
     healthcheck:
       test: ["CMD", "curl", "-f", "https://localhost:7191/healthz"]
       interval: 10s
@@ -97,19 +78,14 @@ services:
     depends_on:
       mysql:
         condition: service_healthy
-      cert-generator:
-        condition: service_completed_successfully
     environment: *common-env
     working_dir: /src
     command: >
       sh -c "dotnet ef database update --project GameTogetherAPI/GameTogetherAPI.csproj --startup-project GameTogetherAPI/GameTogetherAPI.csproj"
     volumes:
-      - certs-volume:/https:ro
+      - ./backend/certs:/https:ro
     networks:
       - app-network
-
-volumes:
-  certs-volume:
 
 networks:
   app-network:

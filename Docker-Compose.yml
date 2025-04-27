@@ -10,22 +10,26 @@ x-common-env: &common-env
   EmailSettings__SenderEmail: ${SENDER_EMAIL}
   EmailSettings__SenderPassword: ${SENDER_PASSWORD}
   ASPNETCORE_URLS: ${ASPNETCORE_URLS}
-  ASPNETCORE_Kestrel__Certificates__Default__Path: "/https/aspnet-dev.pfx"
+  #ASPNETCORE_Kestrel__Certificates__Default__Path: "/https/aspnet-dev.pfx"
   ASPNETCORE_Kestrel__Certificates__Default__Password: ${DB_PASSWORD:-rekt123}
-  FrontendBaseUrl: ${FRONTEND_BASE_URL}
+  FRONTEND_BASE_URL: ${FRONTEND_BASE_URL}
 
 services:
   # Frontend (React + Nginx)
+# Frontend service in Docker-Compose.yml
   frontend:
     build:
-      context: ./frontend  # Path to the frontend directory
-      dockerfile: Dockerfile  # Dockerfile for the frontend
+      context: ./frontend
+      dockerfile: Dockerfile
     ports:
-      - "443:443"  # Expose HTTPS port for frontend
+      - "443:443"
     depends_on:
-      - api  # Ensure the backend is up before starting the frontend
+      - api
     environment:
-      - NODE_ENV=production  # Set environment to production for React
+      - NODE_ENV=production
+      - API_URL=http://localhost:7191
+      - VITE_PORT=5173
+      - ENVIRONMENT=${ENVIRONMENT:-Development}
     networks:
       - app-network
 

@@ -6,7 +6,7 @@ import "./ProfilePage.css";
 
 
 const UserProfilePage = () => {
-    const [name, setName] = useState(null);
+    const [username, setUsername] = useState(null);
     const [age, setAge] = useState(null);
     const [region, setRegion] = useState(null);
     const [profilePicture, setProfilePicture] = useState(null);
@@ -18,7 +18,7 @@ const UserProfilePage = () => {
         const fetchData = async () => {
             try {
                 const userData = await fetchUserProfile();
-                setName(userData.name);
+                setUsername(userData.username);
                 setRegion(userData.region);
                 setProfilePicture(userData.profilePicture);
                 setDescription(userData.description);
@@ -40,7 +40,7 @@ const UserProfilePage = () => {
             <div className="profile-card">
             <div className="profile-details">
                     <h2>{name}</h2>
-                    <h4><p>{"How old am i?: "+ age}</p></h4>
+                    <h4><p>{"Age: "+ age}</p></h4>
                     <h4><p>{"Region: "+ region}</p></h4>
                 <div className="profile-image">
                     <img src={profilePicture} alt="Profile" />

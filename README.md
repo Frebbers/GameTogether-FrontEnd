@@ -2,13 +2,13 @@ How to run the project:
 
 ### Requirements
 - Docker/Docker Compose installed
-- .NET 9 installed (8 burde også være fint)
+- .NET 9 installed (8 should be fine too)
 
 ### Steps
 1. Clone project
     - `git clone https://github.com/Frebbers/GameTogether-FrontEnd --recurse-submodules`
 2. Run script to generate certificates
-    - **Windows:** `./generate-certs.ps1`
+    - **Windows PowerShell:** `./generate-certs.ps1`
     - **MacOS/Linux:** `bash generate-certs.sh`
 3. `docker compose up -d --build`
 

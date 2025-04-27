@@ -25,6 +25,7 @@
     background-color: #32FF6A;
     border: 1px solid black;
     border-radius: 0.5rem;
+    justify-content: center;
 }
 .description {
     background-color: #4A4E54;

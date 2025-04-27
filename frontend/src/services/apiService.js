@@ -1,4 +1,4 @@
-const API_BASE = "http://localhost:7191/api";
+const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:7191/api";
 
 /**
  * Sends a registration request to the server.

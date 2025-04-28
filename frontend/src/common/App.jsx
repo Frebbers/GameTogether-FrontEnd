@@ -22,8 +22,8 @@ function App() {
     <Router>
       <Header />
       <Routes>
-        <Route path="/" element={<HomePage groups={groups} setGroups={setGroups} searchTerm={searchTerm} setSearchTerm={setSearchTerm} />} />
-        <Route path="/LaunchingPage" element={<LaunchingPage />} />
+      <Route path="/" element={<LaunchingPage />} />
+        <Route path="/home-page" element={<HomePage groups={groups} setGroups={setGroups} searchTerm={searchTerm} setSearchTerm={setSearchTerm} />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/edit-profile" element={<EditProfilePage />} />
         <Route path="/group/:groupId/:ownerId" element={<GroupInfoPage groups={groups} setGroups={setGroups} />} />

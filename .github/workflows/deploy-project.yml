@@ -53,7 +53,7 @@ jobs:
             git submodule update --init --recursive
           else
             echo "Repository not found. Cloning..."
-            git clone https://github.com/Frebbers/GameTogether-FrontEnd --recursive-submodules
+            git clone https://github.com/Frebbers/GameTogether-FrontEnd --recurse-submodules
             cd GameTogether-FrontEnd
           fi
 

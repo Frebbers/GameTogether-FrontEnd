@@ -1,6 +1,7 @@
 import { useState } from 'react';
         import { useLocation, useNavigate } from 'react-router-dom';
         import { updateUserProfile } from "../services/apiService.js";
+        import Header from "../common/Header"; 
 
         const EditProfilePage = () => {
             const location = useLocation();
@@ -38,6 +39,8 @@ import { useState } from 'react';
             };
 
             return (
+                <div>
+            <Header />
                 <div className="edit-profile-container">
                 <h1>Edit Profile</h1>
                     <div className="profile-picture-preview">
@@ -62,11 +65,13 @@ import { useState } from 'react';
                             Region:
                             <input type="text" name="region" value={formData.region} onChange={handleChange} />
                         </label>
-                        <button className= "edit-profile-button" type="submit">Save Changes</button>
                     </form>
+                        <button className= "save-changes-button" type="submit">Save Changes</button>
             
                 </div>
             </div>
+            </div>
+            
             
             );
         };

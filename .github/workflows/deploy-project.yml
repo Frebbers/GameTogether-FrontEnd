@@ -1,0 +1,52 @@
+name: Deploy Project
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+      with:
+        submodules: 'recursive'
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    - name: Create .env.prod file
+      run: |
+        touch .env.prod
+        echo "ENVIRONMENT=Production" >> .env.prod
+        echo "FRONTEND_BASE_URL=${{ secrets.FRONTEND_BASE_URL }}" >> .env.prod
+        echo "DB_PASSWORD=${{ secrets.DB_ROOT_PASSWORD }}" >> .env.prod
+        echo "DB_NAME=${{ secrets.DB_NAME }}" >> .env.prod
+        echo "CONNECTION_STRING=Server=${{ vars.DB_TYPE }};Database=${{ secrets.DB_NAME }};User=root;Password=${{ secrets.DB_ROOT_PASSWORD }};Port=${{ vars.DB_PORT }};" >> .env.prod
+        echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env.prod
+        echo "EMAIL_VERIFICATION_URL=https://${{ vars.HOST }}:${{ vars.BACKEND_HTTPS_PORT }}/api/auth/verify-email" >> .env.prod
+        echo "SMTP_SERVER=${{ vars.SMTP_SERVER }}" >> .env.prod
+        echo "SMTP_PORT=${{ vars.SMTP_PORT }}" >> .env.prod
+        echo "SENDER_EMAIL=noreply.gametogether@gmail.com" >> .env.prod
+        echo "SENDER_PASSWORD=${{ secrets.SMTP_PASSWORD }}" >> .env.prod
+        echo "ASPNETCORE_URLS=https://+:7191" >> .env.prod
+        echo "ASPNETCORE_Kestrel__Certificates__Default__Path=" >> .env.prod
+
+#    - name: Set up SSL certificate
+
+    - name: Deploy to server
+      uses: appleboy/ssh-action@v1.2.1
+      with:
+        host: ${{ vars.HOST }}
+        username: ${{ secrets.SSH_USER }}
+        password: ${{ secrets.SSH_PASSWORD }}
+        port: ${{ secrets.SSH_PORT }}
+        key: ${{ secrets.SSH_PKEY }}
+        script: |
+          docker compose down
+    
+          docker compose up -d --build
+          

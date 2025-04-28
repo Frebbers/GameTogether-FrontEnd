@@ -38,9 +38,6 @@ jobs:
 
 #    - name: Set up SSL certificate
 
-    - name: Debug HOST value
-      run: echo "HOST is ${{ vars.HOST }}"
-
     - name: Deploy to server
       uses: appleboy/ssh-action@v1.2.1
       with:

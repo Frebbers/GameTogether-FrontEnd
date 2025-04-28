@@ -46,8 +46,8 @@ const LaunchingPage = ({ setFilterTag }) => {
             </div>
             <hr />
             <div className="game-banners">
-                <img src={dd} alt="D&D Banner" className="game-banner" onClick={() => setFilterTag("D&D")} />
-                <img src={games} alt="Games Banner" className="game-banner" onClick={() => setFilterTag("Other Game")} />
+                <img src={dd} alt="D&D Banner" className="game-banner" onClick={() => {setFilterTag("D&D"); navigate("/home-page");}} />
+                <img src={games} alt="Games Banner" className="game-banner" onClick={() => {setFilterTag("Other Game"); navigate("/home-page");}} />
             </div>
         </div>
     );

@@ -148,6 +148,7 @@ h1 {
 
 .edit-profile-content {
     display: flex;
+    font-weight: bold;
     flex-direction: column;
     align-items: center;
     margin: 5%;

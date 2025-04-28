@@ -6,11 +6,9 @@ import { useState } from 'react';
         const EditProfilePage = () => {
             const location = useLocation();
             const navigate = useNavigate();
-            const { name, age, region, profilePicture, description } = location.state || {};
+            const { region, profilePicture, description } = location.state || {};
 
             const [formData, setFormData] = useState({
-                name: name || "",
-                age: age || "",
                 region: region || "",
                 profilePicture: profilePicture || "",
                 description: description || ""
@@ -23,8 +21,6 @@ import { useState } from 'react';
                 try {
                     const response = await updateUserProfile({
                         body: JSON.stringify({
-                            name: formData.name,
-                            age: formData.age,
                             region: formData.region,
                             profilePicture: formData.profilePicture,
                             description: formData.description,
@@ -49,13 +45,13 @@ import { useState } from 'react';
             
                 <div className="edit-profile-content">
                     <form onSubmit={handleSubmit}>
+                            Profile Picture browser:
                         <label>
-                            Name:
-                            <input type="text" name="name" value={formData.name} onChange={handleChange} />
-                        </label>
-                        <label>
-                            Age:
-                            <input type="number" name="age" value={formData.age} onChange={handleChange} />
+                            <input type="file" 
+                            name="profilePicture" 
+                            accept='image/png, image/jpeg, image/jpg' 
+                            value={formData.profilePicture} 
+                            onChange={handleChange} />
                         </label>
                         <label>
                             Description:
@@ -65,9 +61,18 @@ import { useState } from 'react';
                             Region:
                             <input type="text" name="region" value={formData.region} onChange={handleChange} />
                         </label>
-                    </form>
-                        <button className= "save-changes-button" type="submit">Save Changes</button>
-            
+                    </form> 
+                    <button 
+onClick={(e) => {
+    e.preventDefault(); // Prevent default submit behavior if needed
+    handleChange();      // First submit/save changes
+    navigate('/profile'); // Then navigate
+  }}
+  className="save-changes-button"
+  type="button" // not submit unless you specifically need submit behavior
+>
+  Save Changes
+</button>
                 </div>
             </div>
             </div>

@@ -58,7 +58,7 @@ jobs:
           echo "SENDER_PASSWORD=${{ secrets.SMTP_PASSWORD }}" >> .env.prod
           echo "ASPNETCORE_URLS=https://+:7191" >> .env.prod
           echo "ASPNETCORE_Kestrel__Certificates__Default__Path=" >> .env.prod
-          mv .env-prod .env
+          mv .env.prod .env
 
           # DOCKER COMPOSE
           echo "running docker compose down"

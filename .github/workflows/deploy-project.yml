@@ -44,7 +44,7 @@ jobs:
         host: ${{ vars.HOST }}
         username: ${{ secrets.SSH_USER }}
         port: ${{ secrets.SSH_PORT }}
-        key: ${{ secrets.SSH_PKEY }}
+        key: ${{ secrets.SSH_KEY }}
         script: |
           docker compose down
           docker compose up -d --build

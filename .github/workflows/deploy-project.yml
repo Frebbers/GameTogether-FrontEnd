@@ -12,23 +12,6 @@ jobs:
     environment: DTU Hosting
     
     steps:
-    - name: Create .env.prod file
-      run: |
-        touch .env.prod
-        echo "ENVIRONMENT=Production" >> .env.prod
-        echo "FRONTEND_BASE_URL=${{ secrets.FRONTEND_BASE_URL }}" >> .env.prod
-        echo "DB_PASSWORD=${{ secrets.DB_ROOT_PASSWORD }}" >> .env.prod
-        echo "DB_NAME=${{ secrets.DB_NAME }}" >> .env.prod
-        echo "CONNECTION_STRING=Server=${{ vars.DB_TYPE }};Database=${{ secrets.DB_NAME }};User=root;Password=${{ secrets.DB_ROOT_PASSWORD }};Port=${{ vars.DB_PORT }};" >> .env.prod
-        echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env.prod
-        echo "EMAIL_VERIFICATION_URL=https://${{ vars.HOST }}:${{ vars.BACKEND_HTTPS_PORT }}/api/auth/verify-email" >> .env.prod
-        echo "SMTP_SERVER=${{ vars.SMTP_SERVER }}" >> .env.prod
-        echo "SMTP_PORT=${{ vars.SMTP_PORT }}" >> .env.prod
-        echo "SENDER_EMAIL=noreply.gametogether@gmail.com" >> .env.prod
-        echo "SENDER_PASSWORD=${{ secrets.SMTP_PASSWORD }}" >> .env.prod
-        echo "ASPNETCORE_URLS=https://+:7191" >> .env.prod
-        echo "ASPNETCORE_Kestrel__Certificates__Default__Path=" >> .env.prod
-
 #    - name: Set up SSL certificate
 
     - name: Deploy to server
@@ -56,6 +39,26 @@ jobs:
             git clone https://github.com/Frebbers/GameTogether-FrontEnd --recurse-submodules
             cd GameTogether-FrontEnd
           fi
+
+          
+
+          # ENVIRONMENT VARIABLES
+          rm .env  # We makin our own .env
+          touch .env.prod
+          echo "ENVIRONMENT=Production" >> .env.prod
+          echo "FRONTEND_BASE_URL=${{ secrets.FRONTEND_BASE_URL }}" >> .env.prod
+          echo "DB_PASSWORD=${{ secrets.DB_ROOT_PASSWORD }}" >> .env.prod
+          echo "DB_NAME=${{ secrets.DB_NAME }}" >> .env.prod
+          echo "CONNECTION_STRING=Server=${{ vars.DB_TYPE }};Database=${{ secrets.DB_NAME }};User=root;Password=${{ secrets.DB_ROOT_PASSWORD }};Port=${{ vars.DB_PORT }};" >> .env.prod
+          echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env.prod
+          echo "EMAIL_VERIFICATION_URL=https://${{ vars.HOST }}:${{ vars.BACKEND_HTTPS_PORT }}/api/auth/verify-email" >> .env.prod
+          echo "SMTP_SERVER=${{ vars.SMTP_SERVER }}" >> .env.prod
+          echo "SMTP_PORT=${{ vars.SMTP_PORT }}" >> .env.prod
+          echo "SENDER_EMAIL=noreply.gametogether@gmail.com" >> .env.prod
+          echo "SENDER_PASSWORD=${{ secrets.SMTP_PASSWORD }}" >> .env.prod
+          echo "ASPNETCORE_URLS=https://+:7191" >> .env.prod
+          echo "ASPNETCORE_Kestrel__Certificates__Default__Path=" >> .env.prod
+          mv .env-prod .env
 
           # DOCKER COMPOSE
           echo "running docker compose down"

@@ -50,9 +50,10 @@ jobs:
             echo "Repository already exists. Pulling latest changes..."
             cd GameTogether-FrontEnd
             git pull
+            git submodule update --init --recursive
           else
             echo "Repository not found. Cloning..."
-            git clone https://github.com/Frebbers/GameTogether-FrontEnd
+            git clone https://github.com/Frebbers/GameTogether-FrontEnd --recursive-submodules
             cd GameTogether-FrontEnd
           fi
 

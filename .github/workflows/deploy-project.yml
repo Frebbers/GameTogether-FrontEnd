@@ -46,10 +46,10 @@ jobs:
           rm .env  # We makin our own .env
           touch .env.prod
           echo "ENVIRONMENT=Production" >> .env.prod
-          echo "FRONTEND_BASE_URL=${{ secrets.FRONTEND_BASE_URL }}" >> .env.prod
+          echo "FRONTEND_BASE_URL=${{ vars.FRONTEND_BASE_URL }}" >> .env.prod
           echo "DB_PASSWORD=${{ secrets.DB_ROOT_PASSWORD }}" >> .env.prod
-          echo "DB_NAME=${{ secrets.DB_NAME }}" >> .env.prod
-          echo "CONNECTION_STRING=Server=${{ vars.DB_TYPE }};Database=${{ secrets.DB_NAME }};User=root;Password=${{ secrets.DB_ROOT_PASSWORD }};Port=${{ vars.DB_PORT }};" >> .env.prod
+          echo "DB_NAME=${{ vars.DB_NAME }}" >> .env.prod
+          echo "CONNECTION_STRING=Server=${{ vars.DB_TYPE }};Database=${{ vars.DB_NAME }};User=root;Password=${{ secrets.DB_ROOT_PASSWORD }};Port=${{ vars.DB_PORT }};" >> .env.prod
           echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env.prod
           echo "EMAIL_VERIFICATION_URL=https://${{ vars.HOST }}:${{ vars.BACKEND_HTTPS_PORT }}/api/auth/verify-email" >> .env.prod
           echo "SMTP_SERVER=${{ vars.SMTP_SERVER }}" >> .env.prod

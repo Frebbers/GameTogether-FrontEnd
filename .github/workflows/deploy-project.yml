@@ -39,13 +39,6 @@ jobs:
 
 #    - name: Set up SSL certificate
 
-    - name: Debug info
-      run: | 
-        echo "pwd:"
-        pwd
-        echo "ls -al:"
-        ls -al
-
     - name: Deploy to server
       uses: appleboy/ssh-action@v1.2.1
       with:
@@ -54,6 +47,10 @@ jobs:
         port: ${{ secrets.SSH_PORT }}
         key: ${{ secrets.SSH_KEY }}
         script: |
+          echo "pwd:"
+          pwd
+          echo "ls -al:"
+          ls -al
           echo "running docker compose down"
           docker compose -f Docker-Compose.yml down
           echo "running docker compose up"

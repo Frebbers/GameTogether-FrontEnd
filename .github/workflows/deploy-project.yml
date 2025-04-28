@@ -51,6 +51,5 @@ jobs:
         key: ${{ secrets.SSH_PKEY }}
         script: |
           docker compose down
-    
           docker compose up -d --build
           

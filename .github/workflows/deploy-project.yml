@@ -46,6 +46,9 @@ jobs:
         port: ${{ secrets.SSH_PORT }}
         key: ${{ secrets.SSH_KEY }}
         script: |
+          echo "running docker compose down"
           docker compose down
+          echo "running docker compose up"
           docker compose up -d --build
+          echo "finished"
           

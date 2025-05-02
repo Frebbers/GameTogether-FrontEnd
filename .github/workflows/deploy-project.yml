@@ -45,7 +45,7 @@ jobs:
           # ENVIRONMENT VARIABLES
           rm .env  # We makin our own .env
           touch .env.prod
-          echo "ENVIRONMENT=Production" >> .env.prod
+          echo "ENVIRONMENT=Development" >> .env.prod
           echo "FRONTEND_BASE_URL=${{ vars.FRONTEND_BASE_URL }}" >> .env.prod
           echo "DB_PASSWORD=${{ secrets.DB_ROOT_PASSWORD }}" >> .env.prod
           echo "DB_NAME=${{ vars.DB_NAME }}" >> .env.prod

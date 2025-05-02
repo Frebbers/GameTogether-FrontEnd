@@ -96,7 +96,7 @@ services:
     ports:
       - "443:443"  # Expose port 443 to the outside world for HTTPS
     volumes:
-      - ./frontedn/nginx.Production.conf:/etc/nginx/nginx.conf  # Mount your NGINX config
+      - ./frontend/nginx.Production.conf:/etc/nginx/nginx.conf  # Mount your NGINX config
       - ./ssl/certificate.crt:/etc/ssl/certs/localhost.pem  # Mount your SSL certificate
       - ./ssl/private-key.key:/etc/ssl/private/localhost-key.pem  # Mount your SSL private key
     depends_on:

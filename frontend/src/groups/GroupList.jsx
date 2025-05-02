@@ -43,7 +43,7 @@ const GroupList = ({ filterTag, onGroupCountChange, searchTerm }) => {
   }
 
   return (
-    <div>
+    <div className="group-list">
       {filteredGroups.length > 0 ? (
         filteredGroups.map((group) => (
           <GroupPost key={group.id} {...group} />

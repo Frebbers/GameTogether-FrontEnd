@@ -34,6 +34,9 @@ jobs:
         echo "ASPNETCORE_URLS=https://+:7191" >> .env
         echo "ASPNETCORE_Kestrel__Certificates__Default__Path=" >> .env
 
+    - name: Debug Filesystem
+      run: ls -R
+
     - name: Run Backend Tests with Docker Compose
       run: |
         docker-compose -f Docker-Compose.yml -f Docker-Compose.test.yml up --build --abort-on-container-exit test

@@ -42,7 +42,7 @@ services:
     ports: ["3306:3306"]  # Expose MySQL port 3306
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      interval: 30s
+      interval: 5s
       timeout: 10s
       retries: 2
     networks:
@@ -66,7 +66,7 @@ services:
       - ./backend/certs:/https:ro
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:7191/healthz"]
-      interval: 30s
+      interval: 10s
       timeout: 5s
       retries: 2
     networks:

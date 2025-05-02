@@ -40,6 +40,10 @@ jobs:
       run: |
         docker-compose -f Docker-Compose.yml -f Docker-Compose.test.yml up --build --abort-on-container-exit test
 
+    - name: Run Docker Compose Logs
+      run: |
+        docker-compose logs
+
     - name: Shut down Docker Compose
       if: always()
       run: docker-compose -f Docker-Compose.yml -f Docker-Compose.test.yml down

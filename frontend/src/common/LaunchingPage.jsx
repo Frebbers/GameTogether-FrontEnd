@@ -10,6 +10,8 @@ import LoginForm from "../common/LoginForm";
 import RegisterForm from "../common/RegisterForm";
 import { AuthContext } from "../context/AuthContext";
 
+import { fetchUserProfile, updateUserProfile } from "../services/apiService";
+
 const LaunchingPage = () => {
   const [showRegister, setShowRegister] = useState(false);
   const { isLoggedIn } = useContext(AuthContext);
@@ -31,6 +33,33 @@ const LaunchingPage = () => {
     setShowVerificationDialog(false);
     window.history.replaceState({}, document.title, window.location.pathname);
   };
+
+  useEffect(() => {
+    const ensureUserProfile = async () => {
+      try {
+        await fetchUserProfile();
+        // If profile exists, do nothing
+      } catch (error) {
+        try {
+          await updateUserProfile({
+            body: JSON.stringify({
+              age: 0,
+              profilePicture: "",
+              description: "",
+              region: "",
+            }),
+          });
+          navigate("edit-profile")
+        } catch (createError) {
+          console.error("Failed to create dummy profile:", createError);
+        }
+      }
+    };
+  
+    if (isLoggedIn) {
+      ensureUserProfile();
+    }
+  }, [isLoggedIn, navigate]);
 
   return (
     <>

@@ -1,4 +1,4 @@
-const API_BASE = "/api";
+const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:7191/api";
 
 /**
  * Sends a registration request to the server.
@@ -252,3 +252,49 @@ export const updateUserProfile = async (profileData) => {
 
     return await response.json();
 }
+
+/**
+ * Reject user into group.
+ * @param {number} groupId
+ * @param {number} userId
+ * @returns {Promise<Object>} Response message from the server.
+ */
+export const AcceptUserIntoGroup = async (groupId, userId) => {
+    const token = localStorage.getItem("token")
+    const response = await fetch(`${API_BASE}/Groups/${groupId}/${userId}/accept`, {
+        method: "GET",
+        headers: {
+            "Authorization": `Bearer ${token}`,
+        }
+    });
+
+    if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to accept user.");
+    }
+
+    return await response.json();
+};
+
+/**
+ * Reject user into group.
+ * @param {number} groupId
+ * @param {number} userId
+ * @returns {Promise<Object>} Response message from the server.
+ */
+export const RejectUserFromGroup = async (groupId, userId) => {
+    const token = localStorage.getItem("token")
+    const response = await fetch(`${API_BASE}/Groups/${groupId}/${userId}/reject`, {
+        method: "GET",
+        headers: {
+            "Authorization": `Bearer ${token}`,
+        }
+    });
+
+    if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to accept user.");
+    }
+
+    return await response.json();
+};

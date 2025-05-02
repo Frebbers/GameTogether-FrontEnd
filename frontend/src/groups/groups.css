@@ -25,6 +25,7 @@
     background-color: #32FF6A;
     border: 1px solid black;
     border-radius: 0.5rem;
+    justify-content: center;
 }
 .description {
     background-color: #4A4E54;
@@ -215,8 +216,11 @@ input, textarea {
 .tag {
     background-color: #32a852;
     color: white;
+    font-weight: bold;
     padding: 0.1rem 0.1rem;
     border-radius: 1rem;
+    border: 0.13rem solid;
+    border-color: azure;
 }
 
 .group-info {

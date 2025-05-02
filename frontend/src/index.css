@@ -63,6 +63,7 @@ nav ul li a img {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    padding-bottom: 15em;
 }
 
 .nav-container {
@@ -351,3 +352,17 @@ button:hover{
     color: #ccc;
   }
   
+  .custom-card {
+    background: rgba(255, 255, 255, 0.12) !important;
+    border-radius: 16px;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    box-shadow: rgb(254, 254, 254) 0px 0px 4px;
+    transition: transform 0.2s ease;
+    border: none;
+  }
+
+  .custom-card:hover {
+        transform: translateY(-8px) scale(1.2);
+        z-index: 5;
+  }

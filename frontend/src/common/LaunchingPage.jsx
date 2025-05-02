@@ -67,7 +67,6 @@ const LaunchingPage = () => {
                 backgroundPosition: "center",
                 backgroundRepeat: "no-repeat",
                 minHeight: "100vh",
-                paddingBottom: "15em",
             }}
         >
             <img src={logo1} alt="Launching Banner" className="launching-logo" />

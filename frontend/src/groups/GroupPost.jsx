@@ -29,43 +29,49 @@ const GroupPost = ({ id, title, ownerId, members, maxMembers,nonUserMembers = []
   return (
     <div className="col-md-4 mb-4">
       <div
-        className="card shadow-sm h-100"
+        className="custom-card card h-100"
         onClick={() => navigate(`/group/${id}/${ownerId}`)}
-        style={{ cursor: "pointer" }}
+        style={{ cursor: "pointer", textAlign:"center", color:"#eee"}}
       >
         <div className="card-body d-flex flex-column">
           <h5 className="card-title text-primary">{title}</h5>
-          <h6 className="card-subtitle mb-2 text-muted">Owner: {ownerName}</h6>
+          <h6 className="card-subtitle mb-2">Owner: {ownerName}</h6>
 
-          <ul className="list-unstyled mb-2">
-            {activeMembers.length > 0 && (
-                <>
-                {activeMembers.map((member, index) => (
+          <div className="d-flex justify-content-center gap-4 mb-2 flex-wrap">
+            {/* Active members */}
+            <div>
+                <strong>Members</strong>
+                <ul className="list-unstyled mb-0">
+                {activeMembers.length > 0 ? (
+                    activeMembers.map((member, index) => (
                     <li key={`user-${member.userId || index}`}>
-                    • {member.username || "Unnamed"}
+                        {member.username || "Unnamed"}
                     </li>
-                ))}
-                </>
-            )}
+                    ))
+                ) : (
+                    <li className="text-muted fst-italic">None</li>
+                )}
+                </ul>
+            </div>
 
-            {nonUserMembers.length > 0 && (
-                <>
-                {activeMembers.length > 0 && <li className="mt-1 text-muted">Guests:</li>}
-                {nonUserMembers.map((name, index) => (
-                    <li key={`guest-${index}`} className="text-muted fst-italic">
-                    • {name}
+            {/* Guest members */}
+            <div>
+                <strong>Guests</strong>
+                <ul className="list-unstyled mb-0">
+                {nonUserMembers.length > 0 ? (
+                    nonUserMembers.map((name, index) => (
+                    <li key={`guest-${index}`} className="fst-italic">
+                        {name}
                     </li>
-                ))}
-                </>
-            )}
-
-            {activeMembers.length === 0 && nonUserMembers.length === 0 && (
-                <li>No members yet</li>
-            )}
-            </ul>
+                    ))
+                ) : (
+                    <li className="fst-italic">None</li>
+                )}
+                </ul>
+            </div>
+            </div>
 
           <div className="mb-3">
-            <strong>Tags:</strong>
             <div className="d-flex flex-wrap gap-1 mt-1">
               {tags?.length > 0 ? (
                 tags.map((tag, i) => (

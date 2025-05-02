@@ -13,7 +13,7 @@ const HomePage = ({ searchTerm, setSearchTerm }) => {
       className="position-relative d-flex flex-column flex-grow-1"
       style={{ zIndex: 1 }}
     >
-      {/* Background Layer */}
+      {/* Background Layer - background img basically */}
       <div
         className="position-absolute top-0 start-0 w-100 h-100"
         style={{

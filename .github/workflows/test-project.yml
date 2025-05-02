@@ -34,7 +34,7 @@ jobs:
         echo "SMTP_PORT=${{ vars.SMTP_PORT }}" >> .env
         echo "SENDER_EMAIL=noreply.gametogether@gmail.com" >> .env
         echo "SENDER_PASSWORD=${{ secrets.SMTP_PASSWORD }}" >> .env
-        echo "ASPNETCORE_URLS=https://+:7191" >> .env
+        echo "ASPNETCORE_URLS=http://+:7191" >> .env
         echo "ASPNETCORE_Kestrel__Certificates__Default__Path=" >> .env
 
     - name: Run Backend Tests with Docker Compose

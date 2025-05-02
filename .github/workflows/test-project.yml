@@ -2,7 +2,7 @@ name: Run Tests
 
 on:
   push:
-    branches: [main, gha-fixes]
+    branches: [main, gha-fixing]
 
 jobs:
   backend-tests:

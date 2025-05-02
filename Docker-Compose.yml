@@ -90,6 +90,7 @@ services:
       - ./backend/certs:/https:ro
     networks:
       - app-network
+      
   nginx:
     image: nginx:latest
     container_name: nginx

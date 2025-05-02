@@ -20,7 +20,7 @@ export const register = async (email, username, password) => {
     const message = await response.text();
 
     if (!response.ok) {
-        throw new Error(message.replace(/^"|"$/g, ));
+        throw new Error(message.replace(/^"|"$/g, ''));
     }
 
     return { message }; 

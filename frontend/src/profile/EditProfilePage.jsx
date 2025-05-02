@@ -40,7 +40,6 @@ import { useState } from 'react';
 
             return (
                 <div>
-            <Header />
                 <div className="edit-profile-container">
                 <h1>Edit Profile</h1>
                     <div className="profile-picture-preview">

@@ -36,7 +36,6 @@ const UserProfilePage = () => {
 
     return (
         <div>
-            <Header />
             <div className="profile-card">
                 <div className="profile-details">
                     <div className="profile-header">

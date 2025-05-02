@@ -56,6 +56,7 @@ const CreateGroupPage = ({ setGroups }) => {
       maxMembers: maxMembers,
       description: description,
       tags: tags,
+      nonUserMembers: members
     };
 
     try{
@@ -69,7 +70,7 @@ const CreateGroupPage = ({ setGroups }) => {
   };
 
   return (
-    <div className="container">
+    <div className="custom-container">
       <h1>Create A New Group</h1>
 
       <div className="group-post">

@@ -24,9 +24,12 @@ const GroupList = ({ filterTag, onGroupCountChange, searchTerm }) => {
       group.tags?.some((tag) => tag.toLowerCase() === filterTag.toLowerCase());
 
     //Searches on title and description and can be expanded to include other properties
+    const lowerSearch = searchTerm?.toLowerCase() || "";
+
     const matchesSearch =
-      group.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      group.description?.toLowerCase().includes(searchTerm.toLowerCase());
+      !lowerSearch ||
+      group.title?.toLowerCase().includes(lowerSearch) ||
+      group.description?.toLowerCase().includes(lowerSearch);
 
     return matchesTag && matchesSearch;
   });
@@ -41,18 +44,21 @@ const GroupList = ({ filterTag, onGroupCountChange, searchTerm }) => {
   if (loading) {
     return <p>Loading groups...</p>;
   }
+  console.log(groups);
 
   return (
-    <div className="group-list">
-      {filteredGroups.length > 0 ? (
-        filteredGroups.map((group) => (
-          <GroupPost key={group.id} {...group} />
-        ))
-      ) : (
-        <p className="no-groups-text">No groups found for this category.</p>
-      )}
+    <div className="container py-4">
+      <div className="row">
+        {filteredGroups.length > 0 ? (
+          filteredGroups.map((group) => (
+            <GroupPost key={group.id} {...group} />
+          ))
+        ) : (
+          <p className="text-light">No groups found for this category.</p>
+        )}
+      </div>
     </div>
-  );
-};
+    );
+  };
 
 export default GroupList;

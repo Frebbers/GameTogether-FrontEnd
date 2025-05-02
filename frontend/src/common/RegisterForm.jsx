@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { register } from "../services/apiService";
-import background from "../images/background.png";
+import background from "../images/background.jpg";
 
 const RegisterForm = ({ onRegisterSuccess, onShowLogin }) => {
     const [email, setEmail] = useState("");
@@ -31,7 +31,7 @@ const RegisterForm = ({ onRegisterSuccess, onShowLogin }) => {
 
     return (
         <div
-            className="container"
+            className="custom-container"
             style={{
                 backgroundImage: `url(${background})`,
                 backgroundSize: "cover",

@@ -6,9 +6,11 @@ import { useState } from 'react';
         const EditProfilePage = () => {
             const location = useLocation();
             const navigate = useNavigate();
-            const { region, profilePicture, description } = location.state || {};
+            const { region, profilePicture, description, username, email } = location.state || {};
 
             const [formData, setFormData] = useState({
+                username: username || "",
+                email: email || "",
                 region: region || "",
                 profilePicture: profilePicture || "",
                 description: description || ""
@@ -54,6 +56,14 @@ import { useState } from 'react';
                             accept='image/png, image/jpeg, image/jpg' 
                             value={formData.profilePicture} 
                             onChange={handleChange} />
+                        </label>
+                        <label>
+                            Username:
+                            <div value={formData.username} onChange={handleChange} />
+                        </label>
+                        <label>
+                            Email:
+                            <input type="email" name="email" value={formData.email} onChange={handleChange} />
                         </label>
                         <label>
                             Description:

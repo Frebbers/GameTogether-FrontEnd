@@ -66,4 +66,7 @@ jobs:
           echo "running docker compose up"
           docker compose -f Docker-Compose.yml up -d --build
           echo "finished"
+
+          # CLEANUP
+          docker system prune -af --volumes
           

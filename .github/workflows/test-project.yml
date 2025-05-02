@@ -23,7 +23,7 @@ jobs:
     - name: Create .env file
       run: |
         touch .env
-        echo "ENVIRONMENT=Production" >> .env
+        echo "ENVIRONMENT=Development" >> .env
         echo "FRONTEND_BASE_URL=${{ vars.FRONTEND_BASE_URL }}" >> .env
         echo "DB_PASSWORD=${{ secrets.DB_ROOT_PASSWORD }}" >> .env
         echo "DB_NAME=${{ vars.DB_NAME }}" >> .env

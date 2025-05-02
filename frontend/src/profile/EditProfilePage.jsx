@@ -21,6 +21,8 @@ import { useState } from 'react';
                 try {
                     const response = await updateUserProfile({
                         body: JSON.stringify({
+                            username: formData.username,
+                            email: formData.email,
                             region: formData.region,
                             profilePicture: formData.profilePicture,
                             description: formData.description,
@@ -61,6 +63,7 @@ import { useState } from 'react';
                             Region:
                             <input type="text" name="region" value={formData.region} onChange={handleChange} />
                         </label>
+                        
                     </form> 
                     <button 
 onClick={(e) => {

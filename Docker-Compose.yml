@@ -87,7 +87,7 @@ services:
     command: >
       sh -c "dotnet ef database update --project GameTogetherAPI/GameTogetherAPI.csproj --startup-project GameTogetherAPI/GameTogetherAPI.csproj"
     volumes:
-      - /etc/nginx/ssl/:/https:ro
+      
     networks:
       - app-network
       
@@ -98,8 +98,7 @@ services:
       - "443:443"  # Expose port 443 to the outside world for HTTPS
 
     volumes:
-      - /etc/letsencrypt/live/${DOMAIN}/fullchain.pem:/etc/ssl/certs/localhost.pem
-      - /etc/letsencrypt/live/${DOMAIN}/privkey.pem:/etc/ssl/private/localhost-key.pem
+      - /etc/nginx/ssl/:/https:ro:/etc/ssl/certs/
       
     depends_on:
       - frontend

@@ -357,12 +357,16 @@ button:hover{
     border-radius: 16px;
     backdrop-filter: blur(6px);
     -webkit-backdrop-filter: blur(6px);
-    box-shadow: rgb(254, 254, 254) 0px 0px 4px;
-    transition: transform 0.2s ease;
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.15);
+    transition: transform 0.3s ease, backdrop-filter 0.3s ease, box-shadow 0.3s ease;
     border: none;
+    will-change: transform, backdrop-filter;
   }
-
+  
   .custom-card:hover {
-        transform: translateY(-8px) scale(1.2);
-        z-index: 5;
+    transform: translateY(-8px) scale(1.05);
+    z-index: 5;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow: 0 12px 30px rgba(255, 255, 255, 0.3);
   }

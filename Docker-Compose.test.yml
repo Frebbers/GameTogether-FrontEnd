@@ -1,3 +1,19 @@
+x-common-env: &common-env
+  ASPNETCORE_ENVIRONMENT: ${ENVIRONMENT}
+  ConnectionStrings__DefaultConnection: ${CONNECTION_STRING}
+  JwtSettings__SecretKey: ${JWT_SECRET}
+  JwtSettings__Issuer: "GameTogether"
+  JwtSettings__Audience: "GameTogetherApp"
+  EmailSettings__VerificationUrl: ${EMAIL_VERIFICATION_URL}
+  EmailSettings__SmtpServer: ${SMTP_SERVER}
+  EmailSettings__Port: ${SMTP_PORT}
+  EmailSettings__SenderEmail: ${SENDER_EMAIL}
+  EmailSettings__SenderPassword: ${SENDER_PASSWORD}
+  ASPNETCORE_URLS: ${ASPNETCORE_URLS}
+  #ASPNETCORE_Kestrel__Certificates__Default__Path: "/https/aspnet-dev.pfx"
+  ASPNETCORE_Kestrel__Certificates__Default__Password: ${DB_PASSWORD:-rekt123}
+  FRONTEND_BASE_URL: ${FRONTEND_BASE_URL}
+
 services:
   test:
     build:
@@ -12,8 +28,7 @@ services:
         condition: service_completed_successfully
       api:
         condition: service_healthy
-    environment:
-      <<: *common-env
+    environment: *common-env
     working_dir: /src
     command: >
       dotnet test GameTogetherAPI.Test/GameTogetherAPI.Test.csproj --property:WarningLevel=0

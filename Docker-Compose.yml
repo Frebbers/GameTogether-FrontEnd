@@ -98,7 +98,7 @@ services:
       - "443:443"  # Expose port 443 to the outside world for HTTPS
 
     volumes:
-      - /etc/nginx/ssl/:/https:ro:/https
+      - /etc/nginx/ssl/:/https:ro
       
     depends_on:
       - frontend

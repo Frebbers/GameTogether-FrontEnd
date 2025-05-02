@@ -1,9 +1,12 @@
 .group-post {
     background-color: #2e3565;
-    width: 90%;
+    width: 98%;
     padding: 2%;
     border-radius: 1rem;
     margin-bottom: 5%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .group-post-header {

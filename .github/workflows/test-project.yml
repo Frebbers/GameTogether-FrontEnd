@@ -11,6 +11,8 @@ jobs:
     steps:
     - name: Checkout Code
       uses: actions/checkout@v3
+      with:
+        submodules: recursive
 
     - name: Set up Docker Compose
       run: |
@@ -33,9 +35,6 @@ jobs:
         echo "SENDER_PASSWORD=${{ secrets.SMTP_PASSWORD }}" >> .env
         echo "ASPNETCORE_URLS=https://+:7191" >> .env
         echo "ASPNETCORE_Kestrel__Certificates__Default__Path=" >> .env
-
-    - name: Debug Filesystem
-      run: ls -R
 
     - name: Run Backend Tests with Docker Compose
       run: |

@@ -9,9 +9,10 @@ import LoginForm from "../common/LoginForm";
 import RegisterForm from "../common/RegisterForm";
 import { AuthContext } from "../context/AuthContext";
 
-const LaunchingPage = ({ setFilterTag }) => {
+const LaunchingPage = () => {
     const [showRegister, setShowRegister] = useState(false);
     const { isLoggedIn } = useContext(AuthContext);
+    const [filterTag, setFilterTag] = useState("");
     const navigate = useNavigate();
 
     if (!isLoggedIn) {

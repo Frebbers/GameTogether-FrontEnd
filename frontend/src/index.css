@@ -353,20 +353,32 @@ button:hover{
   }
   
   .custom-card {
-    background: rgba(255, 255, 255, 0.12) !important;
+    background-color: rgba(0, 0, 0, 0.8) !important;
     border-radius: 16px;
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
-    box-shadow: 0 0 8px rgba(255, 255, 255, 0.15);
-    transition: transform 0.3s ease, backdrop-filter 0.3s ease, box-shadow 0.3s ease;
-    border: none;
+    box-shadow: 0 0 8px rgba(101, 217, 239, 0.15);
+    transition: transform 0.3s ease, backdrop-filter 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+    border: 1px solid rgb(255 255 255 / 20%) !important;
     will-change: transform, backdrop-filter;
   }
   
   .custom-card:hover {
-    transform: translateY(-8px) scale(1.05);
+    transform: translateY(-4px) scale(1.06);
+    background-color: rgba(0, 0, 0, 0.8) !important;
     z-index: 5;
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    box-shadow: 0 12px 30px rgba(255, 255, 255, 0.3);
+    box-shadow: 0 12px 30px rgba(101, 217, 239, 0.6);
+  }
+
+  @keyframes fadeInDown {
+    0% {
+      opacity: 0;
+      transform: translateY(-30px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .fade-in-down {
+    animation: fadeInDown 0.3s ease-out both;
   }

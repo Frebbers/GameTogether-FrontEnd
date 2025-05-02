@@ -22,7 +22,7 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={withLayout(LaunchingPage)} />
+        <Route path="/" element={<LaunchingPage />} />
         <Route path="/home-page" element={withLayout(HomePage, { groups, setGroups, searchTerm, setSearchTerm })} />
         <Route path="/profile" element={withLayout(ProfilePage)} />
         <Route path="/edit-profile" element={withLayout(EditProfilePage)} />

@@ -5,7 +5,8 @@ import dd from "../images/d&d.png";
 import games from "../images/games.png";
 import background from "../images/background.jpg";
 import Dialog from "../components/Dialog";
-
+import Footer from "./Footer.jsx"
+import Header from "./Header.jsx"
 import LoginForm from "../common/LoginForm";
 import RegisterForm from "../common/RegisterForm";
 import { AuthContext } from "../context/AuthContext";
@@ -88,6 +89,9 @@ const LaunchingPage = () => {
           )}
         </>
       ) : (
+        <div className="d-flex flex-column vh-100">
+        <Header/>
+        <div className="flex-grow-1 overflow-hidden d-flex flex-column">
         <div
             className="custom-container justify-content-center"
             style={{
@@ -106,6 +110,9 @@ const LaunchingPage = () => {
                 <img src={dd} alt="D&D Banner" className="game-banner" onClick={() => {setFilterTag("D&D"); navigate("/home-page");}} />
                 <img src={games} alt="Games Banner" className="game-banner" onClick={() => {setFilterTag("Other Game"); navigate("/home-page");}} />
             </div>
+        </div>
+        </div>
+        <Footer/>
         </div>
       )}
     </>

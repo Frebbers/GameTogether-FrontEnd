@@ -132,25 +132,30 @@ h1 {
 }
 
 .edit-profile-container {
-    max-width: 30%;
-    margin-top: 10%;
+    width: 40%;
     padding: 2%;
-    background: #424c90;
+    background: rgba(27, 31, 59, 0.9);
     border-radius: 0.8%;
     box-shadow: 0 3rem 3rem rgba(0, 0, 0, 2);
     text-align: center;
     color: white;
-    position: center;
-    margin: auto;
-    margin-top: 10%;
+    margin-bottom: 15%;
 }
 
-.edit-profile-content {
+.profile-form {
+    display:flex;
+    flex-direction: column;
+}
+
+.profile-form label {
+    font-size: 1.2em;
+}
+
+.edit-profile-content form {
     display: flex;
     font-weight: bold;
     flex-direction: column;
     align-items: center;
-    margin: 5%;
 }
 
 .edit-profile-form div {
@@ -213,3 +218,4 @@ button:hover {
 .save-changes-button:hover {
     background: #0056b3;
 }
+

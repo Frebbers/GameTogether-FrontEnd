@@ -1,18 +1,18 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { fetchUserProfile, fetchUserGroups } from "../services/apiService.js";
-import Header from "../common/Header.jsx";
+import defaultProfileIcon from '../images/default-profile-icon.png';
+import background from "../images/background.jpg";
 import "./ProfilePage.css";
 
-
 const UserProfilePage = () => {
-    const [username, setUsername] = useState(null);
-    const [age, setAge] = useState(null);
-    const [region, setRegion] = useState(null);
-    const [profilePicture, setProfilePicture] = useState(null);
-    const [description, setDescription] = useState(null);
-    const navigate = useNavigate();
+    const [username, setUsername] = useState("");
+    const [age, setAge] = useState("");
+    const [region, setRegion] = useState("");
+    const [profilePicture, setProfilePicture] = useState("");
+    const [description, setDescription] = useState("");
     const [myGroups, setMyGroups] = useState([]);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -27,53 +27,75 @@ const UserProfilePage = () => {
                 const groups = await fetchUserGroups();
                 setMyGroups(groups);
             } catch (error) {
-                console.error('Fetch error:', error);
+                console.error("Fetch error:", error);
             }
         };
 
         fetchData();
     }, []);
 
+    const resolvedProfilePicture =
+        profilePicture && profilePicture.startsWith("data:image")
+            ? profilePicture
+            : defaultProfileIcon;
+
     return (
-        <div>
-            <div className="profile-card">
-                <div className="profile-details">
-                    <div className="profile-header">
-                        <h2 className="username-title">{username}</h2>
-                        <button className="edit-profile-button" onClick={() => navigate('/edit-profile')}>
-                            Edit Profile
-                        </button>
+        <div
+            className="custom-container justify-content-center"
+            style={{
+                backgroundImage: `url(${background})`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+                backgroundRepeat: "no-repeat",
+                minHeight: "100vh",
+                padding: "2rem",
+                alignItems: "center"
+            }}
+        >
+            <div className="edit-profile-container fade-in-down">
+                <div className="edit-profile-content">
+                    <h2 className="text-center mb-4">My Profile</h2>
+
+                    <div className="text-center">
+                        <img
+                            src={resolvedProfilePicture}
+                            alt="Profile"
+                            className="profile-picture-preview"
+                        />
                     </div>
-                    <h4><p>{"Age: " + age}</p></h4>
-                    <h4><p>{"Region: " + region}</p></h4>
-                    <div className="profile-image">
-                        <img src={profilePicture} alt="Profile" />
+
+                    <div className="profile-form">
+                        <div>
+                            <label>Username:</label>
+                            <div>{username}</div>
+                        </div>
+                        <div>
+                            <label>Age:</label>
+                            <div>{age}</div>
+                        </div>
+                        <div>
+                            <label>Region:</label>
+                            <div>{region}</div>
+                        </div>
+                        <div>
+                            <label>Description:</label>
+                            <div className="profile-description">{description}</div>
+                        </div>
                     </div>
-                    <p>{description}</p>
-                    <div className="profile-groups">
-                        <h2>My Groups</h2>
-                        {myGroups.map((group) => (
-                            <div key={group.id} className="group-post">
-                                <h3>{group.title}</h3>
-                                <p>Owner ID: {group.ownerId}</p>
-                                <p>Members: {group.members?.length ?? 0}/{group.maxMembers}</p>
-                                <p>{group.description}</p>
-                                <div className="tags">
-                                    {group.tags?.length > 0 ? (
-                                        group.tags.map((tag, index) => (
-                                            <span key={index} className="tag">{tag}</span>
-                                        ))
-                                    ) : (
-                                        <span className="tag">No tags</span>
-                                    )}
-                                </div>
-                            </div>
-                        ))}
-                    </div>
+
+                    <button
+                        className="save-changes-button"
+                        onClick={() =>
+                            navigate("/edit-profile", {
+                                state: { username, region, profilePicture, description },
+                            })
+                        }
+                    >
+                        Edit Profile
+                    </button>
                 </div>
             </div>
         </div>
-
     );
 };
 

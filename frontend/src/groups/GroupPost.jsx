@@ -29,12 +29,12 @@ const GroupPost = ({ id, title, ownerId, members, maxMembers,nonUserMembers = []
   return (
     <div className="col-md-4 mb-4">
       <div
-        className="custom-card card h-100"
+        className="custom-card card w-100"
         onClick={() => navigate(`/group/${id}/${ownerId}`)}
-        style={{ cursor: "pointer", textAlign:"center", color:"#eee"}}
+        style={{ cursor: "pointer", textAlign:"center", color:"#66d9ef" }}
       >
-        <div className="card-body d-flex flex-column">
-          <h5 className="card-title text-primary">{title}</h5>
+        <div className="card-body d-flex flex-column h-100">
+          <h5 className="card-title" style={{color: "#ffdd9e", fontSize: "1.4em"}}>{title}</h5>
           <h6 className="card-subtitle mb-2">Owner: {ownerName}</h6>
 
           <div className="d-flex justify-content-center gap-4 mb-2 flex-wrap">

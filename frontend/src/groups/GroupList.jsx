@@ -47,7 +47,8 @@ const GroupList = ({ filterTag, onGroupCountChange, searchTerm }) => {
   console.log(groups);
 
   return (
-    <div className="container py-4">
+    
+    <div className="container py-4 fade-in-down">
       <div className="row">
         {filteredGroups.length > 0 ? (
           filteredGroups.map((group) => (

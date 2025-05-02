@@ -235,11 +235,14 @@ export const fetchProfile = async (userId) => {
  * @returns {Promise<Object>} Updated profile data
  */
 export const updateUserProfile = async (profileData) => {
-    const token = localStorage.getItem("token")
+    const token = localStorage.getItem("token");
+
+    const isFormData = profileData.body instanceof FormData;
+
     const response = await fetch(`${API_BASE}/Users/update-profile`, {
         method: "PUT",
         headers: {
-            "Content-Type": "application/json",
+            ...(isFormData ? {} : { "Content-Type": "application/json" }),
             "Authorization": `Bearer ${token}`
         },
         body: profileData.body
@@ -251,7 +254,8 @@ export const updateUserProfile = async (profileData) => {
     }
 
     return await response.json();
-}
+};
+
 
 /**
  * Reject user into group.

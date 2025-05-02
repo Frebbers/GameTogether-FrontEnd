@@ -1,0 +1,45 @@
+name: Run Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  backend-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Set up Docker Compose
+      run: |
+        sudo apt-get update
+        sudo apt-get install docker-compose -y
+
+    - name: Create .env file
+      run: |
+        touch .env
+        echo "ENVIRONMENT=Production" >> .env
+        echo "FRONTEND_BASE_URL=${{ vars.FRONTEND_BASE_URL }}" >> .env
+        echo "DB_PASSWORD=${{ secrets.DB_ROOT_PASSWORD }}" >> .env
+        echo "DB_NAME=${{ vars.DB_NAME }}" >> .env
+        echo "CONNECTION_STRING=Server=${{ vars.DB_TYPE }};Database=${{ vars.DB_NAME }};User=root;Password=${{ secrets.DB_ROOT_PASSWORD }};Port=${{ vars.DB_PORT }};" >> .env
+        echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
+        echo "EMAIL_VERIFICATION_URL=https://${{ vars.HOST }}:${{ vars.BACKEND_HTTPS_PORT }}/api/auth/verify-email" >> .env
+        echo "SMTP_SERVER=${{ vars.SMTP_SERVER }}" >> .env
+        echo "SMTP_PORT=${{ vars.SMTP_PORT }}" >> .env
+        echo "SENDER_EMAIL=noreply.gametogether@gmail.com" >> .env
+        echo "SENDER_PASSWORD=${{ secrets.SMTP_PASSWORD }}" >> .env
+        echo "ASPNETCORE_URLS=https://+:7191" >> .env
+        echo "ASPNETCORE_Kestrel__Certificates__Default__Path=" >> .env
+
+    - name: Run Backend Tests with Docker Compose
+      run: |
+        docker-compose -f Docker-Compose.yml -f Docker-Compose.test.yml up --build --abort-on-container-exit test
+
+    - name: Shut down Docker Compose
+      if: always()
+      run: docker-compose -f Docker-Compose.yml -f Docker-Compose.test.yml down

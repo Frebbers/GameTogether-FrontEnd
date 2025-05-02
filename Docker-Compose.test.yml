@@ -1,0 +1,23 @@
+services:
+  test:
+    build:
+      context: ./backend
+      target: build
+      args:
+        - ENVIRONMENT=${ENVIRONMENT}
+    depends_on:
+      mysql:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+      api:
+        condition: service_healthy
+    environment:
+      <<: *common-env
+    working_dir: /src
+    command: >
+      dotnet test GameTogetherAPI.Test/GameTogetherAPI.Test.csproj --property:WarningLevel=0
+    volumes:
+      - ./backend/certs:/https:ro
+    networks:
+      - app-network

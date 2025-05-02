@@ -7,6 +7,7 @@ on:
 jobs:
   backend-tests:
     runs-on: ubuntu-latest
+    environment: DTU Hosting
 
     steps:
     - name: Checkout Code

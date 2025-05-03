@@ -103,6 +103,26 @@ services:
     networks:
       - app-network
 
+  test:
+    build:
+      context: ./frontend
+      target: build
+      args:
+        - ENVIRONMENT=${ENVIRONMENT}
+    depends_on:
+      mysql:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+      api:
+        condition: service_healthy
+    environment: *common-env
+    working_dir: /src
+    command: >
+      npm test
+    networks:
+      - app-network
+
 networks:
   app-network:
     driver: bridge

@@ -13,17 +13,13 @@ RUN npm install
 COPY . .
 RUN npm run build
 
-# Production Stage
-FROM nginx:stable-alpine AS production
+# Production Stage (no Nginx)
+FROM node:18-alpine AS production
 
-# Add environment arg here too
-ARG ENVIRONMENT=Development
-ENV ENVIRONMENT=$ENVIRONMENT
+WORKDIR /app
 
-COPY --from=build /app/dist /usr/share/nginx/html
+# Copy build output to container
+COPY --from=build /app/dist /app/dist
 
-# Conditionally copy nginx config based on environment
-COPY nginx.${ENVIRONMENT}.conf /etc/nginx/nginx.conf
-
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+EXPOSE 5173
+CMD ["npm", "run", "serve"]

@@ -25,9 +25,10 @@ services:
       - api
     environment:
       - NODE_ENV=production
-      - API_URL=http://localhost:7191
+      - API_URL=http://api:7191
       - VITE_PORT=5173
       - ENVIRONMENT=${ENVIRONMENT:-Development}
+    ports: ["5173:5173"]
     networks:
       - app-network
 

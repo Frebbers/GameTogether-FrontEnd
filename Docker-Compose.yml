@@ -105,7 +105,6 @@ services:
 
   test:
     build:
-      context: ./frontend
       target: build
       args:
         - ENVIRONMENT=${ENVIRONMENT}
@@ -117,7 +116,7 @@ services:
       api:
         condition: service_healthy
     environment: *common-env
-    working_dir: /src
+    working_dir: /frontend
     command: >
       npm test
     networks:

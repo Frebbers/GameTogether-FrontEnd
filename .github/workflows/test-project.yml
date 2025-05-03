@@ -22,8 +22,5 @@ jobs:
         with:
           version: 'latest'
 
-      - name: Build containers
-        run: /usr/bin/docker compose -f Docker-Compose.yml build 
-
       - name: Run tests
         run: /usr/bin/docker compose -f Docker-Compose.yml up test

@@ -2,66 +2,83 @@ import { useNavigate } from "react-router-dom";
 import logo from "../images/sitelogo.png";
 import profile from "../images/profileimage.png";
 
-function Header({setSearchTerm, searchTerm, setFilterTag}) {
+function Header({ setSearchTerm, searchTerm, setFilterTag }) {
     const navigate = useNavigate();
-
+  
     return (
-        <header className="header">
-            <nav className="nav-container">
-                <ul className="nav-list-header">
+      <header>
+        <nav className="navbar navbar-expand-lg navbar-dark bg-dark px-3">
+          <a
+            className="navbar-brand d-flex align-items-center"
+            role="button"
+            onClick={() => {
+              navigate("/");
+              setFilterTag("All Games");
+            }}
+          >
+            <img src={logo} alt="GameTogether Logo" height="40" />
+          </a>
+  
+          <button
+            className="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarContent"
+            aria-controls="navbarContent"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span className="navbar-toggler-icon"></span>
+          </button>
+  
+          <div className="collapse navbar-collapse" id="navbarContent">
+            <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+              <li className="nav-item">
+                <a
+                  className="nav-link"
+                  role="button"
+                  onClick={() => setFilterTag("D&D")}
+                >
+                  D&D
+                </a>
+              </li>
+  
+              <li className="nav-item">
+                <a
+                  className="nav-link"
+                  role="button"
+                  onClick={() => setFilterTag("Other Game")}
+                >
+                  Other Games
+                </a>
+              </li>
+            </ul>
 
-                    <li className="logo-container"> 
-                        <a className="nav-element" onClick={() => {
-                            navigate("/");
-                            setFilterTag("All Games");
-                        }}
-                            > 
-                            <img src={logo} alt="GameTogether Logo" className="logo" /> 
-                        </a> 
-                    </li>
-
-                    <li>
-                        <a className="nav-element" onClick={() => setFilterTag("D&D")}>
-                            D&D
-                        </a>
-                    </li>
-
-                    <li className="search-container">
-                        <input
-                            type="text"
-                            placeholder="Search for groups..."
-                            className="search-bar"
-                            value={searchTerm}
-                            onInput={(e) => setSearchTerm(e.target.value)}
-                        />
-                    </li>
-
-                    <li>
-                        <a className="nav-element" onClick={() => setFilterTag("Other Game")}>
-                            Other Games
-                        </a>
-                    </li>
-                    
-                    <li className="profile-container"> 
-                        <button
-                            onClick={() => {
-                                localStorage.removeItem("token");
-                                window.location.href = "/";
-                            }}
-                            className="profile-button"
-                        >
-                            Logout
-                        </button>
-
-                        <a className="nav-element" onClick={() => navigate("/profile")}> 
-                            <img src={profile} alt="Profile Image" className="profile-icon" /> 
-                        </a> 
-                    </li>
-
-                </ul>
-            </nav>
-        </header>
+  
+            <div className="d-flex align-items-center gap-2">
+              <button
+                className="btn btn-outline-danger"
+                onClick={() => {
+                  localStorage.removeItem("token");
+                  window.location.href = "/";
+                }}
+              >
+                Logout
+              </button>
+  
+              <a role="button" onClick={() => navigate("/profile")}>
+                <img
+                  src={profile}
+                  alt="Profile"
+                  className="rounded-circle"
+                  style={{ width: "40px", height: "40px", objectFit: "cover" }}
+                />
+              </a>
+            </div>
+          </div>
+        </nav>
+      </header>
     );
-}
-
-export default Header;
+  }
+  
+  export default Header;

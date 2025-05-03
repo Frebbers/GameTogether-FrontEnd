@@ -1,5 +1,13 @@
-const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:7191/api";
-
+let apiBase;
+//var API_BASE; = import.meta.env.VITE_API_BASE || "http://localhost:7191/api";
+try {
+     apiBase = import.meta.env.VITE_API_BASE;
+}
+catch {
+    apiBase = "http://localhost:7191/api";
+}
+const API_BASE = apiBase;
+export { API_BASE }; //export url to be used in test file
 /**
  * Sends a registration request to the server.
  * @param {string} email
@@ -20,7 +28,7 @@ export const register = async (email, username, password) => {
     const message = await response.text();
 
     if (!response.ok) {
-        throw new Error(message.replace(/^"|"$/g, ));
+        throw new Error(message.replace(/^"|"$/g, ''));
     }
 
     return { message }; 
@@ -56,7 +64,7 @@ export const login = async (email, password) => {
  * @returns {Promise<Object>} Response message from the server.
  */
 export const createGroup = async (groupData) => {
-    const token = localStorage.getItem("token")
+    const token =getToken()
     const response = await fetch(`${API_BASE}/Groups/create`, {
         method: "POST",
         headers: {
@@ -80,7 +88,7 @@ export const createGroup = async (groupData) => {
  * @returns {Promise<Object>} Response message from the server.
  */
 export const joinGroup = async (groupId) => {
-    const token = localStorage.getItem("token")
+    const token =getToken()
     const response = await fetch(`${API_BASE}/Groups/${groupId}/join`, {
         method: "POST",
         headers: {
@@ -102,7 +110,7 @@ export const joinGroup = async (groupId) => {
  * @returns {Promise<Object>} Response message from the server.
  */
 export const leaveGroup = async (groupId) => {
-    const token = localStorage.getItem("token")
+    const token =getToken()
     const response = await fetch(`${API_BASE}/Groups/${groupId}/leave`, {
         method: "DELETE",
         headers: {
@@ -124,7 +132,7 @@ export const leaveGroup = async (groupId) => {
  * @returns {Promise<Array>} Array of group objects
  */
 export const fetchGroups = async () => {
-    const token = localStorage.getItem("token")
+    const token =getToken()
     const response = await fetch(`${API_BASE}/Groups`, {
         method: "GET",
         headers: {
@@ -146,7 +154,7 @@ export const fetchGroups = async () => {
  * @returns {Promise<Array>} Array of user's sessions
  */
 export const fetchUserGroups = async () => {
-    const token = localStorage.getItem("token")
+    const token =getToken()
     const response = await fetch(`${API_BASE}/Groups/user`, {
         method: "GET",
         headers: {
@@ -168,7 +176,7 @@ export const fetchUserGroups = async () => {
  * @returns {Promise<Object>} group data. 
 */
 export const fetchGroupById = async (groupId) => {
-    const token = localStorage.getItem("token")
+    const token =getToken()
     const response = await fetch(`${API_BASE}/Groups/${groupId}`, {
         method: "GET",
         headers: {
@@ -190,7 +198,7 @@ export const fetchGroupById = async (groupId) => {
  * @returns {Promise<Object>} User profile data
  */
 export const fetchUserProfile = async () => {
-    const token = localStorage.getItem("token")
+    const token =getToken()
     const response = await fetch(`${API_BASE}/Users/get-profile`, {
         method: "GET",
         headers: {
@@ -212,7 +220,7 @@ export const fetchUserProfile = async () => {
  * @returns {Promise<Object>} User profile data
  */
 export const fetchProfile = async (userId) => {
-    const token = localStorage.getItem("token")
+    const token =getToken()
     const response = await fetch(`${API_BASE}/Users/${userId}/profile`, {
         method: "GET",
         headers: {
@@ -235,11 +243,14 @@ export const fetchProfile = async (userId) => {
  * @returns {Promise<Object>} Updated profile data
  */
 export const updateUserProfile = async (profileData) => {
-    const token = localStorage.getItem("token")
+    const token =getToken();
+
+    const isFormData = profileData.body instanceof FormData;
+
     const response = await fetch(`${API_BASE}/Users/update-profile`, {
         method: "PUT",
         headers: {
-            "Content-Type": "application/json",
+            ...(isFormData ? {} : { "Content-Type": "application/json" }),
             "Authorization": `Bearer ${token}`
         },
         body: profileData.body
@@ -251,7 +262,8 @@ export const updateUserProfile = async (profileData) => {
     }
 
     return await response.json();
-}
+};
+
 
 /**
  * Reject user into group.
@@ -260,7 +272,7 @@ export const updateUserProfile = async (profileData) => {
  * @returns {Promise<Object>} Response message from the server.
  */
 export const AcceptUserIntoGroup = async (groupId, userId) => {
-    const token = localStorage.getItem("token")
+    const token =getToken()
     const response = await fetch(`${API_BASE}/Groups/${groupId}/${userId}/accept`, {
         method: "GET",
         headers: {
@@ -283,7 +295,7 @@ export const AcceptUserIntoGroup = async (groupId, userId) => {
  * @returns {Promise<Object>} Response message from the server.
  */
 export const RejectUserFromGroup = async (groupId, userId) => {
-    const token = localStorage.getItem("token")
+    const token =getToken()
     const response = await fetch(`${API_BASE}/Groups/${groupId}/${userId}/reject`, {
         method: "GET",
         headers: {
@@ -298,3 +310,16 @@ export const RejectUserFromGroup = async (groupId, userId) => {
 
     return await response.json();
 };
+
+/**
+ * Gets the token from local storage.
+ * @returns {string} The token.
+ * @throws {Error} If the token is not found.
+ */
+export const getToken = () => {
+    const token = localStorage.getItem("token")
+    if (!token) {
+        throw new Error("Token not found");
+    }
+    return token;
+}

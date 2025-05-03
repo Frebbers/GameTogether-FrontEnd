@@ -1,7 +1,7 @@
 import { useState, useContext } from "react";
 import { login as apiLogin } from "../services/apiService"; 
 import { AuthContext } from "../context/AuthContext";
-import background from "../images/background.png";
+import background from "../images/background.jpg";
 
 const LoginForm = ({ onShowRegister }) => {
     const [email, setEmail] = useState("");
@@ -24,7 +24,7 @@ const LoginForm = ({ onShowRegister }) => {
 
     return (
         <div
-            className="container"
+            className="custom-container"
             style={{
                 backgroundImage: `url(${background})`,
                 backgroundSize: "cover",

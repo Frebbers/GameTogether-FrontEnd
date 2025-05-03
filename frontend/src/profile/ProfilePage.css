@@ -2,7 +2,6 @@ body {
     background-color: #1B1F3B;
     font-family: Arial, sans-serif;
     color: white;
-    padding: 20px;
 }
 
 h1 {
@@ -48,7 +47,6 @@ h1 {
     position: relative;
     display: flex;
     justify-content: center;
-    /* center the username */
     align-items: center;
     width: 100%;
     padding: 1rem;
@@ -133,25 +131,31 @@ h1 {
 }
 
 .edit-profile-container {
-    max-width: 30%;
-    margin-top: 10%;
+    width: 40%;
     padding: 2%;
-    background: #424c90;
+    background: rgba(27, 31, 59, 0.9);
     border-radius: 0.8%;
     box-shadow: 0 3rem 3rem rgba(0, 0, 0, 2);
     text-align: center;
     color: white;
-    position: center;
-    margin: auto;
-    margin-top: 10%;
+    margin-bottom: 15%;
 }
 
-.edit-profile-content {
+.profile-form {
+    display:flex;
+    flex-direction: column;
+    gap: .5em;
+}
+
+.profile-form label {
+    font-size: 1.2em;
+}
+
+.edit-profile-content form {
     display: flex;
     font-weight: bold;
     flex-direction: column;
     align-items: center;
-    margin: 5%;
 }
 
 .edit-profile-form div {
@@ -177,7 +181,8 @@ h1 {
     display: inline-block;
 }
 
-
+/*<label>Description:</label>
+                            <div className="profile-description">{description}</div>*/
 button:hover {
     background: #0056b3;
 }
@@ -214,3 +219,32 @@ button:hover {
 .save-changes-button:hover {
     background: #0056b3;
 }
+
+
+/*Profile page shenanigans*/
+
+.custom-profile-container {
+    border: 1px solid black;
+    background: rgba(27, 31, 59, 0.9);
+    width:50%;
+    padding: 2em;
+}
+
+.profile-wrapper {
+    display:flex;
+    justify-content: space-between;
+}
+
+.profile-wrapper-i1 {
+    margin-left: 4em;
+}
+
+.card {
+    background-color: #fff;
+    border-radius: 15px;
+  }
+  
+  .accordion-button {
+    background-color: #f8f9fa;
+  }
+  

@@ -19,14 +19,21 @@ const GroupList = ({ filterTag, onGroupCountChange, searchTerm }) => {
   }, []);
 
   const filteredGroups = groups.filter((group) => {
+    // Only show visible groups
+    if (!group.isVisible) return false;
+
+    // Then tag filter
     const matchesTag =
       filterTag === "All Games" ||
       group.tags?.some((tag) => tag.toLowerCase() === filterTag.toLowerCase());
 
-    //Searches on title and description and can be expanded to include other properties
+    // Then search filter
+    const lowerSearch = searchTerm?.toLowerCase() || "";
+
     const matchesSearch =
-      group.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      group.description?.toLowerCase().includes(searchTerm.toLowerCase());
+      !lowerSearch ||
+      group.title?.toLowerCase().includes(lowerSearch) ||
+      group.description?.toLowerCase().includes(lowerSearch);
 
     return matchesTag && matchesSearch;
   });
@@ -43,14 +50,16 @@ const GroupList = ({ filterTag, onGroupCountChange, searchTerm }) => {
   }
 
   return (
-    <div className="group-list">
-      {filteredGroups.length > 0 ? (
-        filteredGroups.map((group) => (
-          <GroupPost key={group.id} {...group} />
-        ))
-      ) : (
-        <p className="no-groups-text">No groups found for this category.</p>
-      )}
+    <div className="container py-4 fade-in-down">
+      <div className="row">
+        {filteredGroups.length > 0 ? (
+          filteredGroups.map((group) => (
+            <GroupPost key={group.id} {...group} />
+          ))
+        ) : (
+          <p className="text-light">No groups found for this category.</p>
+        )}
+      </div>
     </div>
   );
 };

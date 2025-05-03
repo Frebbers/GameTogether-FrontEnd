@@ -16,7 +16,6 @@ x-common-env: &common-env
 
 services:
   # Frontend (React + Nginx)
-# Frontend service in Docker-Compose.yml
   frontend:
     build:
       context: ./frontend
@@ -32,7 +31,7 @@ services:
     networks:
       - app-network
 
-  # MySQL Database (optional, if your backend requires it)
+  # MySQL Database
   mysql:
     image: mysql:latest
     environment:
@@ -71,7 +70,7 @@ services:
     networks:
       - app-network
 
-  # Migration service to run migrations
+  # Migration service to run db migrations
   migrate:
     build:
       context: ./backend

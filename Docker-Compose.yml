@@ -105,7 +105,8 @@ services:
 
   test:
     build:
-      target: build
+      context: ./frontend
+      dockerfile: Dockerfile
       args:
         - ENVIRONMENT=${ENVIRONMENT}
     depends_on:

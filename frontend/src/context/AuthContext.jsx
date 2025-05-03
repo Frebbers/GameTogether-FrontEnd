@@ -1,6 +1,6 @@
 import { createContext, useState, useEffect, useCallback } from "react";
 import { useIdleLogoutTimer } from "../hooks/useIdleLogoutTimer";
-import Dialog from "../components/Dialog";
+import Modal from "../components/Modal";
 
 export const AuthContext = createContext();
 
@@ -23,7 +23,7 @@ export function AuthProvider({ children }) {
 
   const cancelLogout = () => {
     setShowWarning(false);
-    setIdleSignal(prev => prev + 1);
+    setIdleSignal((prev) => prev + 1);
   };
 
   const handleLoggedOutClose = () => {
@@ -40,9 +40,9 @@ export function AuthProvider({ children }) {
       setShowLoggedOut(true);
       logout();
     },
-    undefined,                
-    () => setShowWarning(true), 
-    setIdleSignal          
+    undefined,
+    () => setShowWarning(true),
+    setIdleSignal
   );
 
   useEffect(() => {
@@ -56,19 +56,28 @@ export function AuthProvider({ children }) {
       {children}
 
       {showWarning && (
-        <Dialog
+        <Modal
           title="Inactive Warning"
-          message={`You will be logged out in 5 minutes due to inactivity.`}
+          message="You will be logged out in 5 minutes due to inactivity."
           onClose={cancelLogout}
+          actions={
+            <button className="btn btn-primary" onClick={cancelLogout}>
+              OK
+            </button>
+          }
         />
       )}
 
       {showLoggedOut && (
-        <Dialog
+        <Modal
           title="Logged Out"
           message="You have been logged out due to inactivity."
           onClose={handleLoggedOutClose}
-          actions={<button onClick={handleLoggedOutClose}>OK</button>}
+          actions={
+            <button className="btn btn-primary" onClick={handleLoggedOutClose}>
+              OK
+            </button>
+          }
         />
       )}
     </AuthContext.Provider>

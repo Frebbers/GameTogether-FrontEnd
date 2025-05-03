@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { register } from "../services/apiService";
 import background from "../images/background.jpg";
-import Dialog from "../components/Dialog";
+import Modal from "../components/Modal";
 
 const RegisterForm = ({ onRegisterSuccess, onShowLogin }) => {
   const [email, setEmail] = useState("");
@@ -43,7 +43,7 @@ const RegisterForm = ({ onRegisterSuccess, onShowLogin }) => {
     setShowDialog(false);
     onRegisterSuccess();
   };
-  
+
   return (
     <div
       className="custom-container"
@@ -60,11 +60,15 @@ const RegisterForm = ({ onRegisterSuccess, onShowLogin }) => {
       }}
     >
       {showDialog && (
-        <Dialog
+        <Modal
           title={dialogTitle}
           message={dialogMessage}
           onClose={handleCloseDialog}
-          actions={<button onClick={handleCloseDialog}>OK</button>}
+          actions={
+            <button className="btn btn-primary" onClick={handleCloseDialog}>
+              OK
+            </button>
+          }
         />
       )}
 

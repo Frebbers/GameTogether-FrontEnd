@@ -1,9 +1,9 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import Dialog from "../components/Dialog";
+import Modal from "../components/Modal";
 import { joinGroup } from "../services/apiService";
 
-const GroupPost = ({ id, title, ownerId, members, maxMembers,nonUserMembers = [], description, tags }) => {
+const GroupPost = ({ id, title, ownerId, members, maxMembers, nonUserMembers = [], description, tags }) => {
   const navigate = useNavigate();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [ownerName, setOwnerName] = useState("");
@@ -37,8 +37,7 @@ const GroupPost = ({ id, title, ownerId, members, maxMembers,nonUserMembers = []
           <h5 className="card-title" style={{ color: "white", fontSize: "1.4em" }}>{title}</h5>
           <h6 className="card-subtitle mb-2">Owner: {ownerName}</h6>
 
-          <div style={{fontSize: "0.85em"}} className="d-flex justify-content-center gap-4 mb-2 flex-wrap">
-            {/* Active members */}
+          <div style={{ fontSize: "0.85em" }} className="d-flex justify-content-center gap-4 mb-2 flex-wrap">
             <div>
               <strong>Members</strong>
               <ul className="list-unstyled mb-0">
@@ -54,7 +53,6 @@ const GroupPost = ({ id, title, ownerId, members, maxMembers,nonUserMembers = []
               </ul>
             </div>
 
-            {/* Guest members */}
             <div>
               <strong>Guests</strong>
               <ul className="list-unstyled mb-0">
@@ -96,7 +94,7 @@ const GroupPost = ({ id, title, ownerId, members, maxMembers,nonUserMembers = []
       </div>
 
       {isDialogOpen && (
-        <Dialog
+        <Modal
           title="Join Group"
           message={`Do you want to join session #${id}?`}
           onClose={closeDialog}

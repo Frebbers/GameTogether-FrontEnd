@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { createGroup, fetchUserProfile } from "../services/apiService";
-import background from "../images/background.jpg"; // <-- Add this if you have a background image
+import background from "../images/background.jpg";
+import Modal from "../components/Modal";
 
 const predefinedTags = ["D&D", "Other Game"];
 
@@ -13,6 +14,8 @@ const CreateGroupPage = ({ setGroups }) => {
   const [members, setMembers] = useState([]);
   const [description, setDescription] = useState("");
   const [tags, setTags] = useState([]);
+  const [showDialog, setShowDialog] = useState(false);
+  const [newMemberName, setNewMemberName] = useState("");
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -23,19 +26,23 @@ const CreateGroupPage = ({ setGroups }) => {
         console.error("Failed to fetch user", err);
       }
     };
-
     fetchUser();
   }, []);
 
   const AddMember = () => {
-    if (members.length < maxMembers) {
-      const newMember = prompt("Enter member name:");
-      if (newMember) {
-        setMembers([...members, newMember]);
-      }
-    } else {
+    if (members.length >= maxMembers) {
       alert("Maximum number of members reached.");
+      return;
     }
+    setNewMemberName("");
+    setShowDialog(true);
+  };
+
+  const handleAddMember = () => {
+    if (newMemberName.trim()) {
+      setMembers((prev) => [...prev, newMemberName.trim()]);
+    }
+    setShowDialog(false);
   };
 
   const toggleTag = (tag) => {
@@ -98,23 +105,23 @@ const CreateGroupPage = ({ setGroups }) => {
         <h1 className="text-center mb-4">Create A New Group</h1>
 
         <div className="group-post-header mb-3 d-flex flex-column align-items-center">
-        <input
-          type="text"
-          value={groupName}
-          onChange={(e) => setGroupName(e.target.value)}
-          placeholder="Enter Group Name"
-          style={{
-            marginBottom: "10px",
-            padding: "10px",
-            fontSize: "14px",
-            borderRadius: "8px",
-          }}
-        />
+          <input
+            type="text"
+            value={groupName}
+            onChange={(e) => setGroupName(e.target.value)}
+            placeholder="Enter Group Name"
+            style={{
+              marginBottom: "10px",
+              padding: "10px",
+              fontSize: "14px",
+              borderRadius: "8px",
+            }}
+          />
           <div className="d-flex justify-content-between w-100">
-          <div>
-            <label>Owner:</label>
-            <span id="owner">{userName}</span>
-          </div>
+            <div>
+              <label>Owner:</label>
+              <span id="owner">{userName}</span>
+            </div>
             <span className="member-count">
               Members: {members.length}/{maxMembers}
             </span>
@@ -143,12 +150,12 @@ const CreateGroupPage = ({ setGroups }) => {
         </div>
 
         <textarea
-          style={{marginBottom: "10px", minHeight: "150px", fontSize:"12px"}}
+          style={{ marginBottom: "10px", minHeight: "150px", fontSize: "12px" }}
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           placeholder="Enter Group Description"
-          
         ></textarea>
+
         <button className="btn btn-primary d-block mx-auto mb-3" onClick={AddMember}>
           Add Member
         </button>
@@ -173,6 +180,7 @@ const CreateGroupPage = ({ setGroups }) => {
             ))}
           </div>
         </div>
+
         <div className="group-post-btns">
           <button className="btn btn-primary d-block" onClick={CreateGroup}>
             Create Group
@@ -182,6 +190,29 @@ const CreateGroupPage = ({ setGroups }) => {
           </button>
         </div>
       </div>
+
+      {/* Modal for adding member */}
+      {showDialog && (
+        <Modal
+          title="Add New Member"
+          message="Enter the new member's name:"
+          onClose={() => setShowDialog(false)}
+          showInput
+          inputPlaceholder="Member Name"
+          inputValue={newMemberName}
+          setInputValue={setNewMemberName}
+          actions={
+            <>
+              <button className="btn btn-secondary" onClick={() => setShowDialog(false)}>
+                Cancel
+              </button>
+              <button className="btn btn-primary" onClick={handleAddMember}>
+                Add
+              </button>
+            </>
+          }
+        />
+      )}
     </div>
   );
 };

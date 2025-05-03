@@ -4,9 +4,9 @@ import { useSearchParams } from "react-router-dom";
 import { AuthContext } from "./context/AuthContext";
 import ControlPanel from "./common/ControlPanel";
 import GroupList from "./groups/GroupList";
-import Dialog from "./components/Dialog";
 import LoginForm from "./common/LoginForm";
 import RegisterForm from "./common/RegisterForm";
+import Modal from "./components/Modal";
 
 import background from "./images/background.jpg";
 import "./groups/groups.css";
@@ -39,7 +39,7 @@ const HomePage = ({ searchTerm, setSearchTerm }) => {
     return (
       <>
         {showVerificationDialog && (
-          <Dialog
+          <Modal
             title={verificationStatus === "success" ? "Email Verified!" : "Verification Failed"}
             message={
               verificationStatus === "success"
@@ -47,7 +47,11 @@ const HomePage = ({ searchTerm, setSearchTerm }) => {
                 : "Your email verification link is invalid or has expired."
             }
             onClose={handleCloseDialog}
-            actions={<button onClick={handleCloseDialog}>OK</button>}
+            actions={
+              <button className="btn btn-primary" onClick={handleCloseDialog}>
+                OK
+              </button>
+            }
           />
         )}
 
@@ -63,13 +67,11 @@ const HomePage = ({ searchTerm, setSearchTerm }) => {
     );
   }
 
-  // Logged-in normal HomePage view
   return (
     <div
       className="position-relative d-flex flex-column flex-grow-1"
       style={{ zIndex: 1 }}
     >
-      {/* Background Layer */}
       <div
         className="position-absolute top-0 start-0 w-100 h-100"
         style={{
@@ -81,7 +83,6 @@ const HomePage = ({ searchTerm, setSearchTerm }) => {
         }}
       ></div>
 
-      {/* Foreground Content */}
       <div className="position-relative" style={{ zIndex: 1 }}>
         <ControlPanel
           NumberOfGroups={groupCount}
@@ -102,20 +103,6 @@ const HomePage = ({ searchTerm, setSearchTerm }) => {
           searchTerm={searchTerm}
         />
       </div>
-
-      {/* Verification Dialog */}
-      {showVerificationDialog && (
-        <Dialog
-          title={verificationStatus === "success" ? "Email Verified!" : "Verification Failed"}
-          message={
-            verificationStatus === "success"
-              ? "Your email has been verified successfully."
-              : "Your email verification link is invalid or has expired."
-          }
-          onClose={handleCloseDialog}
-          actions={<button onClick={handleCloseDialog}>OK</button>}
-        />
-      )}
     </div>
   );
 };

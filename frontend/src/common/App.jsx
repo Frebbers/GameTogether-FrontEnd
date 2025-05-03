@@ -1,7 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useState } from "react";
 
-import LaunchingPage from "../common/LaunchingPage";
 import HomePage from "../HomePage";
 import ProfilePage from "../profile/ProfilePage";
 import GroupInfoPage from "../groups/GroupInfoPage";
@@ -22,8 +21,7 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<LaunchingPage />} />
-        <Route path="/home-page" element={withLayout(HomePage, { groups, setGroups, searchTerm, setSearchTerm })} />
+        <Route path="/" element={withLayout(HomePage, { groups, setGroups, searchTerm, setSearchTerm })} />
         <Route path="/profile" element={withLayout(ProfilePage)} />
         <Route path="/edit-profile" element={withLayout(EditProfilePage)} />
         <Route path="/group/:groupId/:ownerId" element={withLayout(GroupInfoPage, { groups, setGroups })} />

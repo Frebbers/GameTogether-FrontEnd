@@ -58,7 +58,7 @@ jobs:
           echo "SMTP_PORT=${{ vars.SMTP_PORT }}" >> .env.prod
           echo "SENDER_EMAIL=noreply.gametogether@gmail.com" >> .env.prod
           echo "SENDER_PASSWORD=${{ secrets.SMTP_PASSWORD }}" >> .env.prod
-          echo "ASPNETCORE_URLS=https://+:7191" >> .env.prod
+          echo "ASPNETCORE_URLS=http://+:7191" >> .env.prod
           echo "ASPNETCORE_Kestrel__Certificates__Default__Path=" >> .env.prod
           mv .env.prod .env
 

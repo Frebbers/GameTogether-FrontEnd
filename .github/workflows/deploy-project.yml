@@ -35,6 +35,7 @@ jobs:
           if [ -d "GameTogether-FrontEnd" ]; then
             echo "Repository already exists. Pulling latest changes..."
             cd GameTogether-FrontEnd
+            rm .env # just to make sure we don't have working tree issues
             git fetch origin
             git checkout $BRANCH_NAME
             git pull origin $BRANCH_NAME

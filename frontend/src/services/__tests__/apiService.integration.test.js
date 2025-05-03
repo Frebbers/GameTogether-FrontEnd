@@ -1,6 +1,6 @@
 // src/services/__tests__/apiService.integration.test.js
 import * as apiService from '../apiService';
-
+import jest from 'jest-mock';
 // Test credentials
 const testEmail = 'user@example.com';
 const testUsername = 'TestUser';
@@ -8,6 +8,23 @@ const testPassword = 'TestPassword123!';
 let authToken = null;
 let userId = null;
 let createdGroupId = null;
+// Add this at the top of your test file
+const localStorageMock = (() => {
+    let store = {};
+    return {
+        getItem: jest.fn(key => store[key] || null),
+        setItem: jest.fn((key, value) => {
+            store[key] = value.toString();
+        }),
+        removeItem: jest.fn(key => {
+            delete store[key];
+        }),
+        clear: jest.fn(() => {
+            store = {};
+        })
+    };
+})();
+global.localStorage = localStorageMock;
 
 // Skip tests flag - set to true if API is unreachable
 let skipTests = false;
@@ -42,7 +59,7 @@ describe('API Service Integration Tests', () => {
             expect(result).toHaveProperty('message');
             expect(typeof result.message).toBe('string');
         } catch (error) {
-            if (error.message.includes('already exists')) {
+            if (error.message.includes('already taken')) {
                 console.log('Test user already exists, continuing...');
             } else {
                 throw error;

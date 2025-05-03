@@ -2,9 +2,11 @@ on:
   push:
     branches:
       - main
+      - gha-fixing
   pull_request:
     branches:
       - main
+      - gha-fixing
 
 jobs:
   run-tests:

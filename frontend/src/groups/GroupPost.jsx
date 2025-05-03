@@ -37,7 +37,7 @@ const GroupPost = ({ id, title, ownerId, members, maxMembers,nonUserMembers = []
           <h5 className="card-title" style={{ color: "white", fontSize: "1.4em" }}>{title}</h5>
           <h6 className="card-subtitle mb-2">Owner: {ownerName}</h6>
 
-          <div className="d-flex justify-content-center gap-4 mb-2 flex-wrap">
+          <div style={{fontSize: "0.85em"}} className="d-flex justify-content-center gap-4 mb-2 flex-wrap">
             {/* Active members */}
             <div>
               <strong>Members</strong>

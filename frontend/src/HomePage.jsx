@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 
 import { AuthContext } from "./context/AuthContext";
 import ControlPanel from "./common/ControlPanel";
@@ -7,6 +7,8 @@ import GroupList from "./groups/GroupList";
 import LoginForm from "./common/LoginForm";
 import RegisterForm from "./common/RegisterForm";
 import Modal from "./components/Modal";
+
+import { fetchUserProfile, updateUserProfile } from "./services/apiService";
 
 import background from "./images/background.jpg";
 import "./groups/groups.css";
@@ -22,6 +24,8 @@ const HomePage = ({ searchTerm, setSearchTerm }) => {
   const [showVerificationDialog, setShowVerificationDialog] = useState(false);
   const [verificationStatus, setVerificationStatus] = useState(null);
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     const status = searchParams.get("verification");
     if (status === "success" || status === "failed") {
@@ -34,6 +38,34 @@ const HomePage = ({ searchTerm, setSearchTerm }) => {
     setShowVerificationDialog(false);
     window.history.replaceState({}, document.title, window.location.pathname);
   };
+
+  useEffect(() => {
+    const ensureUserProfile = async () => {
+      try {
+        await fetchUserProfile();
+        // If profile exists, do nothing
+      } catch (error) {
+        try {
+          await updateUserProfile({
+            body: JSON.stringify({
+              birthDate: new Date('2000-01-01T00:00:00Z').toISOString(),
+              profilePicture: "",
+              description: "",
+              region: "",
+            }),
+          });
+          navigate("edit-profile")
+        } catch (createError) {
+          console.error("Failed to create dummy profile:", createError);
+        }
+      }
+    };
+  
+    if (isLoggedIn) {
+      ensureUserProfile();
+    }
+  }, [isLoggedIn, navigate]);
+  
 
   if (!isLoggedIn) {
     return (

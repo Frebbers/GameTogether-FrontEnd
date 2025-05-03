@@ -1,71 +1,119 @@
-import { useState } from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { updateUserProfile } from "../services/apiService.js";
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { fetchUserProfile, updateUserProfile } from "../services/apiService.js";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Header from "../common/Header";
 import background from "../images/background.jpg";
 import defaultProfileIcon from '../images/default-profile-icon.png';
 
 const EditProfilePage = () => {
-    const location = useLocation();
     const navigate = useNavigate();
     const [file, setFile] = useState(null);
-    const [profile, setProfile] = useState();
-    const { region, profilePicture, description, username, email } = location.state || {};
-    const [preview, setPreview] = useState(
-        profilePicture && profilePicture.startsWith("data:image")
-          ? profilePicture
-          : null
-      );
-
     const [formData, setFormData] = useState({
-        username: username || "",
-        email: email || "",
-        region: region || "",
-        profilePicture: profilePicture || "",
-        description: description || ""
+        username: "",
+        email: "",
+        region: "",
+        profilePicture: "",
+        description: "",
+        birthDate: "",
     });
+    const [preview, setPreview] = useState(null);
+    const [calculatedAge, setCalculatedAge] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [saving, setSaving] = useState(false);
 
-   
+    // Fetch user profile when the page loads
+    useEffect(() => {
+        async function loadProfile() {
+            try {
+                const profile = await fetchUserProfile();
+                setFormData({
+                    username: profile.username || "",
+                    email: profile.email || "",
+                    region: profile.region || "",
+                    profilePicture: profile.profilePicture || "",
+                    description: profile.description || "",
+                    birthDate: profile.birthDate ? profile.birthDate.split('T')[0] : "",
+                });
+                if (profile.profilePicture && profile.profilePicture.startsWith("data:image")) {
+                    setPreview(profile.profilePicture);
+                } else {
+                    setPreview(null);
+                }
+            } catch (error) {
+                console.error("Failed to load profile:", error);
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        loadProfile();
+    }, []);
+
+    // Calculate age whenever birthDate changes
+    useEffect(() => {
+        if (formData.birthDate) {
+            const birth = new Date(formData.birthDate);
+            const today = new Date();
+            let age = today.getFullYear() - birth.getFullYear();
+            const m = today.getMonth() - birth.getMonth();
+            if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) {
+                age--;
+            }
+            setCalculatedAge(age);
+        }
+    }, [formData.birthDate]);
 
     const handleFileChange = (e) => {
         const uploadedFile = e.target.files[0];
         if (uploadedFile) {
-          setFile(uploadedFile);
-    
-          const reader = new FileReader();
-          reader.onloadend = () => {
-            setPreview(reader.result); // base64 image
-          };
-          reader.readAsDataURL(uploadedFile);
+            setFile(uploadedFile);
+
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setPreview(reader.result);
+            };
+            reader.readAsDataURL(uploadedFile);
         }
-      };
+    };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
+        setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-    
+        setSaving(true);
+
         try {
-            const response = await updateUserProfile({
+            await updateUserProfile({
                 body: JSON.stringify({
-                    username: formData.username,
-                    email: formData.email,
-                    region: formData.region,
-                    profilePicture: preview, // 👈 Send base64 string
+                    birthDate: formData.birthDate,
+                    profilePicture: preview,
                     description: formData.description,
+                    region: formData.region,
                 })
             });
-    
-            console.log("Profile Updated:", await response);
+
+            console.log("Profile Updated Successfully!");
             navigate("/profile");
         } catch (error) {
             console.error("Error updating profile:", error);
+        } finally {
+            setSaving(false);
         }
     };
+
+    // Today's date for date picker max
+    const todayString = new Date().toISOString().split('T')[0];
+
+    if (loading) {
+        return (
+            <div className="custom-container" style={{ minHeight: "100vh", display: "flex", justifyContent: "center", alignItems: "center" }}>
+                <h2>Loading Profile...</h2>
+            </div>
+        );
+    }
 
     return (
         <>
@@ -83,59 +131,79 @@ const EditProfilePage = () => {
             >
                 <div className="edit-profile-container fade-in-down">
                     <h1>Edit Profile</h1>
-                    
 
                     <div className="edit-profile-content">
                         <form onSubmit={handleSubmit}>
-                                Profile Picture:
-                                <label style={{ cursor: 'pointer' }}>
+                            Profile Picture:
+                            <label style={{ cursor: 'pointer' }}>
                                 <img
                                     src={preview || defaultProfileIcon}
                                     alt="Profile Icon"
                                     style={{
-                                    width: 100,
-                                    height: 100,
-                                    borderRadius: '50%',
-                                    objectFit: 'cover',
-                                    border: '2px solid #ccc',
-                                    marginTop: "10px"
+                                        width: 100,
+                                        height: 100,
+                                        borderRadius: '50%',
+                                        objectFit: 'cover',
+                                        border: '2px solid #ccc',
+                                        marginTop: "10px"
                                     }}
                                 />
-                                </label>
-                                <input
+                            </label>
+                            <input
                                 id="profile-upload"
                                 type="file"
                                 accept="image/png, image/jpeg, image/jpg"
                                 style={{ display: "none" }}
                                 onChange={handleFileChange}
-                                />
-                                <label htmlFor="profile-upload" style={{ cursor: 'pointer', marginLeft: '10px' }}>
-                                    <FontAwesomeIcon icon="fa-solid fa-edit" style={{position: "relative", bottom: "100px", left: "50px"}} />
-                                </label>
-                                <div style={{borderBottom: "2px solid white", width: "100%", marginBottom:"4px"}} ></div>
+                            />
+                            <label htmlFor="profile-upload" style={{ cursor: 'pointer', marginLeft: '10px' }}>
+                                <FontAwesomeIcon icon="fa-solid fa-edit" style={{ position: "relative", bottom: "100px", left: "50px" }} />
+                            </label>
+
+                            <div style={{ borderBottom: "2px solid white", width: "100%", marginBottom: "4px" }} ></div>
+
                             <label htmlFor="description">Description:</label>
-                            <textarea style={{marginBottom: "10px", minHeight: "150px", fontSize:"12px"}}
+                            <textarea
+                                style={{ marginBottom: "10px", minHeight: "150px", fontSize: "12px" }}
                                 name="description"
                                 value={formData.description}
-                                placeholder={description}
+                                placeholder="Write something about yourself"
                                 onChange={handleChange}
                             />
-            
+
                             <label htmlFor="region">Region:</label>
                             <input
-                                style={{marginBottom: "10px"}}
+                                style={{ marginBottom: "10px" }}
                                 type="text"
                                 name="region"
-                                placeholder={region}
+                                placeholder="Enter your region"
                                 value={formData.region}
                                 onChange={handleChange}
                             />
 
+                            <label htmlFor="birthDate">Birthdate:</label>
+                            <input
+                                style={{ marginBottom: "10px" }}
+                                type="date"
+                                name="birthDate"
+                                value={formData.birthDate}
+                                max={todayString}
+                                onChange={handleChange}
+                            />
+
+                            {calculatedAge !== null && (
+                                <div style={{ marginBottom: "10px" }}>
+                                    Age: {calculatedAge} years
+                                </div>
+                            )}
+
                             <button
                                 type="submit"
                                 className="save-changes-button"
+                                disabled={saving}
+                                style={{ opacity: saving ? 0.7 : 1 }}
                             >
-                                Save Changes
+                                {saving ? "Saving..." : "Save Changes"}
                             </button>
                         </form>
                     </div>

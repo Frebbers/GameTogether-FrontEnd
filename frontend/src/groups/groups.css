@@ -16,6 +16,18 @@
     align-items: center;
     padding: 10px;
     gap: 1rem;
+    width: 100%;
+}
+
+#owner {
+    margin-left: 4px;
+    font-weight: 400;
+}
+
+.group-post-btns {
+    display:flex;
+    justify-content: space-between;
+    width:100%;
 }
 
 .group-post-tags {
@@ -79,17 +91,13 @@ input, textarea {
     border: none;
 }
 
-.your-name {
-    flex-grow: 1;
-    text-align: center;
-}
 
 .max-members-section {
     display: flex;
-    justify-content: center;
+    justify-content: start;
     align-items: center;
-    gap: 10px;
     margin-top: 10px;
+    width: 100%;
 }
 
 .max-members-section label {

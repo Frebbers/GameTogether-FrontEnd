@@ -100,7 +100,6 @@ const CreateGroupPage = ({ setGroups }) => {
         <div className="group-post-header mb-3 d-flex flex-column align-items-center">
         <input
           type="text"
-          className="form-control mb-2"
           value={groupName}
           onChange={(e) => setGroupName(e.target.value)}
           placeholder="Enter Group Name"
@@ -112,7 +111,10 @@ const CreateGroupPage = ({ setGroups }) => {
           }}
         />
           <div className="d-flex justify-content-between w-100">
-            <span className="your-name">{userName}</span>
+          <div>
+            <label>Owner:</label>
+            <span id="owner">{userName}</span>
+          </div>
             <span className="member-count">
               Members: {members.length}/{maxMembers}
             </span>
@@ -141,18 +143,11 @@ const CreateGroupPage = ({ setGroups }) => {
         </div>
 
         <textarea
-          className="form-control mb-3"
+          style={{marginBottom: "10px", minHeight: "150px", fontSize:"12px"}}
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           placeholder="Enter Group Description"
-          style={{
-            marginBottom: "10px",
-            padding: "10px",
-            fontSize: "14px",
-            borderRadius: "8px",
-            minHeight: "150px",
-            resize: "none",
-          }}
+          
         ></textarea>
         <button className="btn btn-primary d-block mx-auto mb-3" onClick={AddMember}>
           Add Member
@@ -178,13 +173,14 @@ const CreateGroupPage = ({ setGroups }) => {
             ))}
           </div>
         </div>
-
-        <button className="btn btn-primary d-block mx-auto mb-2" onClick={CreateGroup}>
-          Create Group
-        </button>
-        <button className="btn btn-danger d-block mx-auto" onClick={() => navigate(-1)}>
-          Go Back
-        </button>
+        <div className="group-post-btns">
+          <button className="btn btn-primary d-block" onClick={CreateGroup}>
+            Create Group
+          </button>
+          <button className="btn btn-danger d-block" onClick={() => navigate(-1)}>
+            Go Back
+          </button>
+        </div>
       </div>
     </div>
   );

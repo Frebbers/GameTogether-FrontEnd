@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import Modal from "../components/Modal";
 import { joinGroup } from "../services/apiService";
 
-const GroupPost = ({ id, title, ownerId, members, maxMembers, nonUserMembers = [], description, tags }) => {
+const GroupPost = ({ id, title, ownerId, members, maxMembers, nonUserMembers = [], description, tags, ageRange }) => {
   const navigate = useNavigate();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [ownerName, setOwnerName] = useState("");
@@ -36,6 +36,8 @@ const GroupPost = ({ id, title, ownerId, members, maxMembers, nonUserMembers = [
         <div className="card-body d-flex flex-column h-100" style={{ color: "white" }}>
           <h5 className="card-title" style={{ color: "white", fontSize: "1.4em" }}>{title}</h5>
           <h6 className="card-subtitle mb-2">Owner: {ownerName}</h6>
+          <h6 className="card-subtitle mb-2">Age Range: {ageRange}</h6>
+
 
           <div style={{ fontSize: "0.85em" }} className="d-flex justify-content-center gap-4 mb-2 flex-wrap">
             <div>

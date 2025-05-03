@@ -19,11 +19,15 @@ const GroupList = ({ filterTag, onGroupCountChange, searchTerm }) => {
   }, []);
 
   const filteredGroups = groups.filter((group) => {
+    // Only show visible groups
+    if (!group.isVisible) return false;
+
+    // Then tag filter
     const matchesTag =
       filterTag === "All Games" ||
       group.tags?.some((tag) => tag.toLowerCase() === filterTag.toLowerCase());
 
-    //Searches on title and description and can be expanded to include other properties
+    // Then search filter
     const lowerSearch = searchTerm?.toLowerCase() || "";
 
     const matchesSearch =
@@ -44,9 +48,8 @@ const GroupList = ({ filterTag, onGroupCountChange, searchTerm }) => {
   if (loading) {
     return <p>Loading groups...</p>;
   }
-  
+
   return (
-    
     <div className="container py-4 fade-in-down">
       <div className="row">
         {filteredGroups.length > 0 ? (
@@ -58,7 +61,7 @@ const GroupList = ({ filterTag, onGroupCountChange, searchTerm }) => {
         )}
       </div>
     </div>
-    );
-  };
+  );
+};
 
 export default GroupList;

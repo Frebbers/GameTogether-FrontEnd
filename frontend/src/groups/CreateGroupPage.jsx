@@ -17,6 +17,10 @@ const CreateGroupPage = ({ setGroups }) => {
   const [showDialog, setShowDialog] = useState(false);
   const [newMemberName, setNewMemberName] = useState("");
 
+  const [isVisible, setIsVisible] = useState(true);
+  const [ageFrom, setAgeFrom] = useState(0);
+  const [ageTo, setAgeTo] = useState(99);
+
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -57,10 +61,15 @@ const CreateGroupPage = ({ setGroups }) => {
       return;
     }
 
+    if (ageFrom > ageTo) {
+      alert("Minimum age cannot be greater than maximum age.");
+      return;
+    }
+
     const groupData = {
       title: groupName,
-      isVisible: true,
-      ageRange: "0 - 99",
+      isVisible: isVisible,
+      ageRange: `${ageFrom} - ${ageTo}`,
       maxMembers: maxMembers,
       description: description,
       tags: tags,
@@ -128,27 +137,91 @@ const CreateGroupPage = ({ setGroups }) => {
           </div>
         </div>
 
-        <div className="max-members-section mb-3 d-flex align-items-center">
-          <label className="me-2">Max Members:</label>
-          <input
-            type="number"
-            className="form-control"
-            value={maxMembers}
-            onChange={(e) => setMaxMembers(Number(e.target.value))}
-            min="1"
-            style={{
-              width: "80px",
-              backgroundColor: "#4A4E54",
-              color: "white",
-              padding: "10px",
-              fontSize: "14px",
-              borderRadius: "8px",
-              border: "none",
-              textAlign: "center",
-            }}
-          />
-        </div>
+        <div className="mb-3 w-100" style={{ textAlign: "left" }}>
+          {/* Visibility */}
+          <div className="mb-3">
+            <label className="form-label">Visibility:</label>
+            <select
+              className="form-select"
+              style={{
+                backgroundColor: "#4A4E54",
+                color: "white",
+                border: "none",
+                width: "250px", // fixed width for better alignment
+              }}
+              value={isVisible}
+              onChange={(e) => setIsVisible(e.target.value === "true")}
+            >
+              <option value="true">Public</option>
+              <option value="false">Private</option>
+            </select>
+          </div>
 
+          {/* Age Range */}
+          <div className="mb-3">
+            <label className="form-label">Age Range:</label>
+            <div className="d-flex align-items-center" style={{ gap: "10px" }}>
+              <input
+                type="number"
+                min="0"
+                max="100"
+                value={ageFrom}
+                onChange={(e) => setAgeFrom(Number(e.target.value))}
+                style={{
+                  width: "80px",
+                  backgroundColor: "#4A4E54",
+                  color: "white",
+                  padding: "8px",
+                  fontSize: "14px",
+                  borderRadius: "8px",
+                  border: "none",
+                  textAlign: "center",
+                }}
+              />
+              to
+              <input
+                type="number"
+                min="0"
+                max="100"
+                value={ageTo}
+                onChange={(e) => setAgeTo(Number(e.target.value))}
+                style={{
+                  width: "80px",
+                  backgroundColor: "#4A4E54",
+                  color: "white",
+                  padding: "8px",
+                  fontSize: "14px",
+                  borderRadius: "8px",
+                  border: "none",
+                  textAlign: "center",
+                }}
+              />
+            </div>
+          </div>
+
+          {/* Max Members */}
+          <div className="mb-3">
+            <label className="form-label">Max Members:</label>
+            <input
+              type="number"
+              className="form-control"
+              value={maxMembers}
+              onChange={(e) => setMaxMembers(Number(e.target.value))}
+              min="1"
+              style={{
+                width: "250px",
+                backgroundColor: "#4A4E54",
+                color: "white",
+                padding: "10px",
+                fontSize: "14px",
+                borderRadius: "8px",
+                border: "none",
+                textAlign: "center",
+              }}
+            />
+          </div>
+        </div>
+        
         <textarea
           style={{ marginBottom: "10px", minHeight: "150px", fontSize: "12px" }}
           value={description}

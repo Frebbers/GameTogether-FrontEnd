@@ -29,14 +29,19 @@ jobs:
           ls -al
 
           # GIT CLONE
+          BRANCH_NAME="${{ github.ref_name }}"
+          echo "Deploying branch: $BRANCH_NAME"
+
           if [ -d "GameTogether-FrontEnd" ]; then
             echo "Repository already exists. Pulling latest changes..."
             cd GameTogether-FrontEnd
-            git pull
+            git fetch origin
+            git checkout $BRANCH_NAME
+            git pull origin $BRANCH_NAME
             git submodule update --init --recursive
           else
             echo "Repository not found. Cloning..."
-            git clone https://github.com/Frebbers/GameTogether-FrontEnd --recurse-submodules
+            git clone --branch $BRANCH_NAME --recurse-submodules https://github.com/Frebbers/GameTogether-FrontEnd
             cd GameTogether-FrontEnd
           fi
 

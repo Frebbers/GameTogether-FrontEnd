@@ -47,7 +47,6 @@ h1 {
     position: relative;
     display: flex;
     justify-content: center;
-    /* center the username */
     align-items: center;
     width: 100%;
     padding: 1rem;

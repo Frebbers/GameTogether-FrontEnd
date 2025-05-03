@@ -31,45 +31,45 @@ const GroupPost = ({ id, title, ownerId, members, maxMembers,nonUserMembers = []
       <div
         className="custom-card card w-100"
         onClick={() => navigate(`/group/${id}/${ownerId}`)}
-        style={{ cursor: "pointer", textAlign:"center", color:"#66d9ef" }}
+        style={{ cursor: "pointer", textAlign: "center", color: "white" }}
       >
-        <div className="card-body d-flex flex-column h-100">
-          <h5 className="card-title" style={{color: "#ffdd9e", fontSize: "1.4em"}}>{title}</h5>
+        <div className="card-body d-flex flex-column h-100" style={{ color: "white" }}>
+          <h5 className="card-title" style={{ color: "white", fontSize: "1.4em" }}>{title}</h5>
           <h6 className="card-subtitle mb-2">Owner: {ownerName}</h6>
 
           <div className="d-flex justify-content-center gap-4 mb-2 flex-wrap">
             {/* Active members */}
             <div>
-                <strong>Members</strong>
-                <ul className="list-unstyled mb-0">
+              <strong>Members</strong>
+              <ul className="list-unstyled mb-0">
                 {activeMembers.length > 0 ? (
-                    activeMembers.map((member, index) => (
+                  activeMembers.map((member, index) => (
                     <li key={`user-${member.userId || index}`}>
-                        {member.username || "Unnamed"}
+                      {member.username || "Unnamed"}
                     </li>
-                    ))
+                  ))
                 ) : (
-                    <li className="text-muted fst-italic">None</li>
+                  <li className="text-muted fst-italic">None</li>
                 )}
-                </ul>
+              </ul>
             </div>
 
             {/* Guest members */}
             <div>
-                <strong>Guests</strong>
-                <ul className="list-unstyled mb-0">
+              <strong>Guests</strong>
+              <ul className="list-unstyled mb-0">
                 {nonUserMembers.length > 0 ? (
-                    nonUserMembers.map((name, index) => (
+                  nonUserMembers.map((name, index) => (
                     <li key={`guest-${index}`} className="fst-italic">
-                        {name}
+                      {name}
                     </li>
-                    ))
+                  ))
                 ) : (
-                    <li className="fst-italic">None</li>
+                  <li className="fst-italic">None</li>
                 )}
-                </ul>
+              </ul>
             </div>
-            </div>
+          </div>
 
           <div className="mb-3">
             <div className="d-flex flex-wrap gap-1 mt-1">
@@ -84,7 +84,7 @@ const GroupPost = ({ id, title, ownerId, members, maxMembers,nonUserMembers = []
           </div>
 
           <button
-            className="btn btn-outline-success mt-auto"
+            className="btn btn-primary mt-auto"
             onClick={(e) => {
               e.stopPropagation();
               openDialog(e);

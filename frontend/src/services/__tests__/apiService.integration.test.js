@@ -5,6 +5,13 @@ import jest from 'jest-mock';
 const testEmail = 'user@example.com';
 const testUsername = 'TestUser';
 const testPassword = 'TestPassword123!';
+const testProfileData = {
+    name: 'Test User',
+    age: 30,
+    region: 'Test Region',
+    profilePicture: '',
+    description: 'Test description'
+}
 let authToken = null;
 let userId = null;
 let createdGroupId = null;
@@ -159,18 +166,14 @@ describe('API Service Integration Tests', () => {
     }, 10000);
 
     // 10. Update User Profile Test
-    test('updates user profile', async () => {
+    test('update user profile', async () => {
         if (skipTests || !authToken) return;
-
-        const updatedBio = `Updated bio ${Date.now()}`;
         const result = await apiService.updateUserProfile({
-            body: JSON.stringify({
-                bio: updatedBio
-            })
+            body: JSON.stringify(testProfileData)
         });
 
-        expect(result).toHaveProperty('bio');
-        expect(result.bio).toBe(updatedBio);
+        expect(result).toHaveProperty('message');
+        expect(result.message).toBe('Profile updated successfully!');
     }, 10000);
 
     // 11. Fetch Profile by ID Test

@@ -187,28 +187,42 @@ const UserProfilePage = () => {
     {tabIndex === 1 && userId === "me" && (
         <Box>
         {groups.length > 0 ? (
-            <ul className="list-group mt-3">
-            {groups.map((group) => (
+          <ul className="list-group mt-3">
+            {groups.map((group) => {
+              const activeMembers = group.members?.filter(m => m.groupStatus === 1) ?? [];
+              const guestCount = group.nonUserMembers?.length ?? 0;
+              const max = group.maxMembers ?? "?";
+              const total = activeMembers.length + guestCount;
+      
+              return (
                 <li
-                key={group.id}
-                className="list-group-item list-group-item-action"
-                style={{
+                  key={group.id}
+                  className="list-group-item list-group-item-action profile-group-item"
+                  style={{
                     backgroundColor: "rgba(27, 31, 59, 0.9)",
                     color: "white",
                     border: "none",
                     marginBottom: "8px",
                     borderRadius: "8px",
-                }}
-                onClick={() => navigate(`/group/${group.id}/${group.ownerId}`)}
+                    cursor: "pointer",
+                    boxShadow: "0 0 8px rgba(255, 255, 255, 0.15)",
+                  }}
+                  onClick={() => navigate(`/group/${group.id}/${group.ownerId}`)}
                 >
-                {group.title}
+                  <Box display="flex" justifyContent="space-between" alignItems="center">
+                    <span>{group.title}</span>
+                    <span style={{ fontSize: "0.9em"}}>
+                      {total} / {max}
+                    </span>
+                  </Box>
                 </li>
-            ))}
-            </ul>
+              );
+            })}
+          </ul>
         ) : (
-            <p className="text-muted mt-3">You are not part of any groups yet.</p>
+          <p className="text-muted mt-3">You are not part of any groups yet.</p>
         )}
-        </Box>
+      </Box>
     )}
     {tabIndex === 2 && (
     <Box>

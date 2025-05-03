@@ -353,17 +353,15 @@ button:hover{
   }
   
   .custom-card {
-    background-color: rgba(27, 31, 59, 0.9) !important; 
+    background-color: rgba(27, 31, 59, 0.9) !important;
     border-radius: 16px;
-    box-shadow: 0 0 8px rgba(255, 255, 255, 0.15); 
-    transition: transform 0.3s ease, backdrop-filter 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.15);
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
     border: 1px solid rgba(255, 255, 255, 0.2) !important;
-    will-change: transform, backdrop-filter;
   }
   
-  
   .custom-card:hover {
-    transform: translateY(-4px) scale(1.06);
+    transform: translateY(-4px) scale(1.03);
     background-color: rgba(27, 31, 59, 0.95) !important;
     z-index: 5;
     box-shadow: 0 12px 30px rgba(255, 255, 255, 0.3);

@@ -25,5 +25,5 @@ COPY --from=build /app/dist /usr/share/nginx/html
 # Conditionally copy nginx config based on environment
 COPY nginx.${ENVIRONMENT}.conf /etc/nginx/nginx.conf
 
-EXPOSE 443
+EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]

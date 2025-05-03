@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { register } from "../services/apiService";
+import { Button, Paper, Typography, Box } from "@mui/material";
 import background from "../images/background.jpg";
 import Modal from "../components/Modal";
+import InputTextField from "../components/InputTextField";
 
 const RegisterForm = ({ onRegisterSuccess, onShowLogin }) => {
   const [email, setEmail] = useState("");
@@ -45,18 +47,16 @@ const RegisterForm = ({ onRegisterSuccess, onShowLogin }) => {
   };
 
   return (
-    <div
-      className="custom-container"
-      style={{
+    <Box
+      sx={{
+        minHeight: "100vh",
         backgroundImage: `url(${background})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
-        height: "100vh",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        flexDirection: "column",
-        color: "white",
+        padding: 2,
       }}
     >
       {showDialog && (
@@ -65,46 +65,71 @@ const RegisterForm = ({ onRegisterSuccess, onShowLogin }) => {
           message={dialogMessage}
           onClose={handleCloseDialog}
           actions={
-            <button className="btn btn-primary" onClick={handleCloseDialog}>
+            <Button onClick={handleCloseDialog} variant="contained">
               OK
-            </button>
+            </Button>
           }
         />
       )}
 
-      <div className="register-box">
-        <h2>Register</h2>
-        <form onSubmit={handleRegister}>
-          <input
-            type="text"
-            placeholder="Username"
+      <Paper
+        elevation={10}
+        sx={{
+          padding: 5,
+          borderRadius: 4,
+          maxWidth: 400,
+          width: "100%",
+          backgroundColor: "rgba(27, 31, 59, 0.9)",
+          color: "white",
+          boxShadow: "0 0 30px rgba(0,0,0,0.5)",
+        }}
+      >
+        <Typography variant="h4" align="center" gutterBottom>
+          Register
+        </Typography>
+
+        <form onSubmit={handleRegister} style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
+          <InputTextField
+            label="Username"
+            placeholder="username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            required
-          />
-          <input
-            type="email"
-            placeholder="Email"
+            />
+  
+
+          <InputTextField
+            label="Email"
+            placeholder="iama@gamer.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            required
           />
-          <input
+
+          <InputTextField
+            label="Password"
             type="password"
-            placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            required
           />
-          <button type="submit">Register</button>
+
+          {error && (
+            <Typography color="error" variant="body2" align="center">
+              {error}
+            </Typography>
+          )}
+
+          <Button type="submit" variant="contained" fullWidth size="large" sx={{ fontWeight: "bold" }}>
+            Register
+          </Button>
         </form>
 
-        <p style={{ marginTop: "20px" }}>
+        <Typography variant="body2" align="center" sx={{ marginTop: 3 }}>
           Already have an account?{" "}
-          <button onClick={onShowLogin}>Log In</button>
-        </p>
-      </div>
-    </div>
+          <Button onClick={onShowLogin} variant="text" sx={{ color: "#90caf9", textTransform: "none" }}>
+            Log In
+          </Button>
+        </Typography>
+      </Paper>
+    </Box>
   );
 };
 

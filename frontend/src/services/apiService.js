@@ -1,4 +1,4 @@
-let apiBase;
+/*let apiBase;
 //var API_BASE; = import.meta.env.VITE_API_BASE || "http://localhost:7191/api";
 try {
      apiBase = import.meta.env.VITE_API_BASE;
@@ -7,7 +7,9 @@ catch {
     apiBase = "http://localhost:7191/api";
 }
 const API_BASE = apiBase;
-export { API_BASE }; //export url to be used in test file
+export { API_BASE }; */ //export url to be used in test file
+
+var API_BASE = "http://localhost:7191/api";
 /**
  * Sends a registration request to the server.
  * @param {string} email

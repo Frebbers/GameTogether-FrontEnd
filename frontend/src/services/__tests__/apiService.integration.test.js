@@ -7,11 +7,19 @@ const testUsername = 'TestUser';
 const testPassword = 'TestPassword123!';
 const testProfileData = {
     name: 'Test User',
-    age: 30,
+    birthDate: '2000-01-01T00:00:00',
     region: 'Test Region',
     profilePicture: '',
     description: 'Test description'
-}
+};
+const testGroupData = {
+    title: `Test Group ${Date.now()}`,
+    isVisible: true,
+    ageRange: "0 - 99",
+    maxMembers: 10,
+    description: 'Integration test group',
+    tags: ["D&D"]
+};
 let authToken = null;
 let userId = null;
 let createdGroupId = null;
@@ -92,24 +100,22 @@ describe('API Service Integration Tests', () => {
         if (skipTests || !authToken) return;
 
         const result = await apiService.fetchUserProfile();
-        expect(result).toHaveProperty('id');
+        expect(result).toHaveProperty('description');
         expect(result).toHaveProperty('username');
+        expect(result).toHaveProperty('region');
+        expect(result).toHaveProperty('birthDate');
         expect(result.username).toBe(testUsername);
+        expect(result.region).toBe(testProfileData.region);
+        expect(result.birthDate).toBe(testProfileData.birthDate);
     }, 10000);
 
     // 4. Create Group Test
-    test('creates a new group', async () => {
+    test('create a new group', async () => {
         if (skipTests || !authToken) return;
+        const result = await apiService.createGroup(testGroupData);
 
-        const groupName = `Test Group ${Date.now()}`;
-        const result = await apiService.createGroup({
-            name: groupName,
-            description: 'Integration test group'
-        });
-
-        expect(result).toHaveProperty('id');
-        expect(result).toHaveProperty('name');
-        expect(result.name).toBe(groupName);
+        expect(result).toHaveProperty('message');
+        expect(result.message).toBe('Group created successfully!');
 
         createdGroupId = result.id;
     }, 10000);

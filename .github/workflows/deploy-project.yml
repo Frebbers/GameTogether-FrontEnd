@@ -45,10 +45,6 @@ jobs:
             cd GameTogether-FrontEnd
           fi
 
-          # Generate SSL certificate
-          sudo apt-get install certbot
-          sudo certbot certonly --standalone -d ${{ vars.DOMAIN }}
-
           # ENVIRONMENT VARIABLES
           rm .env  # We makin our own .env
           touch .env.prod

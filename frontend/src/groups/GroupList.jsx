@@ -44,8 +44,7 @@ const GroupList = ({ filterTag, onGroupCountChange, searchTerm }) => {
   if (loading) {
     return <p>Loading groups...</p>;
   }
-  console.log(groups);
-
+  
   return (
     
     <div className="container py-4 fade-in-down">

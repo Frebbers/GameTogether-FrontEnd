@@ -7,7 +7,6 @@ const Modal = ({ title, message, actions, onClose, showInput = false, inputPlace
         <div className="modal-content" style={{ backgroundColor: "#1b1f3b", color: "white", borderRadius: "1rem" }}>
           <div className="modal-header">
             <h5 className="modal-title">{title}</h5>
-            <button type="button" className="btn-close" onClick={onClose} style={{ background: "white" }}></button>
           </div>
           <div className="modal-body">
             <p>{message}</p>

@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { useState } from "react";
+import { useState, useContext } from "react";
 
 import HomePage from "../HomePage";
 import ProfilePage from "../profile/ProfilePage";
@@ -12,16 +12,26 @@ import SupportPage from "../common/SupportPage";
 import PrivatePolicyPage from "../common/PrivatePolicyPage";
 import Layout from "../common/Layout";
 
+import { AuthContext } from "../context/AuthContext";
+
 function App() {
+  const { isLoggedIn } = useContext(AuthContext);
   const [groups, setGroups] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
 
-  const withLayout = (Component, props = {}) => <Layout><Component {...props} /></Layout>;
+  const withLayout = (Component, props = {}, hideHeader = false) => (
+    <Layout hideHeader={hideHeader}>
+      <Component {...props} />
+    </Layout>
+  );
 
   return (
     <Router>
       <Routes>
-        <Route path="/" element={withLayout(HomePage, { groups, setGroups, searchTerm, setSearchTerm })} />
+        <Route
+          path="/"
+          element={withLayout(HomePage, { groups, setGroups, searchTerm, setSearchTerm }, !isLoggedIn)}
+        />
         <Route path="/profile" element={withLayout(ProfilePage)} />
         <Route path="/edit-profile" element={withLayout(EditProfilePage)} />
         <Route path="/group/:groupId/:ownerId" element={withLayout(GroupInfoPage, { groups, setGroups })} />

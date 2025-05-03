@@ -1,9 +1,9 @@
 import Header from "./Header";
 import Footer from "./Footer";
 
-const Layout = ({ children }) => (
+const Layout = ({ children, hideHeader = false }) => (
   <div className="d-flex flex-column vh-100">
-    <Header />
+    {!hideHeader && <Header />}
     <main className="flex-grow-1 overflow-hidden d-flex flex-column">
       {children}
     </main>

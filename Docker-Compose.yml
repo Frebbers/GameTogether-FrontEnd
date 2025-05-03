@@ -92,8 +92,8 @@ services:
     image: nginx:latest
     container_name: nginx
     ports:
-      - "443:443"  # Expose port 443 to the outside world for HTTPS
-      - "80:80"
+      - "10192:443"  # Expose port 443 to the outside world for HTTPS
+      - "10191:80"
     volumes:
       - /etc/nginx/ssl/:/https:ro
       - ./frontend/nginx.Production.conf:/etc/nginx/nginx.conf

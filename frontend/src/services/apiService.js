@@ -221,6 +221,8 @@ export const fetchProfile = async (userId) => {
         }
     });
 
+    console.log(response);
+
     if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.error || `Failed to fetch profile data of user ${userId}.`);

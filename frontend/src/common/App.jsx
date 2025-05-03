@@ -32,7 +32,7 @@ function App() {
           path="/"
           element={withLayout(HomePage, { groups, setGroups, searchTerm, setSearchTerm }, !isLoggedIn)}
         />
-        <Route path="/profile" element={withLayout(ProfilePage)} />
+        <Route path="/profile/:userId" element={withLayout(ProfilePage)} />
         <Route path="/edit-profile" element={withLayout(EditProfilePage)} />
         <Route path="/group/:groupId/:ownerId" element={withLayout(GroupInfoPage, { groups, setGroups })} />
         <Route path="/create" element={withLayout(CreateGroupPage, { setGroups })} />

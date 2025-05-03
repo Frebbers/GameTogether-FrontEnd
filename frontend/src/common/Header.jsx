@@ -66,7 +66,7 @@ function Header({ setSearchTerm, searchTerm, setFilterTag }) {
                 Logout
               </button>
   
-              <a role="button" onClick={() => navigate("/profile")}>
+              <a role="button" onClick={() => navigate("/profile/me")}>
                 <img
                   src={profile}
                   alt="Profile"

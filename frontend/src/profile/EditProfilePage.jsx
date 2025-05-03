@@ -96,7 +96,7 @@ const EditProfilePage = () => {
             });
 
             console.log("Profile Updated Successfully!");
-            navigate("/profile");
+            navigate("/profile/me");
         } catch (error) {
             console.error("Error updating profile:", error);
         } finally {

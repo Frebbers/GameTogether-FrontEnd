@@ -1,60 +1,83 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { fetchUserProfile, fetchUserGroups } from "../services/apiService";
+import { useParams, useNavigate } from "react-router-dom";
+import { fetchUserProfile, fetchUserGroups, fetchProfile } from "../services/apiService";
 import defaultProfileIcon from "../images/default-profile-icon.png";
 import background from "../images/background.jpg";
 import { jwtDecode } from 'jwt-decode';
 import "./ProfilePage.css";
 
 const UserProfilePage = () => {
-  const [username, setUsername] = useState("");
-  const [age, setAge] = useState("");
-  const [region, setRegion] = useState("");
-  const [profilePicture, setProfilePicture] = useState("");
-  const [description, setDescription] = useState("");
-  const [birthDate, setBirthDate] = useState("");
-  const [groups, setGroups] = useState([]); // NEW
+  const { userId } = useParams();
   const navigate = useNavigate();
-  const claims = jwtDecode(localStorage.getItem('token'));
-  const email = claims.email;
+  
+  const [profileData, setProfileData] = useState(null);
+  const [groups, setGroups] = useState([]);
+  const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const userData = await fetchUserProfile();
-        setUsername(userData.username);
-        setRegion(userData.region);
-        setProfilePicture(userData.profilePicture);
-        setDescription(userData.description);
-        setBirthDate(userData.birthDate);
-
-        if (userData.birthDate) {
-          const birth = new Date(userData.birthDate);
-          const today = new Date();
-          let calculatedAge = today.getFullYear() - birth.getFullYear();
-          const m = today.getMonth() - birth.getMonth();
-          if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) {
-            calculatedAge--;
-          }
-          setAge(calculatedAge);
+        let data;
+        if (userId === "me") {
+          data = await fetchUserProfile();
+          const claims = jwtDecode(localStorage.getItem('token'));
+          setEmail(claims.email);
+        } else {
+          data = await fetchProfile(userId);
+          setEmail(""); // Can't show email of other users unless you add it from backend.
         }
 
-        // Fetch user's groups
-        const userGroups = await fetchUserGroups();
-        setGroups(userGroups);
+        setProfileData(data);
 
+        if (userId === "me") {
+          const userGroups = await fetchUserGroups();
+          setGroups(userGroups);
+        } else {
+          setGroups([]); // No groups shown for other users, unless you want to expand.
+        }
       } catch (error) {
         console.error("Fetch error:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchData();
-  }, []);
+  }, [userId]);
+
+  if (loading) {
+    return (
+      <div className="custom-container" style={{ minHeight: "100vh", display: "flex", justifyContent: "center", alignItems: "center" }}>
+        <h2>Loading Profile...</h2>
+      </div>
+    );
+  }
+
+  if (!profileData) {
+    return (
+      <div className="custom-container" style={{ minHeight: "100vh", display: "flex", justifyContent: "center", alignItems: "center" }}>
+        <h2>Profile Not Found</h2>
+      </div>
+    );
+  }
 
   const resolvedProfilePicture =
-    profilePicture && profilePicture.startsWith("data:image")
-      ? profilePicture
+    profileData.profilePicture && profileData.profilePicture.startsWith("data:image")
+      ? profileData.profilePicture
       : defaultProfileIcon;
+
+  const calculateAge = (birthDate) => {
+    if (!birthDate) return "N/A";
+    const birth = new Date(birthDate);
+    const today = new Date();
+    let calculatedAge = today.getFullYear() - birth.getFullYear();
+    const m = today.getMonth() - birth.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) {
+      calculatedAge--;
+    }
+    return `${calculatedAge} years`;
+  };
 
   return (
     <div
@@ -88,38 +111,48 @@ const UserProfilePage = () => {
           />
 
           <div>
-            <h3 className="mb-0">{username}</h3>
+            <h3 className="mb-0">{profileData.username}</h3>
           </div>
 
-          <div className="ms-auto">
-            <button
-              className="btn btn-info text-white"
-              onClick={() =>
-                navigate("/edit-profile", {
-                  state: { username, region, profilePicture, description, birthDate },
-                })
-              }
-            >
-              <i className="bi bi-pencil me-1"></i> EDIT
-            </button>
-          </div>
+          {userId === "me" && (
+            <div className="ms-auto">
+              <button
+                className="btn btn-info text-white"
+                onClick={() =>
+                  navigate("/edit-profile", {
+                    state: { 
+                      username: profileData.username, 
+                      region: profileData.region, 
+                      profilePicture: profileData.profilePicture, 
+                      description: profileData.description, 
+                      birthDate: profileData.birthDate 
+                    },
+                  })
+                }
+              >
+                <i className="bi bi-pencil me-1"></i> EDIT
+              </button>
+            </div>
+          )}
         </div>
 
         <hr />
 
         {/* Basic Info */}
         <div className="row">
-          <div className="col-6 mb-2">
-            <strong>Email</strong>
-            <div>{email}</div>
-          </div>
+          {email && (
+            <div className="col-6 mb-2">
+              <strong>Email</strong>
+              <div>{email}</div>
+            </div>
+          )}
           <div className="col-6 mb-2">
             <strong>Region</strong>
-            <div>{region}</div>
+            <div>{profileData.region || "N/A"}</div>
           </div>
           <div className="col-12 mb-2">
             <strong>Age</strong>
-            <div>{typeof age === "number" ? `${age} years` : "N/A"}</div>
+            <div>{calculateAge(profileData.birthDate)}</div>
           </div>
         </div>
 
@@ -145,62 +178,64 @@ const UserProfilePage = () => {
                 className="accordion-body"
                 style={{ maxHeight: "350px", overflowY: "auto" }}
               >
-                {description || "No description provided."}
+                {profileData.description || "No description provided."}
               </div>
             </div>
           </div>
         </div>
 
         {/* Groups Accordion */}
-        <div className="accordion mt-4" id="groupsAccordion">
-          <div className="accordion-item">
-            <h2 className="accordion-header">
-              <button
-                className="accordion-button collapsed"
-                type="button"
-                data-bs-toggle="collapse"
-                data-bs-target="#groupsCollapse"
-              >
-                Your Groups
-              </button>
-            </h2>
-            <div
-              id="groupsCollapse"
-              className="accordion-collapse collapse"
-              data-bs-parent="#groupsAccordion"
-            >
+        {userId === "me" && (
+          <div className="accordion mt-4" id="groupsAccordion">
+            <div className="accordion-item">
+              <h2 className="accordion-header">
+                <button
+                  className="accordion-button collapsed"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#groupsCollapse"
+                >
+                  Your Groups
+                </button>
+              </h2>
               <div
-                className="accordion-body"
-                style={{ maxHeight: "350px", overflowY: "auto" }}
+                id="groupsCollapse"
+                className="accordion-collapse collapse"
+                data-bs-parent="#groupsAccordion"
               >
-                {groups.length > 0 ? (
-                  <ul className="list-group">
-                    {groups.map((group) => (
-                      <li
-                        key={group.id}
-                        className="list-group-item list-group-item-action"
-                        style={{
-                          backgroundColor: "rgba(27, 31, 59, 0.9)",
-                          color: "white",
-                          border: "none",
-                          marginBottom: "8px",
-                          borderRadius: "8px",
-                        }}
-                        onClick={() =>
-                          navigate(`/group/${group.id}/${group.ownerId}`)
-                        }
-                      >
-                        {group.title}
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p className="text-muted">You are not part of any groups yet.</p>
-                )}
+                <div
+                  className="accordion-body"
+                  style={{ maxHeight: "350px", overflowY: "auto" }}
+                >
+                  {groups.length > 0 ? (
+                    <ul className="list-group">
+                      {groups.map((group) => (
+                        <li
+                          key={group.id}
+                          className="list-group-item list-group-item-action"
+                          style={{
+                            backgroundColor: "rgba(27, 31, 59, 0.9)",
+                            color: "white",
+                            border: "none",
+                            marginBottom: "8px",
+                            borderRadius: "8px",
+                          }}
+                          onClick={() =>
+                            navigate(`/group/${group.id}/${group.ownerId}`)
+                          }
+                        >
+                          {group.title}
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="text-muted">You are not part of any groups yet.</p>
+                  )}
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        )}
 
       </div>
     </div>

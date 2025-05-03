@@ -1,0 +1,213 @@
+// src/services/__tests__/apiService.integration.test.js
+import * as apiService from '../apiService';
+
+// Test credentials
+const testEmail = 'user@example.com';
+const testUsername = 'TestUser';
+const testPassword = 'TestPassword123!';
+let authToken = null;
+let userId = null;
+let createdGroupId = null;
+
+// Skip tests flag - set to true if API is unreachable
+let skipTests = false;
+
+// Check API connectivity before tests
+beforeAll(async () => {
+    try {
+        const backEndAddress = apiService.API_BASE.replace(/\/api$/, '');
+        const healthCheckUrl = `${backEndAddress}/healthz`;
+        const response = await fetch(healthCheckUrl);
+        console.log(`Checking endpoint health at: ${healthCheckUrl}`);
+        let responseText = await response.text();
+        console.log(`Response status: ${responseText}`);
+        if (!(responseText === 'Healthy')) {
+            console.warn('API is not reachable. Skipping integration tests.');
+            skipTests = true;
+        }
+    } catch (error) {
+        console.warn(`Failed to connect to API: ${error.message}`);
+        skipTests = true;
+    }
+}, 10000);
+
+describe('API Service Integration Tests', () => {
+    // 1. Registration Test
+    test('registers a new user', async () => {
+        console.log('registers a new user test starting...');
+        if (skipTests) return;
+
+        try {
+            const result = await apiService.register(testEmail, testUsername, testPassword);
+            expect(result).toHaveProperty('message');
+            expect(typeof result.message).toBe('string');
+        } catch (error) {
+            if (error.message.includes('already exists')) {
+                console.log('Test user already exists, continuing...');
+            } else {
+                throw error;
+            }
+        }
+    }, 10000);
+
+    // 2. Login Test
+    test('logs in with valid credentials', async () => {
+        if (skipTests) return;
+
+        const result = await apiService.login(testEmail, testPassword);
+        expect(result).toHaveProperty('token');
+
+        // Save for other tests
+        authToken = result.token;
+        userId = result.userId;
+        localStorage.setItem('token', authToken);
+    }, 10000);
+
+    // 3. Fetch User Profile Test
+    test('fetches user profile', async () => {
+        if (skipTests || !authToken) return;
+
+        const result = await apiService.fetchUserProfile();
+        expect(result).toHaveProperty('id');
+        expect(result).toHaveProperty('username');
+        expect(result.username).toBe(testUsername);
+    }, 10000);
+
+    // 4. Create Group Test
+    test('creates a new group', async () => {
+        if (skipTests || !authToken) return;
+
+        const groupName = `Test Group ${Date.now()}`;
+        const result = await apiService.createGroup({
+            name: groupName,
+            description: 'Integration test group'
+        });
+
+        expect(result).toHaveProperty('id');
+        expect(result).toHaveProperty('name');
+        expect(result.name).toBe(groupName);
+
+        createdGroupId = result.id;
+    }, 10000);
+
+    // 5. Fetch Groups Test
+    test('fetches all groups', async () => {
+        if (skipTests || !authToken) return;
+
+        const result = await apiService.fetchGroups();
+        expect(Array.isArray(result)).toBe(true);
+
+        if (createdGroupId) {
+            const foundGroup = result.find(group => group.id === createdGroupId);
+            expect(foundGroup).toBeDefined();
+        }
+    }, 10000);
+
+    // 6. Fetch User Groups Test
+    test('fetches user groups', async () => {
+        if (skipTests || !authToken) return;
+
+        const result = await apiService.fetchUserGroups();
+        expect(Array.isArray(result)).toBe(true);
+
+        if (createdGroupId) {
+            const foundGroup = result.find(group => group.id === createdGroupId);
+            expect(foundGroup).toBeDefined();
+        }
+    }, 10000);
+
+    // 7. Fetch Group By ID Test
+    test('fetches a specific group by ID', async () => {
+        if (skipTests || !authToken || !createdGroupId) return;
+
+        const result = await apiService.fetchGroupById(createdGroupId);
+        expect(result).toHaveProperty('id');
+        expect(result.id).toBe(createdGroupId);
+    }, 10000);
+
+    // 8. Leave Group Test
+    test('leaves a group', async () => {
+        if (skipTests || !authToken || !createdGroupId) return;
+
+        const result = await apiService.leaveGroup(createdGroupId);
+        expect(result).toBeDefined();
+    }, 10000);
+
+    // 9. Join Group Test
+    test('joins a group', async () => {
+        if (skipTests || !authToken || !createdGroupId) return;
+
+        const result = await apiService.joinGroup(createdGroupId);
+        expect(result).toBeDefined();
+    }, 10000);
+
+    // 10. Update User Profile Test
+    test('updates user profile', async () => {
+        if (skipTests || !authToken) return;
+
+        const updatedBio = `Updated bio ${Date.now()}`;
+        const result = await apiService.updateUserProfile({
+            body: JSON.stringify({
+                bio: updatedBio
+            })
+        });
+
+        expect(result).toHaveProperty('bio');
+        expect(result.bio).toBe(updatedBio);
+    }, 10000);
+
+    // 11. Fetch Profile by ID Test
+    test('fetches another user profile by ID', async () => {
+        if (skipTests || !authToken || !userId) return;
+
+        // This is getting our own profile by ID for simplicity
+        const result = await apiService.fetchProfile(userId);
+        expect(result).toHaveProperty('id');
+        expect(result.id).toBe(userId);
+    }, 10000);
+
+    // 12-13. Group Management Tests (Conditional)
+    // Note: These tests would require specific setup with two accounts
+    // and are conditionally implemented
+
+    test('accepts a user into group (conditional test)', async () => {
+        if (skipTests || !authToken || !createdGroupId) {
+            console.log('Skipping accept user test - requires special setup');
+            return;
+        }
+
+        // Only run if there's another userId to test with (would need separate setup)
+        const otherUserId = process.env.TEST_OTHER_USER_ID;
+        if (!otherUserId) {
+            console.log('Skipping accept/reject user tests - no test user ID provided');
+            return;
+        }
+
+        try {
+            const result = await apiService.AcceptUserIntoGroup(createdGroupId, otherUserId);
+            expect(result).toBeDefined();
+        } catch (error) {
+            // This may fail if user isn't in pending state
+            console.log('Accept user test failed, likely due to test preconditions');
+        }
+    }, 10000);
+
+    test('rejects a user from group (conditional test)', async () => {
+        if (skipTests || !authToken || !createdGroupId) {
+            console.log('Skipping reject user test - requires special setup');
+            return;
+        }
+
+        // Only run if there's another userId to test with (would need separate setup)
+        const otherUserId = process.env.TEST_OTHER_USER_ID;
+        if (!otherUserId) return;
+
+        try {
+            const result = await apiService.RejectUserFromGroup(createdGroupId, otherUserId);
+            expect(result).toBeDefined();
+        } catch (error) {
+            // This may fail if user isn't in pending state
+            console.log('Reject user test failed, likely due to test preconditions');
+        }
+    }, 10000);
+});

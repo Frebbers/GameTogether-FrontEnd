@@ -64,7 +64,7 @@ services:
     volumes:
       - ./backend/certs:/https:ro
     healthcheck:
-      test: ["CMD", "curl", "-f", "https://localhost:7191/healthz"]
+      test: ["CMD", "curl", "-f", "http://localhost:7191/healthz"]
       interval: 10s
       timeout: 5s
       retries: 2

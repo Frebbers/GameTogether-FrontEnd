@@ -107,8 +107,7 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-      args:
-        - ENVIRONMENT=${ENVIRONMENT}
+      target: builder  # Use the builder stage from the frontend's Dockerfile
     depends_on:
       mysql:
         condition: service_healthy
@@ -117,8 +116,8 @@ services:
       api:
         condition: service_healthy
     environment: *common-env
-    command: >
-      npm test
+    working_dir: /app  # Set to the WORKDIR defined in the builder stage
+    command: npm test
     networks:
       - app-network
 

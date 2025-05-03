@@ -144,6 +144,7 @@ h1 {
 .profile-form {
     display:flex;
     flex-direction: column;
+    gap: .5em;
 }
 
 .profile-form label {
@@ -180,7 +181,8 @@ h1 {
     display: inline-block;
 }
 
-
+/*<label>Description:</label>
+                            <div className="profile-description">{description}</div>*/
 button:hover {
     background: #0056b3;
 }
@@ -218,3 +220,31 @@ button:hover {
     background: #0056b3;
 }
 
+
+/*Profile page shenanigans*/
+
+.custom-profile-container {
+    border: 1px solid black;
+    background: rgba(27, 31, 59, 0.9);
+    width:50%;
+    padding: 2em;
+}
+
+.profile-wrapper {
+    display:flex;
+    justify-content: space-between;
+}
+
+.profile-wrapper-i1 {
+    margin-left: 4em;
+}
+
+.card {
+    background-color: #fff;
+    border-radius: 15px;
+  }
+  
+  .accordion-button {
+    background-color: #f8f9fa;
+  }
+  

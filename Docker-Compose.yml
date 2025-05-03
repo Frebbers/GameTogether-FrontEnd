@@ -119,7 +119,6 @@ services:
     environment: *common-env
     working_dir: /src
     command: >
-      cd frontend
       npm test
     networks:
       - app-network

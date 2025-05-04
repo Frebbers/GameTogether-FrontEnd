@@ -1,9 +1,13 @@
 import { useNavigate } from "react-router-dom";
+import { useUser } from "../context/UserContext";
+
 import logo from "../images/sitelogo.png";
 import profile from "../images/profileimage.png";
 
 function Header({ setSearchTerm, searchTerm, setFilterTag }) {
     const navigate = useNavigate();
+    const { profilePicture } = useUser();
+
   
     return (
       <header>
@@ -67,12 +71,13 @@ function Header({ setSearchTerm, searchTerm, setFilterTag }) {
               </button>
   
               <a role="button" onClick={() => navigate("/profile/me")}>
-                <img
-                  src={profile}
-                  alt="Profile"
-                  className="rounded-circle"
-                  style={{ width: "40px", height: "40px", objectFit: "cover" }}
+              <img
+                 src={profilePicture || profile}
+                alt="Profile"
+                className="rounded-circle"
+                style={{ width: "40px", height: "40px", objectFit: "cover" }}
                 />
+
               </a>
             </div>
           </div>

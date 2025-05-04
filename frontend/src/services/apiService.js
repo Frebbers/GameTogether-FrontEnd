@@ -1,7 +1,7 @@
 /*let apiBase;
 //var API_BASE; = import.meta.env.VITE_API_BASE || "http://localhost:7191/api";
 try {
-     apiBase = import.meta.env.VITE_API_BASE;
+     apiBase = import.meta.env.VITE_API_BASE || "http://localhost:7191/api";
 }
 catch {
     apiBase = "http://localhost:7191/api";

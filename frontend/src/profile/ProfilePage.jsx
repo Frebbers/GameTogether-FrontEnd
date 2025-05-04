@@ -1,3 +1,4 @@
+import { useUser } from "../context/UserContext";
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { fetchUserProfile, fetchUserGroups, fetchProfile } from "../services/apiService";
@@ -10,7 +11,8 @@ import "./ProfilePage.css";
 const UserProfilePage = () => {
   const { userId } = useParams();
   const navigate = useNavigate();
-
+  const { setProfilePicture } = useUser();
+  
   const [profileData, setProfileData] = useState(null);
   const [groups, setGroups] = useState([]);
   const [email, setEmail] = useState("");
@@ -31,6 +33,11 @@ const UserProfilePage = () => {
         }
 
         setProfileData(data);
+        const resolved = data.profilePicture?.startsWith("data:image")
+           ? data.profilePicture
+            : defaultProfileIcon;
+
+           setProfilePicture(resolved);
 
         if (userId === "me") {
           const userGroups = await fetchUserGroups();

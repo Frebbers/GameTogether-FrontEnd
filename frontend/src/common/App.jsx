@@ -13,6 +13,7 @@ import PrivatePolicyPage from "../common/PrivatePolicyPage";
 import Layout from "../common/Layout";
 
 import { AuthContext } from "../context/AuthContext";
+import { UserProvider } from "../context/UserContext.jsx";
 
 function App() {
   const { isLoggedIn } = useContext(AuthContext);
@@ -26,6 +27,7 @@ function App() {
   );
 
   return (
+    <UserProvider>
     <Router>
       <Routes>
         <Route
@@ -42,6 +44,7 @@ function App() {
         <Route path="/policy" element={withLayout(PrivatePolicyPage)} />
       </Routes>
     </Router>
+    </UserProvider>
   );
 }
 

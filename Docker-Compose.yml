@@ -107,6 +107,7 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      target: build
     depends_on:
       mysql:
         condition: service_healthy

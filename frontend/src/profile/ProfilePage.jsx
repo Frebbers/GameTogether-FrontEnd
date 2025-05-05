@@ -11,6 +11,7 @@ const UserProfilePage = () => {
   const { userId } = useParams();
   const navigate = useNavigate();
   const { user, loading: userLoading } = useUser();
+
   const [profileData, setProfileData] = useState(null);
   const [groups, setGroups] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -18,16 +19,21 @@ const UserProfilePage = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        if (userId === "me") {
-          if (!user) {
-            setProfileData(null);
-            return;
-          }
-          setProfileData(user);
+      if (userId === "me") {
+        if (!user) {
+          return; // user still loading, wait
+        }
+        setProfileData(user);
+        try {
           const userGroups = await fetchUserGroups();
           setGroups(userGroups);
-        } else {
+        } catch (error) {
+          console.error("Failed to fetch groups:", error);
+        } finally {
+          setLoading(false);
+        }
+      } else {
+        try {
           const data = await fetchProfile(userId);
           setProfileData({
             username: data.username,
@@ -38,25 +44,38 @@ const UserProfilePage = () => {
               ? data.profilePicture
               : defaultProfileIcon,
           });
-          setGroups([]); // not fetching groups for others
+          setGroups([]); // No groups for other profiles
+        } catch (error) {
+          console.error("Failed to fetch profile:", error);
+          setProfileData(null);
+        } finally {
+          setLoading(false);
         }
-      } catch (error) {
-        console.error("Fetch error:", error);
-        setProfileData(null);
-      } finally {
-        setLoading(false);
       }
     };
 
-    fetchData();
-  }, [userId]);
+    if (!userLoading) {
+      fetchData();
+    }
+  }, [userId, user, userLoading]);
 
   const handleTabChange = (event, newValue) => {
     setTabIndex(newValue);
   };
 
-  console.log(user.email);
-  if (loading || (userId === "me" && userLoading)) {
+  const calculateAge = (birthDate) => {
+    if (!birthDate) return "N/A";
+    const birth = new Date(birthDate);
+    const today = new Date();
+    let age = today.getFullYear() - birth.getFullYear();
+    const m = today.getMonth() - birth.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) {
+      age--;
+    }
+    return `${age} years`;
+  };
+
+  if (loading) {
     return (
       <div className="custom-container" style={{ minHeight: "100vh", display: "flex", justifyContent: "center", alignItems: "center" }}>
         <h2>Loading Profile...</h2>
@@ -71,18 +90,6 @@ const UserProfilePage = () => {
       </div>
     );
   }
-
-  const calculateAge = (birthDate) => {
-    if (!birthDate) return "N/A";
-    const birth = new Date(birthDate);
-    const today = new Date();
-    let calculatedAge = today.getFullYear() - birth.getFullYear();
-    const m = today.getMonth() - birth.getMonth();
-    if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) {
-      calculatedAge--;
-    }
-    return `${calculatedAge} years`;
-  };
 
   return (
     <div
@@ -107,129 +114,127 @@ const UserProfilePage = () => {
           color: "white",
         }}
       >
-    <Box sx={{ borderBottom: 1, borderColor: "divider", marginBottom: 2 }}>
-        <Tabs
+        <Box sx={{ borderBottom: 1, borderColor: "divider", marginBottom: 2 }}>
+          <Tabs
             value={tabIndex}
             onChange={handleTabChange}
             textColor="inherit"
             indicatorColor="primary"
             variant="scrollable"
             scrollButtons="auto"
-            >
+          >
             <Tab label="Profile" />
             {userId === "me" && <Tab label="Groups" />}
             <Tab label="About Me" />
-        </Tabs>
-    </Box>
-
-    {/* Tab 0: Profile Info */}
-    {tabIndex === 0 && (
-        <Box>
-        {/* Top Profile Section */}
-        <div className="d-flex align-items-center gap-4">
-          <img
-            src={profileData.profilePicture || defaultProfileIcon}
-            alt="Profile"
-            className="rounded-circle border"
-            style={{ width: "120px", height: "120px", objectFit: "cover" }}
-            />
-
-            <div>
-            <h3 className="mb-0">{profileData.username}</h3>
-            </div>
-
-            {userId === "me" && (
-            <div className="ms-auto">
-                <button
-                className="btn btn-info text-white"
-                onClick={() =>
-                    navigate("/edit-profile", {
-                    state: {
-                        username: profileData.username,
-                        region: profileData.region,
-                        profilePicture: profileData.profilePicture,
-                        description: profileData.description,
-                        birthDate: profileData.birthDate,
-                    },
-                    })
-                }
-                >
-                <i className="bi bi-pencil me-1"></i> EDIT
-                </button>
-            </div>
-            )}
-        </div>
-
-        <hr />
-
-        {/* Basic Info */}
-        <div className="row">
-          {userId === "me" && user?.email && (
-            <div className="col-6 mb-2">
-              <strong>Email</strong>
-              <div>{user.email}</div>
-            </div>
-            )}
-            <div className="col-6 mb-2">
-            <strong>Region</strong>
-            <div>{profileData.region || "N/A"}</div>
-            </div>
-            <div className="col-12 mb-2">
-            <strong>Age</strong>
-            <div>{calculateAge(profileData.birthDate)}</div>
-            </div>
-        </div>
+          </Tabs>
         </Box>
-    )}
 
-    {/* Tab 1: Groups */}
-    {tabIndex === 1 && userId === "me" && (
-        <Box>
-        {groups.length > 0 ? (
-          <ul className="list-group mt-3">
-            {groups.map((group) => {
-              const activeMembers = group.members?.filter(m => m.groupStatus === 1) ?? [];
-              const guestCount = group.nonUserMembers?.length ?? 0;
-              const max = group.maxMembers ?? "?";
-              const total = activeMembers.length + guestCount;
-      
-              return (
-                <li
-                  key={group.id}
-                  className="list-group-item list-group-item-action profile-group-item"
-                  style={{
-                    backgroundColor: "rgba(27, 31, 59, 0.9)",
-                    color: "white",
-                    border: "none",
-                    marginBottom: "8px",
-                    borderRadius: "8px",
-                    cursor: "pointer",
-                    boxShadow: "0 0 8px rgba(255, 255, 255, 0.15)",
-                  }}
-                  onClick={() => navigate(`/group/${group.id}/${group.ownerId}`)}
-                >
-                  <Box display="flex" justifyContent="space-between" alignItems="center">
-                    <span>{group.title}</span>
-                    <span style={{ fontSize: "0.9em"}}>
-                      {total} / {max}
-                    </span>
-                  </Box>
-                </li>
-              );
-            })}
-          </ul>
-        ) : (
-          <p className="text-muted mt-3">You are not part of any groups yet.</p>
+        {/* Tab 0: Profile */}
+        {tabIndex === 0 && (
+          <Box>
+            <div className="d-flex align-items-center gap-4">
+              <img
+                src={profileData.profilePicture || defaultProfileIcon}
+                alt="Profile"
+                className="rounded-circle border"
+                style={{ width: "120px", height: "120px", objectFit: "cover" }}
+              />
+              <div>
+                <h3 className="mb-0">{profileData.username}</h3>
+              </div>
+              {userId === "me" && (
+                <div className="ms-auto">
+                  <button
+                    className="btn btn-info text-white"
+                    onClick={() =>
+                      navigate("/edit-profile", {
+                        state: {
+                          username: profileData.username,
+                          region: profileData.region,
+                          profilePicture: profileData.profilePicture,
+                          description: profileData.description,
+                          birthDate: profileData.birthDate,
+                        },
+                      })
+                    }
+                  >
+                    <i className="bi bi-pencil me-1"></i> EDIT
+                  </button>
+                </div>
+              )}
+            </div>
+
+            <hr />
+
+            <div className="row">
+              {userId === "me" && user?.email && (
+                <div className="col-6 mb-2">
+                  <strong>Email</strong>
+                  <div>{user.email}</div>
+                </div>
+              )}
+              <div className="col-6 mb-2">
+                <strong>Region</strong>
+                <div>{profileData.region || "N/A"}</div>
+              </div>
+              <div className="col-12 mb-2">
+                <strong>Age</strong>
+                <div>{calculateAge(profileData.birthDate)}</div>
+              </div>
+            </div>
+          </Box>
         )}
-      </Box>
-    )}
-    {tabIndex === 2 && (
-    <Box>
-        <p style={{ whiteSpace: "pre-wrap" }}>
-        {profileData.description || "No description provided."}
-        </p>
-    </Box>
-    )}
+
+        {/* Tab 1: Groups */}
+        {tabIndex === 1 && userId === "me" && (
+          <Box>
+            {groups.length > 0 ? (
+              <ul className="list-group mt-3">
+                {groups.map((group) => {
+                  const activeMembers = group.members?.filter(m => m.groupStatus === 1) ?? [];
+                  const guestCount = group.nonUserMembers?.length ?? 0;
+                  const max = group.maxMembers ?? "?";
+                  const total = activeMembers.length + guestCount;
+
+                  return (
+                    <li
+                      key={group.id}
+                      className="list-group-item list-group-item-action profile-group-item"
+                      style={{
+                        backgroundColor: "rgba(27, 31, 59, 0.9)",
+                        color: "white",
+                        border: "none",
+                        marginBottom: "8px",
+                        borderRadius: "8px",
+                        cursor: "pointer",
+                        boxShadow: "0 0 8px rgba(255, 255, 255, 0.15)",
+                      }}
+                      onClick={() => navigate(`/group/${group.id}/${group.ownerId}`)}
+                    >
+                      <Box display="flex" justifyContent="space-between" alignItems="center">
+                        <span>{group.title}</span>
+                        <span style={{ fontSize: "0.9em" }}>
+                          {total} / {max}
+                        </span>
+                      </Box>
+                    </li>
+                  );
+                })}
+              </ul>
+            ) : (
+              <p className="text-muted mt-3">You are not part of any groups yet.</p>
+            )}
+          </Box>
+        )}
+
+        {/* Tab 2: About Me */}
+        {tabIndex === 2 && (
+          <Box>
+            <p style={{ whiteSpace: "pre-wrap" }}>
+              {profileData.description || "No description provided."}
+            </p>
+          </Box>
+        )}
       </div>
     </div>
   );

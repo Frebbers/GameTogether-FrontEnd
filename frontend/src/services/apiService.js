@@ -152,6 +152,29 @@ export const fetchGroups = async () => {
 };
 
 /**
+ * Fetches groups created by a specific user.
+ * @param {string} userId
+ * @returns {Promise<Array>} Array of groups
+ */
+export const fetchGroupsByUserId = async (userId) => {
+    const token = getToken();
+    const response = await fetch(`${API_BASE}/Groups/user/${userId}`, {
+        method: "GET",
+        headers: {
+            "Accept": "application/json",
+            "Authorization": `Bearer ${token}`
+        }
+    });
+
+    if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || `Failed to fetch groups for user ${userId}.`);
+    }
+
+    return await response.json();
+};
+
+/**
  * Fetches the user's sessions.
  * @returns {Promise<Array>} Array of user's sessions
  */

@@ -1,7 +1,7 @@
 import { useUser } from "../context/UserContext";
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { fetchUserGroups, fetchProfile } from "../services/apiService";
+import { fetchUserGroups, fetchProfile, fetchGroupById, fetchGroupsByUserId } from "../services/apiService";
 import defaultProfileIcon from "../images/default-profile-icon.png";
 import background from "../images/background.jpg";
 import { Tabs, Tab, Box, Button, CircularProgress } from "@mui/material";
@@ -44,10 +44,21 @@ const UserProfilePage = () => {
               ? data.profilePicture
               : defaultProfileIcon,
           });
-          setGroups([]);
+
+          try {
+            const otherUserGroups = await fetchGroupsByUserId(userId);
+            // Only keep groups that are visible (public)
+            const visibleGroups = otherUserGroups.filter((g) => g.isVisible);
+            setGroups(visibleGroups);
+          } catch (groupError) {
+            console.error("Failed to fetch user groups:", groupError);
+            setGroups([]);
+          }
+
         } catch (error) {
           console.error("Failed to fetch profile:", error);
           setProfileData(null);
+          setGroups([]);
         } finally {
           setLoading(false);
         }
@@ -145,8 +156,8 @@ const UserProfilePage = () => {
               scrollButtons="auto"
             >
               <Tab label="Profile" />
-              {userId === "me" && <Tab label="Groups" />}
               <Tab label="About Me" />
+              <Tab label="Groups" />
             </Tabs>
           </Box>
 
@@ -205,7 +216,15 @@ const UserProfilePage = () => {
             </Box>
           )}
 
-          {tabIndex === 1 && userId === "me" && (
+          {tabIndex === 1 && (
+            <Box>
+              <p style={{ whiteSpace: "pre-wrap" }}>
+                {profileData.description || "No description provided."}
+              </p>
+            </Box>
+          )}
+
+          {tabIndex === 2 && (
             <Box>
               {groups.length > 0 ? (
                 <ul className="list-group mt-3">
@@ -241,16 +260,10 @@ const UserProfilePage = () => {
                   })}
                 </ul>
               ) : (
-                <p className="text-muted mt-3">You are not part of any groups yet.</p>
+                <p className="text-muted mt-3">
+                  {userId === "me" ? "You are not part of any groups yet." : "No public groups to display."}
+                </p>
               )}
-            </Box>
-          )}
-
-          {tabIndex === 2 && (
-            <Box>
-              <p style={{ whiteSpace: "pre-wrap" }}>
-                {profileData.description || "No description provided."}
-              </p>
             </Box>
           )}
         </div>

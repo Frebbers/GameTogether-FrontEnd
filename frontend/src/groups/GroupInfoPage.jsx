@@ -140,14 +140,33 @@ const GroupInfoPage = ({ groups, setGroups }) => {
                   <Divider sx={{ borderColor: "#888", my: 1 }} />
                   <Stack spacing={1}>
                     {members.map((m) => (
-                      <Paper key={m.userId} sx={memberCardStyle}>
-                        <Stack direction="row" spacing={1} alignItems="center">
-                          <Typography>{m.username}</Typography>
-                          {String(m.userId) === String(ownerId) && (
-                            <Chip label="Owner" size="small" />
-                          )}
-                        </Stack>
-                      </Paper>
+                    <Button
+                    key={m.userId}
+                    fullWidth
+                    variant="contained"
+                    onClick={() => navigate(`/profile/${m.userId}`)}
+                    sx={{
+                      backgroundColor: "rgba(27, 31, 59, 0.9)",
+                      color: "white",
+                      textTransform: "none",
+                      justifyContent: "space-between",
+                      borderRadius: "8px",
+                      boxShadow: "0 0 8px rgba(255, 255, 255, 0.1)",
+                      p: 2,
+                      transition: "transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease",
+                      "&:hover": {
+                        transform: "translateY(-2px) scale(1.01)",
+                        backgroundColor: "rgba(27, 31, 59, 0.95)",
+                        boxShadow: "0 6px 15px rgba(255, 255, 255, 0.2)",
+                        zIndex: 5,
+                      },
+                    }}
+                  >
+                    <Typography>{m.username}</Typography>
+                    {String(m.userId) === String(ownerId) && (
+                      <Chip label="Owner" size="small" color="primary" />
+                    )}
+                  </Button>
                     ))}
                     {guests.map((g, i) => (
                       <Paper key={i} sx={memberCardStyle}>
@@ -157,6 +176,7 @@ const GroupInfoPage = ({ groups, setGroups }) => {
                       </Paper>
                     ))}
                   </Stack>
+
                 </Paper>
               </Stack>
             </Box>

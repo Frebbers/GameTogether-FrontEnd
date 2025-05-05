@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { fetchUserProfile, updateUserProfile } from "../services/apiService.js";
+import { updateUserProfile } from "../services/apiService.js";
+import { useUser } from "../context/UserContext"; 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import background from "../images/background.jpg";
 import defaultProfileIcon from '../images/default-profile-icon.png';
 
 const EditProfilePage = () => {
     const navigate = useNavigate();
+    const { user, reloadUser, loading: userLoading } = useUser(); 
     const [file, setFile] = useState(null);
     const [formData, setFormData] = useState({
         username: "",
@@ -18,38 +20,22 @@ const EditProfilePage = () => {
     });
     const [preview, setPreview] = useState(null);
     const [calculatedAge, setCalculatedAge] = useState(null);
-    const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
 
-    // Fetch user profile when the page loads
     useEffect(() => {
-        async function loadProfile() {
-            try {
-                const profile = await fetchUserProfile();
-                setFormData({
-                    username: profile.username || "",
-                    email: profile.email || "",
-                    region: profile.region || "",
-                    profilePicture: profile.profilePicture || "",
-                    description: profile.description || "",
-                    birthDate: profile.birthDate ? profile.birthDate.split('T')[0] : "",
-                });
-                if (profile.profilePicture && profile.profilePicture.startsWith("data:image")) {
-                    setPreview(profile.profilePicture);
-                } else {
-                    setPreview(null);
-                }
-            } catch (error) {
-                console.error("Failed to load profile:", error);
-            } finally {
-                setLoading(false);
-            }
+        if (user) {
+            setFormData({
+                username: user.username || "",
+                email: user.email || "",
+                region: user.region || "",
+                profilePicture: user.profilePicture || "",
+                description: user.description || "",
+                birthDate: user.birthDate ? user.birthDate.split('T')[0] : "",
+            });
+            setPreview(user.profilePicture || null);
         }
+    }, [user]);
 
-        loadProfile();
-    }, []);
-
-    // Calculate age whenever birthDate changes
     useEffect(() => {
         if (formData.birthDate) {
             const birth = new Date(formData.birthDate);
@@ -92,10 +78,12 @@ const EditProfilePage = () => {
                     profilePicture: preview,
                     description: formData.description,
                     region: formData.region,
-                })
+                }),
             });
 
             console.log("Profile Updated Successfully!");
+
+            await reloadUser();
             navigate("/profile/me");
         } catch (error) {
             console.error("Error updating profile:", error);
@@ -104,10 +92,9 @@ const EditProfilePage = () => {
         }
     };
 
-    // Today's date for date picker max
     const todayString = new Date().toISOString().split('T')[0];
 
-    if (loading) {
+    if (userLoading || !user) {
         return (
             <div className="custom-container" style={{ minHeight: "100vh", display: "flex", justifyContent: "center", alignItems: "center" }}>
                 <h2>Loading Profile...</h2>

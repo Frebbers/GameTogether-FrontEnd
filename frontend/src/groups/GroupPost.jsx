@@ -75,7 +75,7 @@ const GroupPost = ({
           </div>
 
           {tabIndex === 0 && (
-            <Box sx={{ fontSize: "0.85em", marginBottom: "1rem" }}>
+            <Box sx={{ fontSize: "0.85em" }}>
               <div style={{ marginBottom: "0.25rem" }}>
                 <strong>Owner:</strong> {ownerName}
               </div>
@@ -85,7 +85,7 @@ const GroupPost = ({
               <div style={{ marginBottom: "0.5rem" }}>
                 <strong>Age Range:</strong> {ageRange}
               </div>
-              <Stack direction="row" spacing={1} flexWrap="wrap" justifyContent="center">
+              <Stack mt={3} direction="row" spacing={1} flexWrap="wrap" justifyContent="center">
                 {tags?.length > 0 ? (
                   tags.map((tag, i) => (
                     <Chip key={i} label={tag} size="small" color="success" variant="filled" />
@@ -139,18 +139,6 @@ const GroupPost = ({
               </div>
             </Box>
           )}
-
-          <div onClick={(e) => e.stopPropagation()}>
-            <button
-              className="btn btn-primary"
-              onClick={(e) => {
-                e.stopPropagation();
-                setIsDialogOpen(true);
-              }}
-            >
-              Request to Join
-            </button>
-          </div>
         </div>
       </div>
 

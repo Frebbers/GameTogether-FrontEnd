@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect } from "react";
-import { fetchUserProfile } from "../services/apiService";
+import { fetchUserProfile, updateUserProfile} from "../services/apiService";
 import defaultProfileIcon from "../images/default-profile-icon.png";
 
 const UserContext = createContext();
@@ -10,11 +10,25 @@ export const UserProvider = ({ children }) => {
 
   const reloadUser = async () => {
     try {
-      const profile = await fetchUserProfile();
+      let profile;
+      try {
+        profile = await fetchUserProfile();
+      } catch (fetchError) {
+        await updateUserProfile({
+          body: JSON.stringify({
+            birthDate: new Date('2000-01-01T00:00:00Z').toISOString(),
+            profilePicture: "",
+            description: "",
+            region: "",
+          }),
+        });
+        profile = await fetchUserProfile(); 
+      }
+  
       const resolvedProfilePicture = profile.profilePicture?.startsWith("data:image")
         ? profile.profilePicture
         : defaultProfileIcon;
-
+  
       setUser({
         id: profile.id,
         username: profile.username,
@@ -26,7 +40,7 @@ export const UserProvider = ({ children }) => {
       });
     } catch (error) {
       console.error("Failed to reload user profile:", error);
-      setUser(null); // clear user on failure
+      setUser(null); 
     }
   };
 

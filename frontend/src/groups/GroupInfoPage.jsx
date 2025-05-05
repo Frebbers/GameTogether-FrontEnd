@@ -226,7 +226,7 @@ const GroupInfoPage = ({ groups, setGroups }) => {
                       key={m.userId}
                       fullWidth
                       variant="contained"
-                      onClick={() => navigate(`/profile/${m.userId}`)}
+                      onClick={() => navigate(String(m.userId) === String(claims.nameid) ? `/profile/me` : `/profile/${m.userId}`)}
                       sx={{
                         backgroundColor: "rgba(27, 31, 59, 0.9)",
                         color: "white",

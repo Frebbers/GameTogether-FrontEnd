@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Modal from "../components/Modal";
 import { joinGroup } from "../services/apiService";
-import { Tabs, Tab, Box } from "@mui/material";
+import {Chip, Stack, Tabs, Tab, Box } from "@mui/material";
 
 const GroupPost = ({
   id,
@@ -85,17 +85,15 @@ const GroupPost = ({
               <div style={{ marginBottom: "0.5rem" }}>
                 <strong>Age Range:</strong> {ageRange}
               </div>
-              <div className="d-flex flex-wrap gap-1 justify-content-center">
+              <Stack direction="row" spacing={1} flexWrap="wrap" justifyContent="center">
                 {tags?.length > 0 ? (
                   tags.map((tag, i) => (
-                    <span key={i} className="badge bg-secondary">
-                      {tag}
-                    </span>
+                    <Chip key={i} label={tag} size="small" color="success" variant="filled" />
                   ))
                 ) : (
-                  <span className="badge bg-light text-dark">No tags</span>
+                  <Chip label="No tags" size="small" variant="filled" color="error" />
                 )}
-              </div>
+              </Stack>
             </Box>
           )}
 

@@ -11,7 +11,7 @@ function Header({ setSearchTerm, searchTerm, setFilterTag }) {
   
     return (
       <header>
-        <nav className="navbar navbar-expand-lg navbar-dark bg-dark px-3">
+        <nav className="navbar navbar-expand-lg navbar-dark bg-dark py-1 px-3">
           <a
             className="navbar-brand d-flex align-items-center"
             role="button"

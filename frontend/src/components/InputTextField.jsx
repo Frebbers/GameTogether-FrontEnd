@@ -4,6 +4,7 @@ import { TextField } from "@mui/material";
 const InputTextField = ({ label, placeholder, type = "text", ...props }) => {
   return (
     <TextField
+      autoComplete="off"
       variant="standard"
       fullWidth
       type={type}

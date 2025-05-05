@@ -9,6 +9,7 @@ const RegisterForm = ({ onRegisterSuccess, onShowLogin }) => {
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState(""); // NEW
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [showDialog, setShowDialog] = useState(false);
@@ -20,6 +21,11 @@ const RegisterForm = ({ onRegisterSuccess, onShowLogin }) => {
     setError("");
     setSuccess("");
     setShowDialog(false);
+
+    if (password !== confirmPassword) {
+      setError("Passwords do not match."); // Password check
+      return;
+    }
 
     try {
       const data = await register(email, username, password);
@@ -94,8 +100,7 @@ const RegisterForm = ({ onRegisterSuccess, onShowLogin }) => {
             placeholder="username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            />
-  
+          />
 
           <InputTextField
             label="Email"
@@ -109,6 +114,13 @@ const RegisterForm = ({ onRegisterSuccess, onShowLogin }) => {
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+          />
+
+          <InputTextField
+            label="Confirm Password" // NEW FIELD
+            type="password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
           />
 
           {error && (

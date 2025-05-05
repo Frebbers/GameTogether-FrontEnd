@@ -35,30 +35,7 @@ function Header({ setFilterTag }) {
           </button>
   
           <div className="collapse navbar-collapse" id="navbarContent">
-            <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-              <li className="nav-item">
-                <a
-                  className="nav-link"
-                  role="button"
-                  onClick={() => setFilterTag("D&D")}
-                >
-                  D&D
-                </a>
-              </li>
-  
-              <li className="nav-item">
-                <a
-                  className="nav-link"
-                  role="button"
-                  onClick={() => setFilterTag("Other Game")}
-                >
-                  Other Games
-                </a>
-              </li>
-            </ul>
-
-  
-            <div className="d-flex align-items-center gap-2">
+            <div className="d-flex align-items-center gap-2 ms-auto">
               <button
                 className="btn btn-outline-danger"
                 onClick={() => {
@@ -70,18 +47,18 @@ function Header({ setFilterTag }) {
               </button>
   
               <a role="button" onClick={() => navigate("/profile/me")}>
-              <img
-                src={user?.profilePicture || profile}
-                alt="Profile"
-                className="rounded-circle"
-                style={{ width: "40px", height: "40px", objectFit: "cover" }}
-              />
+                <img
+                  src={user?.profilePicture || profile}
+                  alt="Profile"
+                  className="rounded-circle"
+                  style={{ width: "40px", height: "40px", objectFit: "cover" }}
+                />
               </a>
             </div>
           </div>
         </nav>
       </header>
     );
-  }
-  
-  export default Header;
+}
+
+export default Header;

@@ -116,7 +116,7 @@ services:
       api:
         condition: service_healthy
     environment: *common-env
-    working_dir: /app  # Set to the WORKDIR defined in the builder stage
+    working_dir: /app  # Set to the WORKDIR defined in the builder stage.
     command: npm test
     networks:
       - app-network

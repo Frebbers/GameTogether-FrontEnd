@@ -4,7 +4,6 @@ import { useParams, useNavigate } from "react-router-dom";
 import { fetchUserGroups, fetchProfile } from "../services/apiService";
 import defaultProfileIcon from "../images/default-profile-icon.png";
 import background from "../images/background.jpg";
-import { jwtDecode } from "jwt-decode";
 import { Tabs, Tab, Box } from "@mui/material";
 import "./ProfilePage.css";
 
@@ -12,7 +11,6 @@ const UserProfilePage = () => {
   const { userId } = useParams();
   const navigate = useNavigate();
   const { user, loading: userLoading } = useUser();
-
   const [profileData, setProfileData] = useState(null);
   const [groups, setGroups] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -57,6 +55,7 @@ const UserProfilePage = () => {
     setTabIndex(newValue);
   };
 
+  console.log(user.email);
   if (loading || (userId === "me" && userLoading)) {
     return (
       <div className="custom-container" style={{ minHeight: "100vh", display: "flex", justifyContent: "center", alignItems: "center" }}>

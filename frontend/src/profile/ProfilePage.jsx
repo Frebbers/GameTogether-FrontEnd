@@ -1,7 +1,7 @@
 import { useUser } from "../context/UserContext";
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { fetchUserProfile, fetchUserGroups, fetchProfile } from "../services/apiService";
+import { fetchUserGroups, fetchProfile } from "../services/apiService";
 import defaultProfileIcon from "../images/default-profile-icon.png";
 import background from "../images/background.jpg";
 import { jwtDecode } from "jwt-decode";
@@ -11,42 +11,40 @@ import "./ProfilePage.css";
 const UserProfilePage = () => {
   const { userId } = useParams();
   const navigate = useNavigate();
-  const { setProfilePicture } = useUser();
-  
+  const { user, loading: userLoading } = useUser();
+
   const [profileData, setProfileData] = useState(null);
   const [groups, setGroups] = useState([]);
-  const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(true);
   const [tabIndex, setTabIndex] = useState(0);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        let data;
         if (userId === "me") {
-          data = await fetchUserProfile();
-          const claims = jwtDecode(localStorage.getItem("token"));
-          setEmail(claims.email);
-        } else {
-          data = await fetchProfile(userId);
-          setEmail("");
-        }
-
-        setProfileData(data);
-        const resolved = data.profilePicture?.startsWith("data:image")
-           ? data.profilePicture
-            : defaultProfileIcon;
-
-           setProfilePicture(resolved);
-
-        if (userId === "me") {
+          if (!user) {
+            setProfileData(null);
+            return;
+          }
+          setProfileData(user);
           const userGroups = await fetchUserGroups();
           setGroups(userGroups);
         } else {
-          setGroups([]);
+          const data = await fetchProfile(userId);
+          setProfileData({
+            username: data.username,
+            region: data.region,
+            birthDate: data.birthDate,
+            description: data.description,
+            profilePicture: data.profilePicture?.startsWith("data:image")
+              ? data.profilePicture
+              : defaultProfileIcon,
+          });
+          setGroups([]); // not fetching groups for others
         }
       } catch (error) {
         console.error("Fetch error:", error);
+        setProfileData(null);
       } finally {
         setLoading(false);
       }
@@ -59,7 +57,7 @@ const UserProfilePage = () => {
     setTabIndex(newValue);
   };
 
-  if (loading) {
+  if (loading || (userId === "me" && userLoading)) {
     return (
       <div className="custom-container" style={{ minHeight: "100vh", display: "flex", justifyContent: "center", alignItems: "center" }}>
         <h2>Loading Profile...</h2>
@@ -74,11 +72,6 @@ const UserProfilePage = () => {
       </div>
     );
   }
-
-  const resolvedProfilePicture =
-    profileData.profilePicture && profileData.profilePicture.startsWith("data:image")
-      ? profileData.profilePicture
-      : defaultProfileIcon;
 
   const calculateAge = (birthDate) => {
     if (!birthDate) return "N/A";
@@ -135,8 +128,8 @@ const UserProfilePage = () => {
         <Box>
         {/* Top Profile Section */}
         <div className="d-flex align-items-center gap-4">
-            <img
-            src={resolvedProfilePicture}
+          <img
+            src={profileData.profilePicture || defaultProfileIcon}
             alt="Profile"
             className="rounded-circle border"
             style={{ width: "120px", height: "120px", objectFit: "cover" }}
@@ -172,10 +165,10 @@ const UserProfilePage = () => {
 
         {/* Basic Info */}
         <div className="row">
-            {email && (
+          {userId === "me" && user?.email && (
             <div className="col-6 mb-2">
-                <strong>Email</strong>
-                <div>{email}</div>
+              <strong>Email</strong>
+              <div>{user.email}</div>
             </div>
             )}
             <div className="col-6 mb-2">

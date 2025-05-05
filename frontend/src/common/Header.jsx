@@ -4,11 +4,10 @@ import { useUser } from "../context/UserContext";
 import logo from "../images/sitelogo.png";
 import profile from "../images/profileimage.png";
 
-function Header({ setSearchTerm, searchTerm, setFilterTag }) {
+function Header({ setFilterTag }) {
     const navigate = useNavigate();
-    const { profilePicture } = useUser();
+    const { user } = useUser();
 
-  
     return (
       <header>
         <nav className="navbar navbar-expand-lg navbar-dark bg-dark py-1 px-3">
@@ -72,12 +71,11 @@ function Header({ setSearchTerm, searchTerm, setFilterTag }) {
   
               <a role="button" onClick={() => navigate("/profile/me")}>
               <img
-                 src={profilePicture || profile}
+                src={user?.profilePicture || profile}
                 alt="Profile"
                 className="rounded-circle"
                 style={{ width: "40px", height: "40px", objectFit: "cover" }}
-                />
-
+              />
               </a>
             </div>
           </div>

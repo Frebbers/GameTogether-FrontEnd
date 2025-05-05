@@ -162,30 +162,51 @@ const GroupInfoPage = ({ groups, setGroups }) => {
             </Box>
   
             {/* Chat */}
-            {isAcceptedMember && (
-               <Box sx={{ flex: 1, maxWidth: "100%" }}>
-               <Box sx={{ height: "55vh" }}>
-                 <Paper
-                   elevation={6}
-                   sx={{
-                     p: 0,
-                     backgroundColor: "rgba(27, 31, 59, 0.8)",
-                     color: "white",
-                     height: "100%",
-                     display: "flex",
-                     flexDirection: "column",
-                   }}
-                 >
-                   <ChatBox
-                     currentUserId={claims.nameid}
-                     groupId={groupId}
-                     chatId={group.chat.chatId}
-                     canChat={isAcceptedMember}
-                   />
-                 </Paper>
-               </Box>
-             </Box>
-                )}
+            {isAcceptedMember ? (
+              <Box sx={{ flex: 1, maxWidth: "100%" }}>
+                <Box sx={{ height: "55vh" }}>
+                  <Paper
+                    elevation={6}
+                    sx={{
+                      p: 0,
+                      backgroundColor: "rgba(27, 31, 59, 0.8)",
+                      color: "white",
+                      height: "100%",
+                      display: "flex",
+                      flexDirection: "column",
+                    }}
+                  >
+                    <ChatBox
+                      currentUserId={claims.nameid}
+                      groupId={groupId}
+                      chatId={group.chat.chatId}
+                      canChat={isAcceptedMember}
+                    />
+                  </Paper>
+                </Box>
+              </Box>
+            ) : (
+              <Box sx={{ flex: 1, maxWidth: "100%" }}>
+                <Box sx={{ height: "55vh" }}>
+                  <Paper
+                    elevation={6}
+                    sx={{
+                      p: 2,
+                      backgroundColor: "rgba(27, 31, 59, 0.8)",
+                      color: "white",
+                      height: "100%",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <Typography variant="h6" align="center">
+                      You must be a member of this group to view the chat.
+                    </Typography>
+                  </Paper>
+                </Box>
+              </Box>
+            )}
           </Box>
         </Container>
   

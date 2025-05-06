@@ -20,15 +20,17 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    ports:
-      - "443:443"
+      args:
+        VITE_API_BASE: ${VITE_API_BASE}  # 👈 this must be explicitly passed
+        ENVIRONMENT: ${ENVIRONMENT:-Development}
     depends_on:
       - api
     environment:
       - NODE_ENV=production
-      - API_URL=http://localhost:7191
+      - API_URL=http://api:7191
       - VITE_PORT=5173
       - ENVIRONMENT=${ENVIRONMENT:-Development}
+    ports: ["5173:5173"]
     networks:
       - app-network
 
@@ -62,7 +64,7 @@ services:
         condition: service_completed_successfully
     environment: *common-env
     volumes:
-      - ./backend/certs:/https:ro
+      - /etc/nginx/ssl/:/https:ro
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:7191/healthz"]
       interval: 10s
@@ -85,8 +87,40 @@ services:
     working_dir: /src
     command: >
       sh -c "dotnet ef database update --project GameTogetherAPI/GameTogetherAPI.csproj --startup-project GameTogetherAPI/GameTogetherAPI.csproj"
+      
+    networks:
+      - app-network
+      
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - "443:443"  # Expose port 443 to the outside world for HTTPS
+      - "80:80"
     volumes:
-      - ./backend/certs:/https:ro
+      - /etc/nginx/ssl/:/https:ro
+      - ./frontend/nginx.Production.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - frontend
+      - api
+    networks:
+      - app-network
+
+  test:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      target: build
+    depends_on:
+      mysql:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+      api:
+        condition: service_healthy
+    environment: *common-env
+    working_dir: /app  # Set to the WORKDIR defined in the builder stage.
+    command: npm test
     networks:
       - app-network
 

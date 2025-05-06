@@ -17,7 +17,7 @@ x-common-env: &common-env
 services:
   test:
     build:
-      context: ./backend
+      context: ./frontend
       target: build
       args:
         - ENVIRONMENT=${ENVIRONMENT}
@@ -31,8 +31,6 @@ services:
     environment: *common-env
     working_dir: /src
     command: >
-      dotnet test GameTogetherAPI.Test/GameTogetherAPI.Test.csproj --property:WarningLevel=0
-    volumes:
-      - ./backend/certs:/https:ro
+      npm test
     networks:
       - app-network

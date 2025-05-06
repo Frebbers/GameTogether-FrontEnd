@@ -4,9 +4,11 @@ WORKDIR /app
 
 # Add environment args
 ARG ENVIRONMENT=Development
+ARG VITE_API_BASE=http://localhost:7191/api
 
 # Set env for the build process
 ENV ENVIRONMENT=$ENVIRONMENT
+ENV VITE_API_BASE=$VITE_API_BASE
 
 COPY package*.json ./
 RUN npm install
@@ -14,16 +16,17 @@ COPY . .
 RUN npm run build
 
 # Production Stage
-FROM nginx:stable-alpine AS production
+FROM node:18-alpine AS production
+WORKDIR /app
 
-# Add environment arg here too
-ARG ENVIRONMENT=Development
-ENV ENVIRONMENT=$ENVIRONMENT
+# Install the `serve` package globally
+RUN npm install -g serve
 
-COPY --from=build /app/dist /usr/share/nginx/html
+# Copy the built output from the build stage
+COPY --from=build /app/dist /app/dist
 
-# Conditionally copy nginx config based on environment
-COPY nginx.${ENVIRONMENT}.conf /etc/nginx/nginx.conf
+# Expose port 5173 for the frontend application
+EXPOSE 5173
 
-EXPOSE 443
-CMD ["nginx", "-g", "daemon off;"]
+# Use `serve` to serve the app, and bind to port 5173
+CMD ["serve", "-s", "dist", "-l", "5173"]

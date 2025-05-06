@@ -28,44 +28,49 @@ jobs:
           ls -al
 
           # GIT CLONE
+          BRANCH_NAME="${{ github.ref_name }}"
+          echo "Deploying branch: $BRANCH_NAME"
+
           if [ -d "GameTogether-FrontEnd" ]; then
             echo "Repository already exists. Pulling latest changes..."
             cd GameTogether-FrontEnd
-            git pull
+            rm .env # just to make sure we don't have working tree issues
+            git fetch origin
+            git checkout $BRANCH_NAME
+            git pull origin $BRANCH_NAME
             git submodule update --init --recursive
           else
             echo "Repository not found. Cloning..."
-            git clone https://github.com/Frebbers/GameTogether-FrontEnd --recurse-submodules
+            git clone --branch $BRANCH_NAME --recurse-submodules https://github.com/Frebbers/GameTogether-FrontEnd
             cd GameTogether-FrontEnd
           fi
-
-          
 
           # ENVIRONMENT VARIABLES
           rm .env  # We makin our own .env
           touch .env.prod
           echo "ENVIRONMENT=Production" >> .env.prod
-          echo "FRONTEND_BASE_URL=${{ vars.FRONTEND_BASE_URL }}" >> .env.prod
+          echo "FRONTEND_BASE_URL=http://gametogether.live:10191/" >> .env.prod
+          echo "VITE_API_BASE=http://gametogether.live:10191/api" >> .env.prod
           echo "DB_PASSWORD=${{ secrets.DB_ROOT_PASSWORD }}" >> .env.prod
           echo "DB_NAME=${{ vars.DB_NAME }}" >> .env.prod
           echo "CONNECTION_STRING=Server=${{ vars.DB_TYPE }};Database=${{ vars.DB_NAME }};User=root;Password=${{ secrets.DB_ROOT_PASSWORD }};Port=${{ vars.DB_PORT }};" >> .env.prod
           echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env.prod
-          echo "EMAIL_VERIFICATION_URL=https://${{ vars.HOST }}:${{ vars.BACKEND_HTTPS_PORT }}/api/auth/verify-email" >> .env.prod
+          echo "EMAIL_VERIFICATION_URL=http://${{ vars.HOST }}:10191/api/auth/verify-email" >> .env.prod
           echo "SMTP_SERVER=${{ vars.SMTP_SERVER }}" >> .env.prod
           echo "SMTP_PORT=${{ vars.SMTP_PORT }}" >> .env.prod
           echo "SENDER_EMAIL=noreply.gametogether@gmail.com" >> .env.prod
           echo "SENDER_PASSWORD=${{ secrets.SMTP_PASSWORD }}" >> .env.prod
-          echo "ASPNETCORE_URLS=https://+:7191" >> .env.prod
+          echo "ASPNETCORE_URLS=http://+:7191" >> .env.prod
           echo "ASPNETCORE_Kestrel__Certificates__Default__Path=" >> .env.prod
           mv .env.prod .env
 
           # DOCKER COMPOSE
           echo "running docker compose down"
-          docker compose -f Docker-Compose.yml down
+          docker compose down
           echo "running docker compose up"
-          docker compose -f Docker-Compose.yml up -d --build
+          docker compose up -d --build
           echo "finished"
 
           # CLEANUP
-          docker system prune -af --volumes
+          docker system prune -af
           

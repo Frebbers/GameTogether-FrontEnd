@@ -1,13 +1,12 @@
 import { useEffect, useState, useRef } from "react";
 import { Box, Paper, Typography, Stack } from "@mui/material";
 import { fetchGroupMessages, sendGroupMessage } from "../services/apiService";
+import { WebSocketService } from "../services/websocketService";
 import ChatInput from "./ChatInput";
 
-const ChatBox = ({ groupId ,chatId, currentUserId, canChat }) => {
+const ChatBox = ({ groupId, chatId, currentUserId, canChat }) => {
   const [messages, setMessages] = useState([]);
-  const [input, setInput] = useState("");
   const messagesEndRef = useRef(null);
-  const prevMessagesLength = useRef(0);
 
   const loadMessages = async () => {
     try {
@@ -19,24 +18,65 @@ const ChatBox = ({ groupId ,chatId, currentUserId, canChat }) => {
   };
 
   useEffect(() => {
-    if (messages.length > prevMessagesLength.current) {
-      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-    }
-    prevMessagesLength.current = messages.length;
-  }, [messages]);
+    loadMessages();
+  }, [chatId]);
 
   useEffect(() => {
-    loadMessages();
-    const interval = setInterval(loadMessages, 5000); // refresh every 5s
-    return () => clearInterval(interval);
-  }, [chatId]);
+    if (!canChat) return;
+
+    const token = localStorage.getItem("token");
+
+    WebSocketService.connect(token, {
+      chatId,
+      onMessage: (data) => {
+        try {
+          const raw = JSON.parse(data);
+
+          //To be sure there mess up on casing
+          const msg = {
+            messageId: raw.messageId ?? raw.MessageId,
+            senderId: raw.senderId ?? raw.SenderId,
+            senderName: raw.senderName ?? raw.SenderName,
+            content: raw.content ?? raw.Content,
+            timeStamp: raw.timeStamp ?? raw.TimeStamp,
+            chatId: raw.chatId ?? raw.ChatId,
+          };
+
+          if (
+            msg &&
+            msg.content &&
+            Number(msg.chatId) === Number(chatId)
+          ) {
+            setMessages((prev) => {
+              const alreadyExists = prev.some(
+                (m) => m.messageId === msg.messageId
+              );
+              if (alreadyExists) return prev;
+
+              const updated = [...prev, msg];
+              //For scrolling the container to the bottom when updated
+              setTimeout(() => {
+                messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+              }, 0);
+              return updated;
+            });
+          }
+        } catch (err) {
+          console.warn("Invalid WebSocket message:", data);
+        }
+      },
+    });
+
+    return () => {
+      WebSocketService.disconnect();
+    };
+  }, [chatId, canChat]);
 
   const handleSend = async (message) => {
     if (!message.trim()) return;
-  
+
     try {
       await sendGroupMessage(groupId, { content: message });
-      await loadMessages();
     } catch (err) {
       console.error("Failed to send message:", err);
     }
@@ -44,49 +84,54 @@ const ChatBox = ({ groupId ,chatId, currentUserId, canChat }) => {
 
   return (
     <Box sx={{ height: "55vh", display: "flex", flexDirection: "column" }}>
-      <Paper 
-      sx={{ 
-        flex: 1,
-        p: 0.5,
-        backgroundColor: "rgba(255,255,255,0.05)",
-        height: "100%",
-        width: "100%",
-        display: "flex",
-        flexDirection: "column",
-      }}
-    >
-      <Box sx={{ flex: 1, overflowY: "auto", p: 2 }}>
-        <Stack spacing={2}>
-          {messages.map((msg, idx) => {
-            const isOwn = Number(msg.senderId) === Number(currentUserId);
-            return (
-              <Box
-                key={idx}
-                sx={{ display: "flex", justifyContent: isOwn ? "flex-end" : "flex-start" }}
-              >
+      <Paper
+        sx={{
+          flex: 1,
+          p: 0.5,
+          backgroundColor: "rgba(255,255,255,0.05)",
+          height: "100%",
+          width: "100%",
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
+        <Box sx={{ flex: 1, overflowY: "auto", p: 2 }}>
+          <Stack spacing={2}>
+            {messages.map((msg) => {
+              if (!msg || !msg.content || !msg.senderName) return null;
+
+              const isOwn = Number(msg.senderId) === Number(currentUserId);
+
+              return (
                 <Box
+                  key={msg.messageId}
                   sx={{
-                    maxWidth: "60%",
-                    bgcolor: isOwn ? "primary.main" : "grey.300",
-                    color: isOwn ? "white" : "black",
-                    px: 2,
-                    py: 1,
-                    borderRadius: 2,
+                    display: "flex",
+                    justifyContent: isOwn ? "flex-end" : "flex-start",
                   }}
                 >
-                  <Typography variant="body2" fontWeight={500}>
-                    {isOwn ? "You" : msg.senderName}
-                  </Typography>
-                  <Typography variant="body1">{msg.content}</Typography>
+                  <Box
+                    sx={{
+                      maxWidth: "60%",
+                      bgcolor: isOwn ? "primary.main" : "grey.300",
+                      color: isOwn ? "white" : "black",
+                      px: 2,
+                      py: 1,
+                      borderRadius: 2,
+                    }}
+                  >
+                    <Typography variant="body2" fontWeight={500}>
+                      {isOwn ? "You" : msg.senderName}
+                    </Typography>
+                    <Typography variant="body1">{msg.content}</Typography>
+                  </Box>
+                  <div ref={messagesEndRef} />
                 </Box>
-                <div ref={messagesEndRef} />
-              </Box>
-            );
-          })}
-        </Stack>
-      </Box>
-    </Paper>
-
+              );
+            })}
+          </Stack>
+        </Box>
+      </Paper>
 
       <Box sx={{ display: "flex", alignItems: "center", p: 2 }}>
         {canChat ? (

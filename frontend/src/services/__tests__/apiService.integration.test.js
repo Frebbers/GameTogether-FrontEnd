@@ -100,7 +100,6 @@ describe('API Service Integration Tests', () => {
     // 3. Fetch User Profile Test
     test('fetches user profile', async () => {
         if (skipTests || !authToken) return;
-
         const result = await apiService.fetchUserProfile();
         expect(result).toHaveProperty('description');
         expect(result).toHaveProperty('username');

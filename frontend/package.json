@@ -15,7 +15,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --testMatch='**/*/*.test.js'",
-    "testci": "node --experimental-vm-modules node_modules/jest/bin/jest.js --testMatch='**/*/*.test.js' --coverage --reporters=default --reporters=jest-junit --testResultsProcessor=jest-junit"
+    "testci": "node --experimental-vm-modules node_modules/jest/bin/jest.js --testMatch='**/*/*.test.js' --testResultsProcessor=jest-junit"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",

@@ -2,7 +2,15 @@ import { API_BASE } from "./apiService";
 
 let socket = null;
 
-const WS_BASE = API_BASE.replace("http", "ws").replace("/api", "");
+const isLocalhost = window.location.hostname === "localhost";
+const isSecure = window.location.protocol === "https:" && !isLocalhost;
+const WS_PROTOCOL = isSecure ? "wss" : "ws";
+
+// This keeps the host + port from API_BASE
+const WS_BASE = API_BASE
+  .replace(/^http:/, "ws:")
+  .replace(/^https:/, "wss:")
+  .replace(/\/api\/?$/, "");
 
 export const WebSocketService = {
   connect(token, { onMessage, onOpen, onClose, onError, chatId }) {
@@ -12,7 +20,7 @@ export const WebSocketService = {
     socket = new WebSocket(endpoint);
 
     socket.onopen = () => {
-      console.log("WebSocket connected");
+      console.log("WebSocket connected:", endpoint);
       if (onOpen) onOpen();
     };
 
@@ -20,8 +28,8 @@ export const WebSocketService = {
       if (onMessage) onMessage(event.data);
     };
 
-    socket.onclose = () => {
-      console.log("WebSocket disconnected");
+    socket.onclose = (event) => {
+      console.log("WebSocket disconnected:", event);
       if (onClose) onClose();
     };
 

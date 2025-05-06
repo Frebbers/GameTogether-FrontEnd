@@ -50,6 +50,7 @@ jobs:
           touch .env.prod
           echo "ENVIRONMENT=Production" >> .env.prod
           echo "FRONTEND_BASE_URL=http://gametogether.live:10191/" >> .env.prod
+          echo "VITE_API_BASE=http://gametogether.live:10191/api" >> .env.prod
           echo "DB_PASSWORD=${{ secrets.DB_ROOT_PASSWORD }}" >> .env.prod
           echo "DB_NAME=${{ vars.DB_NAME }}" >> .env.prod
           echo "CONNECTION_STRING=Server=${{ vars.DB_TYPE }};Database=${{ vars.DB_NAME }};User=root;Password=${{ secrets.DB_ROOT_PASSWORD }};Port=${{ vars.DB_PORT }};" >> .env.prod

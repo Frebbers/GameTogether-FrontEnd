@@ -4,11 +4,9 @@ WORKDIR /app
 
 # Add environment args
 ARG ENVIRONMENT=Development
-ARG VITE_API_BASE=http://localhost:7191/api
 
 # Set env for the build process
 ENV ENVIRONMENT=$ENVIRONMENT
-ENV VITE_API_BASE=$VITE_API_BASE
 
 COPY package*.json ./
 RUN npm install

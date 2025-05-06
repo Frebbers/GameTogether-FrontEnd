@@ -20,8 +20,6 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-      args:
-        VITE_API_BASE: http://gametogether.live:10191/api
     depends_on:
       - api
     environment:

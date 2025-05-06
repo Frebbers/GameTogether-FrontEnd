@@ -9,7 +9,7 @@ catch {
 const API_BASE = apiBase;
 export { API_BASE }; */ //export url to be used in test file
 
-var API_BASE = "http://localhost:7191/api";
+export const API_BASE = "http://localhost:7191/api";
 /**
  * Sends a registration request to the server.
  * @param {string} email
@@ -378,7 +378,6 @@ export const fetchGroupMessages = async (chatId) => {
    * @param {{ content: string }} messageBody
    */
   export const sendGroupMessage = async (groupId, messageBody) => {
-    console.log("entered send call: ",groupId, messageBody);
     const token = getToken();
     const response = await fetch(`${API_BASE}/Chats/session/${groupId}/send`, {
       method: "POST",
@@ -396,4 +395,5 @@ export const fetchGroupMessages = async (chatId) => {
   
     return await response.json();
   };
+  
   

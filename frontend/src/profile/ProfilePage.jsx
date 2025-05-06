@@ -1,60 +1,90 @@
+import { useUser } from "../context/UserContext";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { fetchUserProfile, fetchUserGroups } from "../services/apiService";
+import { useParams, useNavigate } from "react-router-dom";
+import { fetchUserGroups, fetchProfile, fetchGroupById, fetchGroupsByUserId } from "../services/apiService";
 import defaultProfileIcon from "../images/default-profile-icon.png";
 import background from "../images/background.jpg";
-import { jwtDecode } from 'jwt-decode';
+import { Tabs, Tab, Box, Button, CircularProgress } from "@mui/material";
 import "./ProfilePage.css";
 
 const UserProfilePage = () => {
-  const [username, setUsername] = useState("");
-  const [age, setAge] = useState("");
-  const [region, setRegion] = useState("");
-  const [profilePicture, setProfilePicture] = useState("");
-  const [description, setDescription] = useState("");
-  const [birthDate, setBirthDate] = useState("");
-  const [groups, setGroups] = useState([]); // NEW
+  const { userId } = useParams();
   const navigate = useNavigate();
-  const claims = jwtDecode(localStorage.getItem('token'));
-  const email = claims.email;
+  const { user, loading: userLoading } = useUser();
+
+  const [profileData, setProfileData] = useState(null);
+  const [groups, setGroups] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [tabIndex, setTabIndex] = useState(0);
 
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        const userData = await fetchUserProfile();
-        setUsername(userData.username);
-        setRegion(userData.region);
-        setProfilePicture(userData.profilePicture);
-        setDescription(userData.description);
-        setBirthDate(userData.birthDate);
-
-        if (userData.birthDate) {
-          const birth = new Date(userData.birthDate);
-          const today = new Date();
-          let calculatedAge = today.getFullYear() - birth.getFullYear();
-          const m = today.getMonth() - birth.getMonth();
-          if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) {
-            calculatedAge--;
-          }
-          setAge(calculatedAge);
+      if (userId === "me") {
+        if (!user) {
+          return; // user still loading
         }
+        setProfileData(user);
+        try {
+          const userGroups = await fetchUserGroups();
+          setGroups(userGroups);
+        } catch (error) {
+          console.error("Failed to fetch groups:", error);
+        } finally {
+          setLoading(false);
+        }
+      } else {
+        try {
+          const data = await fetchProfile(userId);
+          setProfileData({
+            username: data.username,
+            region: data.region,
+            birthDate: data.birthDate,
+            description: data.description,
+            profilePicture: data.profilePicture?.startsWith("data:image")
+              ? data.profilePicture
+              : defaultProfileIcon,
+          });
 
-        // Fetch user's groups
-        const userGroups = await fetchUserGroups();
-        setGroups(userGroups);
+          try {
+            const otherUserGroups = await fetchGroupsByUserId(userId);
+            // Only keep groups that are visible (public)
+            const visibleGroups = otherUserGroups.filter((g) => g.isVisible);
+            setGroups(visibleGroups);
+          } catch (groupError) {
+            console.error("Failed to fetch user groups:", groupError);
+            setGroups([]);
+          }
 
-      } catch (error) {
-        console.error("Fetch error:", error);
+        } catch (error) {
+          console.error("Failed to fetch profile:", error);
+          setProfileData(null);
+          setGroups([]);
+        } finally {
+          setLoading(false);
+        }
       }
     };
 
-    fetchData();
-  }, []);
+    if (!userLoading) {
+      fetchData();
+    }
+  }, [userId, user, userLoading]);
 
-  const resolvedProfilePicture =
-    profilePicture && profilePicture.startsWith("data:image")
-      ? profilePicture
-      : defaultProfileIcon;
+  const handleTabChange = (event, newValue) => {
+    setTabIndex(newValue);
+  };
+
+  const calculateAge = (birthDate) => {
+    if (!birthDate) return "N/A";
+    const birth = new Date(birthDate);
+    const today = new Date();
+    let age = today.getFullYear() - birth.getFullYear();
+    const m = today.getMonth() - birth.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) {
+      age--;
+    }
+    return `${age} years`;
+  };
 
   return (
     <div
@@ -68,141 +98,176 @@ const UserProfilePage = () => {
         padding: "2rem",
       }}
     >
-      <div
-        className="card p-4 fade-in-down"
-        style={{
-          marginBottom: "10em",
-          maxWidth: "700px",
-          width: "100%",
-          background: "rgba(27, 31, 59, 0.9)",
-          color: "white",
-        }}
-      >
-        {/* Top Profile Section */}
-        <div className="d-flex align-items-center gap-4">
-          <img
-            src={resolvedProfilePicture}
-            alt="Profile"
-            className="rounded-circle border"
-            style={{ width: "120px", height: "120px", objectFit: "cover" }}
-          />
-
-          <div>
-            <h3 className="mb-0">{username}</h3>
-          </div>
-
-          <div className="ms-auto">
-            <button
-              className="btn btn-info text-white"
-              onClick={() =>
-                navigate("/edit-profile", {
-                  state: { username, region, profilePicture, description, birthDate },
-                })
-              }
-            >
-              <i className="bi bi-pencil me-1"></i> EDIT
-            </button>
-          </div>
+      {loading ? (
+        <div
+          className="custom-container"
+          style={{
+            minHeight: "45vh",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <CircularProgress color="inherit" />
         </div>
-
-        <hr />
-
-        {/* Basic Info */}
-        <div className="row">
-          <div className="col-6 mb-2">
-            <strong>Email</strong>
-            <div>{email}</div>
-          </div>
-          <div className="col-6 mb-2">
-            <strong>Region</strong>
-            <div>{region}</div>
-          </div>
-          <div className="col-12 mb-2">
-            <strong>Age</strong>
-            <div>{typeof age === "number" ? `${age} years` : "N/A"}</div>
-          </div>
+      ) : !profileData ? (
+        <div
+          className="custom-container"
+          style={{
+            minHeight: "45vh",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            flexDirection: "column",
+            textAlign: "center",
+            padding: "2rem",
+          }}
+        >
+          <h2>User Not Found</h2>
+          <p>The user you are looking for does not exist or has been deleted.</p>
+          <Button
+            variant="contained"
+            color="primary"
+            sx={{ marginTop: 2 }}
+            onClick={() => navigate("/")}
+          >
+            Return Home
+          </Button>
         </div>
-
-        {/* About Me Accordion */}
-        <div className="accordion mt-3" id="descriptionAccordion">
-          <div className="accordion-item">
-            <h2 className="accordion-header">
-              <button
-                className="accordion-button collapsed"
-                type="button"
-                data-bs-toggle="collapse"
-                data-bs-target="#descCollapse"
-              >
-                About Me
-              </button>
-            </h2>
-            <div
-              id="descCollapse"
-              className="accordion-collapse collapse"
-              data-bs-parent="#descriptionAccordion"
+      ) : (
+        <div
+          className="card p-4 fade-in-down"
+          style={{
+            marginBottom: "10em",
+            maxWidth: "800px",
+            minHeight: "45%",
+            width: "100%",
+            background: "rgba(27, 31, 59, 0.9)",
+            color: "white",
+          }}
+        >
+          <Box sx={{ borderBottom: 1, borderColor: "divider", marginBottom: 2 }}>
+            <Tabs
+              value={tabIndex}
+              onChange={handleTabChange}
+              textColor="inherit"
+              indicatorColor="primary"
+              variant="scrollable"
+              scrollButtons="auto"
             >
-              <div
-                className="accordion-body"
-                style={{ maxHeight: "350px", overflowY: "auto" }}
-              >
-                {description || "No description provided."}
+              <Tab label="Profile" />
+              <Tab label="About Me" />
+              <Tab label="Groups" />
+            </Tabs>
+          </Box>
+
+          {tabIndex === 0 && (
+            <Box>
+              <div className="d-flex align-items-center gap-4">
+                <img
+                  src={profileData.profilePicture || defaultProfileIcon}
+                  alt="Profile"
+                  className="rounded-circle border"
+                  style={{ width: "120px", height: "120px", objectFit: "cover" }}
+                />
+                <div>
+                  <h3 className="mb-0">{profileData.username}</h3>
+                </div>
+                {userId === "me" && (
+                  <div className="ms-auto">
+                    <button
+                      className="btn btn-info text-white"
+                      onClick={() =>
+                        navigate("/edit-profile", {
+                          state: {
+                            username: profileData.username,
+                            region: profileData.region,
+                            profilePicture: profileData.profilePicture,
+                            description: profileData.description,
+                            birthDate: profileData.birthDate,
+                          },
+                        })
+                      }
+                    >
+                      <i className="bi bi-pencil me-1"></i> EDIT
+                    </button>
+                  </div>
+                )}
               </div>
-            </div>
-          </div>
-        </div>
 
-        {/* Groups Accordion */}
-        <div className="accordion mt-4" id="groupsAccordion">
-          <div className="accordion-item">
-            <h2 className="accordion-header">
-              <button
-                className="accordion-button collapsed"
-                type="button"
-                data-bs-toggle="collapse"
-                data-bs-target="#groupsCollapse"
-              >
-                Your Groups
-              </button>
-            </h2>
-            <div
-              id="groupsCollapse"
-              className="accordion-collapse collapse"
-              data-bs-parent="#groupsAccordion"
-            >
-              <div
-                className="accordion-body"
-                style={{ maxHeight: "350px", overflowY: "auto" }}
-              >
-                {groups.length > 0 ? (
-                  <ul className="list-group">
-                    {groups.map((group) => (
+              <hr />
+
+              <div className="row">
+                {userId === "me" && user?.email && (
+                  <div className="col-6 mb-2">
+                    <strong>Email</strong>
+                    <div>{user.email}</div>
+                  </div>
+                )}
+                <div className="col-6 mb-2">
+                  <strong>Region</strong>
+                  <div>{profileData.region || "N/A"}</div>
+                </div>
+                <div className="col-12 mb-2">
+                  <strong>Age</strong>
+                  <div>{calculateAge(profileData.birthDate)}</div>
+                </div>
+              </div>
+            </Box>
+          )}
+
+          {tabIndex === 1 && (
+            <Box>
+              <p style={{ whiteSpace: "pre-wrap" }}>
+                {profileData.description || "No description provided."}
+              </p>
+            </Box>
+          )}
+
+          {tabIndex === 2 && (
+            <Box>
+              {groups.length > 0 ? (
+                <ul className="list-group mt-3">
+                  {groups.map((group) => {
+                    const activeMembers = group.members?.filter(m => m.groupStatus === 1) ?? [];
+                    const guestCount = group.nonUserMembers?.length ?? 0;
+                    const max = group.maxMembers ?? "?";
+                    const total = activeMembers.length + guestCount;
+
+                    return (
                       <li
                         key={group.id}
-                        className="list-group-item list-group-item-action"
+                        className="list-group-item list-group-item-action profile-group-item"
                         style={{
                           backgroundColor: "rgba(27, 31, 59, 0.9)",
                           color: "white",
                           border: "none",
                           marginBottom: "8px",
                           borderRadius: "8px",
+                          cursor: "pointer",
+                          boxShadow: "0 0 8px rgba(255, 255, 255, 0.15)",
                         }}
-                        onClick={() =>
-                          navigate(`/group/${group.id}/${group.ownerId}`)
-                        }
+                        onClick={() => navigate(`/group/${group.id}/${group.ownerId}`)}
                       >
-                        {group.title}
+                        <Box display="flex" justifyContent="space-between" alignItems="center">
+                          <span>{group.title}</span>
+                          <span style={{ fontSize: "0.9em" }}>
+                            {total} / {max}
+                          </span>
+                        </Box>
                       </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p className="text-muted">You are not part of any groups yet.</p>
-                )}
-              </div>
-            </div>
-          </div>
+                    );
+                  })}
+                </ul>
+              ) : (
+                <p className="text-muted mt-3">
+                  {userId === "me" ? "You are not part of any groups yet." : "No public groups to display."}
+                </p>
+              )}
+            </Box>
+          )}
         </div>
-
-      </div>
+      )}
     </div>
   );
 };

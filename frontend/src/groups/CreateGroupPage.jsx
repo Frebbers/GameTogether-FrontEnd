@@ -95,7 +95,7 @@ const CreateGroupPage = ({ setGroups }) => {
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
         minHeight: "100vh",
-        paddingTop: "80px",
+        paddingTop: "40px",
         paddingBottom: "80px",
       }}
     >
@@ -111,16 +111,16 @@ const CreateGroupPage = ({ setGroups }) => {
           boxShadow: "0 0 20px rgba(0,0,0,0.5)",
         }}
       >
-        <h1 className="text-center mb-4">Create A New Group</h1>
+        <h1 className="text-center mb-3">Create A New Group</h1>
 
-        <div className="group-post-header mb-3 d-flex flex-column align-items-center">
+        <div className="group-post-header mb-2 d-flex flex-column align-items-center">
           <input
             type="text"
             value={groupName}
             onChange={(e) => setGroupName(e.target.value)}
             placeholder="Enter Group Name"
             style={{
-              marginBottom: "10px",
+              marginBottom: "5px",
               padding: "10px",
               fontSize: "14px",
               borderRadius: "8px",
@@ -137,9 +137,9 @@ const CreateGroupPage = ({ setGroups }) => {
           </div>
         </div>
 
-        <div className="mb-3 w-100" style={{ textAlign: "left" }}>
+        <div className="mb-2 w-100" style={{ textAlign: "left" }}>
           {/* Visibility */}
-          <div className="mb-3">
+          <div className="mb-2">
             <label className="form-label">Visibility:</label>
             <select
               className="form-select"
@@ -158,7 +158,7 @@ const CreateGroupPage = ({ setGroups }) => {
           </div>
 
           {/* Age Range */}
-          <div className="mb-3">
+          <div className="mb-2">
             <label className="form-label">Age Range:</label>
             <div className="d-flex align-items-center" style={{ gap: "10px" }}>
               <input
@@ -168,10 +168,10 @@ const CreateGroupPage = ({ setGroups }) => {
                 value={ageFrom}
                 onChange={(e) => setAgeFrom(Number(e.target.value))}
                 style={{
-                  width: "80px",
+                  width: "70px",
                   backgroundColor: "#4A4E54",
                   color: "white",
-                  padding: "8px",
+                  padding: "6px",
                   fontSize: "14px",
                   borderRadius: "8px",
                   border: "none",
@@ -186,10 +186,10 @@ const CreateGroupPage = ({ setGroups }) => {
                 value={ageTo}
                 onChange={(e) => setAgeTo(Number(e.target.value))}
                 style={{
-                  width: "80px",
+                  width: "70px",
                   backgroundColor: "#4A4E54",
                   color: "white",
-                  padding: "8px",
+                  padding: "6px",
                   fontSize: "14px",
                   borderRadius: "8px",
                   border: "none",
@@ -200,7 +200,7 @@ const CreateGroupPage = ({ setGroups }) => {
           </div>
 
           {/* Max Members */}
-          <div className="mb-3">
+          <div className="mb-2">
             <label className="form-label">Max Members:</label>
             <input
               type="number"
@@ -209,10 +209,10 @@ const CreateGroupPage = ({ setGroups }) => {
               onChange={(e) => setMaxMembers(Number(e.target.value))}
               min="1"
               style={{
-                width: "250px",
+                width: "200px",
                 backgroundColor: "#4A4E54",
                 color: "white",
-                padding: "10px",
+                padding: "8px",
                 fontSize: "14px",
                 borderRadius: "8px",
                 border: "none",
@@ -229,17 +229,17 @@ const CreateGroupPage = ({ setGroups }) => {
           placeholder="Enter Group Description"
         ></textarea>
 
-        <button className="btn btn-primary d-block mx-auto mb-3" onClick={AddMember}>
+        <button className="btn btn-primary d-block mx-auto mb-2" onClick={AddMember}>
           Add Member
         </button>
 
-        <ul className="list-unstyled text-center mb-3">
+        <ul className="list-unstyled text-center mb-2 d-flex gap-2">
           {members.map((member, index) => (
             <li key={index}>{member}</li>
           ))}
         </ul>
 
-        <div className="mb-3">
+        <div className="mb-2">
           <strong>Select Tags:</strong>
           <div className="d-flex gap-2 flex-wrap justify-content-center mt-2">
             {predefinedTags.map((tag) => (

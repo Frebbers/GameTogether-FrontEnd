@@ -1,13 +1,16 @@
 import { useNavigate } from "react-router-dom";
+import { useUser } from "../context/UserContext";
+
 import logo from "../images/sitelogo.png";
 import profile from "../images/profileimage.png";
 
-function Header({ setSearchTerm, searchTerm, setFilterTag }) {
+function Header({ setFilterTag }) {
     const navigate = useNavigate();
-  
+    const { user } = useUser();
+
     return (
       <header>
-        <nav className="navbar navbar-expand-lg navbar-dark bg-dark px-3">
+        <nav className="navbar navbar-expand-lg navbar-dark bg-dark py-1 px-3">
           <a
             className="navbar-brand d-flex align-items-center"
             role="button"
@@ -32,30 +35,7 @@ function Header({ setSearchTerm, searchTerm, setFilterTag }) {
           </button>
   
           <div className="collapse navbar-collapse" id="navbarContent">
-            <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-              <li className="nav-item">
-                <a
-                  className="nav-link"
-                  role="button"
-                  onClick={() => setFilterTag("D&D")}
-                >
-                  D&D
-                </a>
-              </li>
-  
-              <li className="nav-item">
-                <a
-                  className="nav-link"
-                  role="button"
-                  onClick={() => setFilterTag("Other Game")}
-                >
-                  Other Games
-                </a>
-              </li>
-            </ul>
-
-  
-            <div className="d-flex align-items-center gap-2">
+            <div className="d-flex align-items-center gap-2 ms-auto">
               <button
                 className="btn btn-outline-danger"
                 onClick={() => {
@@ -66,9 +46,9 @@ function Header({ setSearchTerm, searchTerm, setFilterTag }) {
                 Logout
               </button>
   
-              <a role="button" onClick={() => navigate("/profile")}>
+              <a role="button" onClick={() => navigate("/profile/me")}>
                 <img
-                  src={profile}
+                  src={user?.profilePicture || profile}
                   alt="Profile"
                   className="rounded-circle"
                   style={{ width: "40px", height: "40px", objectFit: "cover" }}
@@ -79,6 +59,6 @@ function Header({ setSearchTerm, searchTerm, setFilterTag }) {
         </nav>
       </header>
     );
-  }
-  
-  export default Header;
+}
+
+export default Header;

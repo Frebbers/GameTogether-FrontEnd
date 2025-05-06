@@ -142,6 +142,29 @@ export const fetchGroups = async () => {
 };
 
 /**
+ * Fetches groups created by a specific user.
+ * @param {string} userId
+ * @returns {Promise<Array>} Array of groups
+ */
+export const fetchGroupsByUserId = async (userId) => {
+    const token = getToken();
+    const response = await fetch(`${API_BASE}/Groups/user/${userId}`, {
+        method: "GET",
+        headers: {
+            "Accept": "application/json",
+            "Authorization": `Bearer ${token}`
+        }
+    });
+
+    if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || `Failed to fetch groups for user ${userId}.`);
+    }
+
+    return await response.json();
+};
+
+/**
  * Fetches the user's sessions.
  * @returns {Promise<Array>} Array of user's sessions
  */
@@ -220,6 +243,8 @@ export const fetchProfile = async (userId) => {
             "Authorization": `Bearer ${token}`
         }
     });
+
+    console.log(response);
 
     if (!response.ok) {
         const errorData = await response.json();
@@ -315,3 +340,50 @@ export const getToken = () => {
     }
     return token;
 }
+
+/**
+ * Fetch all messages in a group chat.
+ * @param {number} chatId
+ */
+export const fetchGroupMessages = async (chatId) => {
+    const token = getToken();
+    const response = await fetch(`${API_BASE}/Chats/${chatId}/messages`, {
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+      },
+    });
+  
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Failed to fetch messages.");
+    }
+  
+    return await response.json();
+  };
+  
+  /**
+   * Send a message to a group session.
+   * @param {number} groupId
+   * @param {{ content: string }} messageBody
+   */
+  export const sendGroupMessage = async (groupId, messageBody) => {
+    console.log("entered send call: ",groupId, messageBody);
+    const token = getToken();
+    const response = await fetch(`${API_BASE}/Chats/session/${groupId}/send`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+      },
+      body: JSON.stringify(messageBody),
+    });
+  
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Failed to send message.");
+    }
+  
+    return await response.json();
+  };
+  

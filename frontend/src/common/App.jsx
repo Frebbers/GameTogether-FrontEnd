@@ -13,6 +13,8 @@ import PrivatePolicyPage from "../common/PrivatePolicyPage";
 import Layout from "../common/Layout";
 
 import { AuthContext } from "../context/AuthContext";
+import { UserProvider } from "../context/UserContext.jsx";
+import UserProfilePage from "../profile/ProfilePage";
 
 function App() {
   const { isLoggedIn } = useContext(AuthContext);
@@ -26,13 +28,14 @@ function App() {
   );
 
   return (
+    <UserProvider>
     <Router>
       <Routes>
         <Route
           path="/"
           element={withLayout(HomePage, { groups, setGroups, searchTerm, setSearchTerm }, !isLoggedIn)}
         />
-        <Route path="/profile" element={withLayout(ProfilePage)} />
+        <Route path="/profile/:userId" element={withLayout(UserProfilePage)} />
         <Route path="/edit-profile" element={withLayout(EditProfilePage)} />
         <Route path="/group/:groupId/:ownerId" element={withLayout(GroupInfoPage, { groups, setGroups })} />
         <Route path="/create" element={withLayout(CreateGroupPage, { setGroups })} />
@@ -42,6 +45,7 @@ function App() {
         <Route path="/policy" element={withLayout(PrivatePolicyPage)} />
       </Routes>
     </Router>
+    </UserProvider>
   );
 }
 

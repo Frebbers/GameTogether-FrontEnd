@@ -71,5 +71,5 @@ jobs:
           echo "finished"
 
           # CLEANUP
-          docker system prune -af --volumes
+          docker system prune -af
           

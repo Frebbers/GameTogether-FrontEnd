@@ -248,3 +248,13 @@ button:hover {
     background-color: #f8f9fa;
   }
   
+  .profile-group-item {
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+  }
+
+  .profile-group-item:hover {
+    transform: translateY(-2px) scale(1.01);
+    background-color: rgba(27, 31, 59, 0.95) !important;
+    z-index: 5;
+    box-shadow: 0 12px 30px rgba(255, 255, 255, 0.3);
+  }

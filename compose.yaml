@@ -20,6 +20,9 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      args:
+        VITE_API_BASE: ${VITE_API_BASE}  # 👈 this must be explicitly passed
+        ENVIRONMENT: ${ENVIRONMENT:-Development}
     depends_on:
       - api
     environment:

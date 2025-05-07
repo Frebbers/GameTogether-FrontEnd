@@ -1,8 +1,7 @@
 on:
   push:
     branches:
-      - main
-      - gha-fixing
+      - test-fixing
   pull_request:
     branches:
       - main

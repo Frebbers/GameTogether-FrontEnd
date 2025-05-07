@@ -13,6 +13,8 @@ x-common-env: &common-env
   #ASPNETCORE_Kestrel__Certificates__Default__Path: "/https/aspnet-dev.pfx"
   ASPNETCORE_Kestrel__Certificates__Default__Password: ${DB_PASSWORD:-rekt123}
   FRONTEND_BASE_URL: ${FRONTEND_BASE_URL}
+  JEST_JUNIT_OUTPUT_DIR: "test-results"
+  JEST_JUNIT_OUTPUT_NAME: "junit.xml"
 
 services:
   # Frontend (React + Nginx)
@@ -110,6 +112,8 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
       target: build
+    volumes:
+      - ./frontend/test-results:/app/test-results
     depends_on:
       mysql:
         condition: service_healthy
@@ -120,6 +124,7 @@ services:
     environment: *common-env
     working_dir: /app
     command: npm run testci
+
     networks:
       - app-network
 

@@ -62,7 +62,7 @@ beforeAll(async () => {
     } catch (error) {
         console.warn(`Failed to connect to API: ${error.message}`);
         skipTests = true;
-        throw new error(`API is not reachable. Skipping integration tests. ${error.message}`);
+        throw new Error(`API is not reachable. Skipping integration tests. ${error.message}`);
     }
 }, 10000);
 

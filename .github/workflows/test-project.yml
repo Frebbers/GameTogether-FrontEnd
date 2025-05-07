@@ -24,7 +24,7 @@ jobs:
       - name: Run tests and capture exit code
         id: test-run
         run: |
-          /usr/bin/docker compose -f Docker-Compose.yml up test --exit-code-from test
+          /usr/bin/docker compose -f Compose.yml up test --exit-code-from test
           echo "exit_code=$?" >> $GITHUB_OUTPUT
 
       - name: Upload test results

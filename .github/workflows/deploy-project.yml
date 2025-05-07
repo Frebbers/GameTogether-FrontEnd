@@ -1,16 +1,18 @@
 name: Deploy Project
 
 on:
-  push:
+  workflow_run:
+    workflows: ["Test Project"]
+    types:
+      - completed
     branches:
-      - gha-fixing
-      - https-i-prod
+      - main
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     environment: DTU Hosting
-    
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
 #    - name: Set up SSL certificate
     - name: Deploy to server

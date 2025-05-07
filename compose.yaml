@@ -46,6 +46,8 @@ services:
       interval: 5s
       timeout: 10s
       retries: 2
+    volumes:
+      - mysql-data:/var/lib/mysql
     networks:
       - app-network
 
@@ -123,6 +125,9 @@ services:
     command: npm testci
     networks:
       - app-network
+
+volumes:
+  mysql-data:
 
 networks:
   app-network:

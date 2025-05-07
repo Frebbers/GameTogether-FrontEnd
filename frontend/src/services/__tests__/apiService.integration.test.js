@@ -62,6 +62,7 @@ beforeAll(async () => {
     } catch (error) {
         console.warn(`Failed to connect to API: ${error.message}`);
         skipTests = true;
+        throw new error(`API is not reachable. Skipping integration tests. ${error.message}`);
     }
 }, 10000);
 
@@ -140,7 +141,6 @@ describe('API Service Integration Tests', () => {
 
         const result = await apiService.fetchUserGroups();
         expect(Array.isArray(result)).toBe(true);
-
         if (createdGroupId) {
             const foundGroup = result.find(group => group.id === createdGroupId);
             expect(foundGroup).toBeDefined();

@@ -22,5 +22,21 @@ jobs:
         with:
           version: 'latest'
 
-      - name: Run tests
-        run: /usr/bin/docker compose up test
+      - name: Run tests and capture exit code
+        id: test-run
+        run: |
+          /usr/bin/docker compose -f Docker-Compose.yml up test --exit-code-from test
+          echo "exit_code=$?" >> $GITHUB_OUTPUT
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-results
+          path: |
+            frontend/test-results/
+          # backend/test-results/ We currently do not have working backend unit tests
+
+      - name: Fail workflow if tests failed
+        if: steps.test-run.outputs.exit_code != 0
+        run: exit ${{ steps.test-run.outputs.exit_code }}

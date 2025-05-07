@@ -126,7 +126,12 @@ services:
         condition: service_completed_successfully
       api:
         condition: service_healthy
-    environment: *common-env
+    environment:
+      <<: *common-env
+      API_BASE: http://api:7191/api
+      NODE_ENV: test
+      DEBUG: "true"
+
     working_dir: /app
     command: npm run testci
 

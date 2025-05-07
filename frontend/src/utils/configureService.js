@@ -2,7 +2,7 @@
  * Returns the correct API base URL depending on the environment
  * Works in both browser and Node.js environments (Jest tests)
  */
-const fallbackUrl = fallbackUrl; // Default fallback URL
+const fallbackUrl = 'http://localhost:7191/api'; // Default fallback URL
 
 export function getApiBaseUrl() {
     // Node.js environment check (for tests)

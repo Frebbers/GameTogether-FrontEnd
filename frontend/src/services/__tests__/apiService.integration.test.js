@@ -65,11 +65,6 @@ beforeAll(async () => {
     }
 }, 10000);
 
-describe('Failure tests', () => {
-    test('Test to deliberately fail', () => {
-        expect(true).toBe(false);
-    }, 10000);
-
 describe('API Service Integration Tests', () => {
     // 1. Registration Test
     test('registers a new user', async () => {

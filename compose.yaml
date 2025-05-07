@@ -93,14 +93,17 @@ services:
       - app-network
       
   nginx:
-    image: nginx:latest
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+      args:
+        - ENVIRONMENT=${ENVIRONMENT}
     container_name: nginx
     ports:
       - "443:443"
       - "80:80"
     volumes:
       - /etc/nginx/ssl/:/https:ro
-      - ./frontend/nginx.Production.conf:/etc/nginx/nginx.conf
     depends_on:
       - frontend
       - api

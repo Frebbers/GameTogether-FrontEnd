@@ -13,6 +13,8 @@ x-common-env: &common-env
   #ASPNETCORE_Kestrel__Certificates__Default__Path: "/https/aspnet-dev.pfx"
   ASPNETCORE_Kestrel__Certificates__Default__Password: ${DB_PASSWORD:-rekt123}
   FRONTEND_BASE_URL: ${FRONTEND_BASE_URL}
+  JEST_JUNIT_OUTPUT_DIR: "test-results"
+  JEST_JUNIT_OUTPUT_NAME: "junit.xml"
 
 services:
   # Frontend (React + Nginx)
@@ -89,19 +91,21 @@ services:
     working_dir: /src
     command: >
       sh -c "dotnet ef database update --project GameTogetherAPI/GameTogetherAPI.csproj --startup-project GameTogetherAPI/GameTogetherAPI.csproj"
-      
     networks:
       - app-network
       
   nginx:
-    image: nginx:latest
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+      args:
+        - ENVIRONMENT=${ENVIRONMENT}
     container_name: nginx
     ports:
       - "443:443"
       - "80:80"
     volumes:
       - /etc/nginx/ssl/:/https:ro
-      - ./frontend/nginx.Production.conf:/etc/nginx/nginx.conf
     depends_on:
       - frontend
       - api
@@ -113,6 +117,8 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
       target: build
+    volumes:
+      - ./frontend/test-results:/app/test-results
     depends_on:
       mysql:
         condition: service_healthy
@@ -121,8 +127,9 @@ services:
       api:
         condition: service_healthy
     environment: *common-env
-    working_dir: /app  # Set to the WORKDIR defined in the builder stage.
-    command: npm testci
+    working_dir: /app
+    command: npm run testci
+
     networks:
       - app-network
 

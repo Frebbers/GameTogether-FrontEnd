@@ -1,12 +1,8 @@
+name: Test Project
 on:
-  push:
-    branches:
-      - main
-      - gha-fixing
   pull_request:
     branches:
       - main
-      - gha-fixing
 
 jobs:
   run-tests:
@@ -25,12 +21,12 @@ jobs:
       - name: Run tests and capture exit code
         id: test-run
         run: |
-          /usr/bin/docker compose -f Docker-Compose.yml up test --exit-code-from test
+          /usr/bin/docker compose up test --exit-code-from test
           echo "exit_code=$?" >> $GITHUB_OUTPUT
 
       - name: Upload test results
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: test-results
           path: |

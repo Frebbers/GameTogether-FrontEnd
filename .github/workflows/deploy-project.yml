@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - gha-fixing
+      - https-i-prod
 
 jobs:
   deploy:

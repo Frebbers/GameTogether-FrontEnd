@@ -21,7 +21,7 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
       args:
-        VITE_API_BASE: ${VITE_API_BASE}  # 👈 this must be explicitly passed
+        VITE_API_BASE: ${VITE_API_BASE}
         ENVIRONMENT: ${ENVIRONMENT:-Development}
     depends_on:
       - api
@@ -40,7 +40,7 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
       MYSQL_DATABASE: ${DB_NAME}
-    ports: ["3306:3306"]  # Expose MySQL port 3306
+    ports: ["3306:3306"]
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 5s
@@ -52,7 +52,7 @@ services:
 # Backend (ASP.NET Core)
   api:
     build:
-      context: ./backend  # Path to the backend directory
+      context: ./backend
       dockerfile: Dockerfile
       args:
         - ENVIRONMENT=${ENVIRONMENT}
@@ -95,7 +95,7 @@ services:
     image: nginx:latest
     container_name: nginx
     ports:
-      - "443:443"  # Expose port 443 to the outside world for HTTPS
+      - "443:443"
       - "80:80"
     volumes:
       - /etc/nginx/ssl/:/https:ro

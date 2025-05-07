@@ -12,7 +12,6 @@ jobs:
     
     steps:
 #    - name: Set up SSL certificate
-
     - name: Deploy to server
       uses: appleboy/ssh-action@v1.2.1
       with:

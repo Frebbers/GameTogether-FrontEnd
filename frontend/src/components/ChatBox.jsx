@@ -122,6 +122,7 @@ const ChatBox = ({ groupId, chatId, currentUserId, canChat, participants = [] })
                   senderName={isOwn ? "You" : msg.senderName}
                   messageText={msg.content}
                   isCurrentUser={isOwn}
+                  timeStamp={msg.timeStamp}
                 />
               );
             })}

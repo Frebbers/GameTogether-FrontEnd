@@ -53,7 +53,7 @@ jobs:
           echo "DB_NAME=${{ vars.DB_NAME }}" >> .env.prod
           echo "CONNECTION_STRING=Server=${{ vars.DB_TYPE }};Database=${{ vars.DB_NAME }};User=root;Password=${{ secrets.DB_ROOT_PASSWORD }};Port=${{ vars.DB_PORT }};" >> .env.prod
           echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env.prod
-          echo "EMAIL_VERIFICATION_URL=https://${{ vars.HOST }}:10192/api/auth/verify-email" >> .env.prod
+          echo "EMAIL_VERIFICATION_URL=https://gametogether.live:10192/api/auth/verify-email" >> .env.prod
           echo "SMTP_SERVER=${{ vars.SMTP_SERVER }}" >> .env.prod
           echo "SMTP_PORT=${{ vars.SMTP_PORT }}" >> .env.prod
           echo "SENDER_EMAIL=noreply.gametogether@gmail.com" >> .env.prod

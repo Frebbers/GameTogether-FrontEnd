@@ -28,24 +28,20 @@ function App() {
   );
 
   return (
-    <UserProvider>
-    <Router>
-      <Routes>
-        <Route
-          path="/"
-          element={withLayout(HomePage, { groups, setGroups, searchTerm, setSearchTerm }, !isLoggedIn)}
-        />
-        <Route path="/profile/:userId" element={withLayout(UserProfilePage)} />
-        <Route path="/edit-profile" element={withLayout(EditProfilePage)} />
-        <Route path="/group/:groupId/:ownerId" element={withLayout(GroupInfoPage, { groups, setGroups })} />
-        <Route path="/create" element={withLayout(CreateGroupPage, { setGroups })} />
-        <Route path="/faq" element={withLayout(FaqPage)} />
-        <Route path="/about" element={withLayout(AboutPage)} />
-        <Route path="/support" element={withLayout(SupportPage)} />
-        <Route path="/policy" element={withLayout(PrivatePolicyPage)} />
-      </Routes>
-    </Router>
-    </UserProvider>
+    <Routes>
+      <Route
+        path="/"
+        element={withLayout(HomePage, { groups, setGroups, searchTerm, setSearchTerm }, !isLoggedIn)}
+      />
+      <Route path="/profile/:userId" element={withLayout(UserProfilePage)} />
+      <Route path="/edit-profile" element={withLayout(EditProfilePage)} />
+      <Route path="/group/:groupId/:ownerId" element={withLayout(GroupInfoPage, { groups, setGroups })} />
+      <Route path="/create" element={withLayout(CreateGroupPage, { setGroups })} />
+      <Route path="/faq" element={withLayout(FaqPage)} />
+      <Route path="/about" element={withLayout(AboutPage)} />
+      <Route path="/support" element={withLayout(SupportPage)} />
+      <Route path="/policy" element={withLayout(PrivatePolicyPage)} />
+    </Routes>
   );
 }
 

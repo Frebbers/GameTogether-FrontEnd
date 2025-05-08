@@ -4,8 +4,10 @@ import { fetchGroupMessages, sendGroupMessage } from "../services/apiService";
 import { WebSocketService } from "../services/websocketService";
 import ChatInput from "./ChatInput";
 
-const ChatBox = ({ groupId, chatId, currentUserId, canChat }) => {
+const ChatBox = ({ groupId, chatId, currentUserId, canChat, participants = [] }) => {
   const [messages, setMessages] = useState([]);
+  const [typingUserIds, setTypingUserIds] = useState([]);
+  const typingTimeoutsRef = useRef({});
   const messagesEndRef = useRef(null);
 
   const loadMessages = async () => {
@@ -23,53 +25,58 @@ const ChatBox = ({ groupId, chatId, currentUserId, canChat }) => {
 
   useEffect(() => {
     if (!canChat) return;
-
+  
     const token = localStorage.getItem("token");
-
+  
+    WebSocketService.disconnect();
     WebSocketService.connect(token, {
       chatId,
       onMessage: (data) => {
         try {
           const raw = JSON.parse(data);
-
-          //To be sure there mess up on casing
-          const msg = {
-            messageId: raw.messageId ?? raw.MessageId,
-            senderId: raw.senderId ?? raw.SenderId,
-            senderName: raw.senderName ?? raw.SenderName,
-            content: raw.content ?? raw.Content,
-            timeStamp: raw.timeStamp ?? raw.TimeStamp,
-            chatId: raw.chatId ?? raw.ChatId,
-          };
-
-          if (
-            msg &&
-            msg.content &&
-            Number(msg.chatId) === Number(chatId)
-          ) {
-            setMessages((prev) => {
-              const alreadyExists = prev.some(
-                (m) => m.messageId === msg.messageId
-              );
-              if (alreadyExists) return prev;
-
-              const updated = [...prev, msg];
-              //For scrolling the container to the bottom when updated
-              setTimeout(() => {
-                messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-              }, 0);
-              return updated;
+          const isCorrectChat = Number(raw.chatId) === Number(chatId);
+  
+          if (!isCorrectChat) return;
+  
+          if (raw.type === "typing") {
+            const userId = Number(raw.userId);
+            setTypingUserIds((prev) => {
+              if (!prev.includes(userId)) {
+                return [...prev, userId];
+              }
+              return prev;
+            });
+          
+            clearTimeout(typingTimeoutsRef.current[userId]);
+            typingTimeoutsRef.current[userId] = setTimeout(() => {
+              setTypingUserIds((prev) => prev.filter(id => id !== userId));
+            }, 5000);
+            return;
+          }
+  
+          if (raw.type === "message") {
+            const msg = {
+              messageId: raw.messageId,
+              senderId: raw.senderId,
+              senderName: raw.senderName,
+              content: raw.content,
+              timeStamp: raw.timeStamp,
+              chatId: raw.chatId
+            };
+  
+            setMessages(prev => {
+              const exists = prev.some(m => m.messageId === msg.messageId);
+              if (exists) return prev;
+              return [...prev, msg];
             });
           }
         } catch (err) {
-          console.warn("Invalid WebSocket message:", data);
+          console.warn("Invalid WebSocket message format:", data);
         }
-      },
+      }
     });
-
-    return () => {
-      WebSocketService.disconnect();
-    };
+  
+    return () => WebSocketService.disconnect();
   }, [chatId, canChat]);
 
   const handleSend = async (message) => {
@@ -81,6 +88,12 @@ const ChatBox = ({ groupId, chatId, currentUserId, canChat }) => {
       console.error("Failed to send message:", err);
     }
   };
+
+  const typingUsernames = typingUserIds
+  .filter(id => id !== Number(currentUserId))
+  .map(id => participants.find(p => Number(p.userId) === id)?.username)
+  .filter(Boolean);
+    
 
   return (
     <Box sx={{ height: "55vh", display: "flex", flexDirection: "column" }}>
@@ -133,14 +146,31 @@ const ChatBox = ({ groupId, chatId, currentUserId, canChat }) => {
         </Box>
       </Paper>
 
-      <Box sx={{ display: "flex", alignItems: "center", p: 2 }}>
-        {canChat ? (
-          <ChatInput onSend={handleSend} />
-        ) : (
-          <Typography variant="body2" color="text.secondary">
-            You must be an accepted member to participate in the chat.
-          </Typography>
-        )}
+      <Box sx={{ display: "flex",flexDirection: "column", alignItems: "center", pt: 0.5 }}>
+      {canChat ? (
+        <>
+          {typingUsernames.length > 0 && (
+            <Typography variant="caption" sx={{ color:"#000dff",fontSize: "11px",fontWeight: "600", px: 0.5, pt: 0.5, width: "100%" }}>
+              {typingUsernames.join(", ")} {typingUsernames.length === 1 ? "is" : "are"} typing...
+            </Typography>
+          )}
+          <ChatInput
+            onSend={handleSend}
+            onTyping={(chatId) => {
+              if (WebSocketService.isConnected()) {
+                WebSocketService.send({ type: "typing", chatId });
+              } else {
+                console.warn("WebSocket is not ready");
+              }
+            }}
+            chatId={chatId}
+          />
+        </>
+      ) : (
+        <Typography variant="body2" color="text.secondary">
+          You must be an accepted member to participate in the chat.
+        </Typography>
+      )}
       </Box>
     </Box>
   );

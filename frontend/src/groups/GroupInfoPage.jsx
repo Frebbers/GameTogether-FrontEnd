@@ -215,7 +215,7 @@ const GroupInfoPage = ({ groups, setGroups }) => {
                 </Box>
               </Paper>
 
-              <Paper elevation={6} sx={{ ...paperStyle, p: 3 }}>
+              <Paper elevation={6} sx={{ ...paperStyle, p: 3, maxHeight: "35vh", overflowY: "auto" }}>
                 <Typography variant="h6">
                   Members ({members.length + guests.length}/{group.maxMembers})
                 </Typography>

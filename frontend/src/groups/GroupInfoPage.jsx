@@ -253,7 +253,7 @@ const GroupInfoPage = ({ groups, setGroups }) => {
                   ))}
                   {guests.map((g, i) => (
                     <Paper key={i} sx={memberCardStyle}>
-                      <Typography variant="body2" sx={{ fontStyle: "italic" }}>
+                      <Typography variant="body2" sx={{ fontStyle: "italic", color: "white" }}>
                         {g}
                       </Typography>
                     </Paper>

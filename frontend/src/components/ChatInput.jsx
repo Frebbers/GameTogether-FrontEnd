@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { IconButton, InputBase, Paper } from "@mui/material";
 
-const ChatInput = ({ onSend }) => {
+const ChatInput = ({ onSend, onTyping, chatId }) => {
   const [message, setMessage] = useState("");
 
   const handleSend = () => {
@@ -10,6 +10,20 @@ const ChatInput = ({ onSend }) => {
       setMessage("");
     }
   };
+
+  const handleChange = (e) => {
+    setMessage(e.target.value);
+    debounceTyping();
+  };
+
+  const debounceTyping = useCallback(
+    debounce(() => {
+      if (onTyping && chatId) {
+        onTyping(chatId);
+      }
+    }, 1500),
+    [onTyping, chatId]
+  );
 
   return (
     <Paper
@@ -31,7 +45,7 @@ const ChatInput = ({ onSend }) => {
         sx={{ ml: 1, flex: 1, color: "white" }}
         placeholder="Type a message..."
         value={message}
-        onChange={(e) => setMessage(e.target.value)}
+        onChange={handleChange}
         inputProps={{ "aria-label": "type a message" }}
       />
     </Paper>
@@ -39,3 +53,11 @@ const ChatInput = ({ onSend }) => {
 };
 
 export default ChatInput;
+
+function debounce(func, delay) {
+  let timeout;
+  return function (...args) {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func.apply(this, args), delay);
+  };
+}

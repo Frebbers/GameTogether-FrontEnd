@@ -281,6 +281,7 @@ const GroupInfoPage = ({ groups, setGroups }) => {
                   <ChatBox
                     currentUserId={claims.nameid}
                     groupId={groupId}
+                    participants={members}
                     chatId={group.chat.chatId}
                     canChat={isAcceptedMember}
                   />

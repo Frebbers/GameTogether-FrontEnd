@@ -3,6 +3,7 @@ import { Box, Paper, Typography, Stack } from "@mui/material";
 import { fetchGroupMessages, sendGroupMessage } from "../services/apiService";
 import { WebSocketService } from "../services/websocketService";
 import ChatInput from "./ChatInput";
+import ChatMessage from "./ChatMessage";
 
 const ChatBox = ({ groupId, chatId, currentUserId, canChat }) => {
   const [messages, setMessages] = useState([]);
@@ -103,30 +104,12 @@ const ChatBox = ({ groupId, chatId, currentUserId, canChat }) => {
               const isOwn = Number(msg.senderId) === Number(currentUserId);
 
               return (
-                <Box
+                <ChatMessage
                   key={msg.messageId}
-                  sx={{
-                    display: "flex",
-                    justifyContent: isOwn ? "flex-end" : "flex-start",
-                  }}
-                >
-                  <Box
-                    sx={{
-                      maxWidth: "60%",
-                      bgcolor: isOwn ? "primary.main" : "grey.300",
-                      color: isOwn ? "white" : "black",
-                      px: 2,
-                      py: 1,
-                      borderRadius: 2,
-                    }}
-                  >
-                    <Typography variant="body2" fontWeight={500}>
-                      {isOwn ? "You" : msg.senderName}
-                    </Typography>
-                    <Typography variant="body1">{msg.content}</Typography>
-                  </Box>
-                  <div ref={messagesEndRef} />
-                </Box>
+                  senderName={isOwn ? "You" : msg.senderName}
+                  messageText={msg.content}
+                  isCurrentUser={isOwn}
+                />
               );
             })}
           </Stack>

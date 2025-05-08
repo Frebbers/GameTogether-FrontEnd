@@ -1,27 +1,11 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
-import {
-  fetchGroupById,
-  fetchProfile,
-  joinGroup,
-  AcceptUserIntoGroup,
-  RejectUserFromGroup,
-  leaveGroup,
-} from "../services/apiService";
+import {  fetchGroupById,  fetchProfile,  joinGroup,  AcceptUserIntoGroup,  RejectUserFromGroup,  leaveGroup,} from "../services/apiService";
 import Dialog from "../components/Modal";
 import background from "../images/background.jpg";
 import ChatBox from "../components/ChatBox";
-import {
-  Box,
-  Paper,
-  Typography,
-  Chip,
-  Button,
-  Divider,
-  Stack,
-  Container,
-} from "@mui/material";
+import {  Box,  Paper,  Typography,  Chip,  Button,  Divider,  Stack,  Container, Tab, Tabs} from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import CircularProgress from '@mui/material/CircularProgress';
 
@@ -34,6 +18,7 @@ const GroupInfoPage = ({ groups, setGroups }) => {
   const [isPendingDialogOpen, setIsPendingDialogOpen] = useState(false);
   const [isPendingMember, setIsPendingMember] = useState(false);
   const [isAcceptedMember, setIsAcceptedMember] = useState(false);
+  const [tabIndex, setTabIndex] = useState(0);
 
   const claims = jwtDecode(localStorage.getItem("token"));
   const isGroupOwner = claims.nameid === ownerId;
@@ -117,6 +102,8 @@ const GroupInfoPage = ({ groups, setGroups }) => {
   };
 
   return (
+
+    
     <Box
       sx={{
         minHeight: "100%",
@@ -136,18 +123,39 @@ const GroupInfoPage = ({ groups, setGroups }) => {
           }}
         >
           {/* LEFT COLUMN */}
-          <Box sx={{ flex: "0 0 33%", minWidth: 300 }}>
+          <Box sx={{ flex: "0 0 33%"}}>
             <Stack spacing={2}>
-              <Paper elevation={10} sx={paperStyle}>
+            <Paper elevation={10} sx={{ ...paperStyle, p: 0,
+              height: { xs: "auto", md: "55vh" },
+              display: "flex",
+              flexDirection: "column",
+              overflow: "hidden",
+            }}>
+            <Tabs
+              value={tabIndex}
+              onChange={(e, newVal) => setTabIndex(newVal)}
+              textColor="inherit"
+              indicatorColor="primary"
+              variant="fullWidth"
+              size="small"
+            >
+              <Tab label="Info" />
+              <Tab label="Description" />
+              <Tab label="Members" />
+            </Tabs>
+
+            {tabIndex === 0 && (
+              <Box sx={{ p: 3, height: "100%", display: "flex", justifyContent: "space-between", flexDirection: "column" }}>
+                <Box sx={{display: "flex", flexDirection: "column", gap: "4px"}}>
                 <Typography sx={{ wordBreak: "break-word" }} variant="h4">
                   {group.title}
                 </Typography>
-                <Typography variant="subtitle1">Owner: {ownerName}</Typography>
-                <Typography variant="h6" sx={{ mt: 1, mb: 1 }}>
-                  Details
-                </Typography>
+                
                 <Divider sx={{ borderColor: "#888", mb: 1 }} />
-                <Typography>Age Range: {group.ageRange}</Typography>
+                <Typography sx={{mb: 1}}>
+                    Visibility: {group.isVisible ? "Public" : "Private"}
+                </Typography>
+                <Typography sx={{mb: 1}}>Age Range: {group.ageRange}</Typography>
                 <Typography>Max Members: {group.maxMembers}</Typography>
                 <Typography sx={{ mb: 1, mt: 1 }}>Tags:</Typography>
                 <Stack direction="row" spacing={1} flexWrap="wrap">
@@ -159,14 +167,9 @@ const GroupInfoPage = ({ groups, setGroups }) => {
                     <Chip label="No tags" size="large" color="error" />
                   )}
                 </Stack>
-                <Box
-                  mt={4}
-                  display="flex"
-                  gap={1}
-                  flexDirection={"column"}
-                  justifyContent="space-between"
-                  flexWrap="wrap"
-                >
+                  </Box>
+
+                <Box mt={0} display="flex" flexDirection="column" gap={1}>
                   {!isAcceptedMember && !isPendingMember && (
                     <Button variant="contained" onClick={() => setIsDialogOpen(true)}>
                       Request to Join
@@ -175,47 +178,48 @@ const GroupInfoPage = ({ groups, setGroups }) => {
 
                   {isPendingMember && (
                     <LoadingButton
-                    loading
-                    loadingPosition="start"
-                    startIcon={<CircularProgress color="inherit" size={16} />}
-                    variant="outlined"
-                    disabled
-                    color="primary"
-                    sx={{
-                      color: "white",
-                      borderColor: "white",
-                      ".MuiLoadingButton-loadingIndicator": {
-                        color: "white",
-                      },
-                      "&.Mui-disabled": {
-                        opacity: 1,
+                      loading
+                      loadingPosition="start"
+                      startIcon={<CircularProgress color="inherit" size={16} />}
+                      variant="outlined"
+                      disabled
+                      color="primary"
+                      sx={{
                         color: "white",
                         borderColor: "white",
-                      },
-                    }}
-                  >
-                    Pending Approval
-                  </LoadingButton>
+                        ".MuiLoadingButton-loadingIndicator": {
+                          color: "white",
+                        },
+                        "&.Mui-disabled": {
+                          opacity: 1,
+                          color: "white",
+                          borderColor: "white",
+                        },
+                      }}
+                    >
+                      Pending Approval
+                    </LoadingButton>
                   )}
                   {isAcceptedMember && (
                     <Button variant="outlined" color="error" onClick={handleLeave}>
                       Leave Group
                     </Button>
                   )}
-                {isGroupOwner && (
-                  <Button
-                    variant="outlined"
-                    color="warning"
-                    onClick={() => setIsPendingDialogOpen(true)}
-                    sx={{ mt: { xs: 2, md: 0 } }}
-                  >
-                    Pending Users
-                  </Button>
-                )}
+                  {isGroupOwner && (
+                    <Button
+                      variant="outlined"
+                      color="warning"
+                      onClick={() => setIsPendingDialogOpen(true)}
+                    >
+                      Pending Users
+                    </Button>
+                  )}
                 </Box>
-              </Paper>
+              </Box>
+            )}
 
-              <Paper elevation={6} sx={{ ...paperStyle, p: 3, maxHeight: "35vh", overflowY: "auto" }}>
+            {tabIndex === 2 && (
+              <Box sx={{ p: 3, height: "100%", overflowY: "auto" }}>
                 <Typography variant="h6">
                   Members ({members.length + guests.length}/{group.maxMembers})
                 </Typography>
@@ -226,7 +230,9 @@ const GroupInfoPage = ({ groups, setGroups }) => {
                       key={m.userId}
                       fullWidth
                       variant="contained"
-                      onClick={() => navigate(String(m.userId) === String(claims.nameid) ? `/profile/me` : `/profile/${m.userId}`)}
+                      onClick={() =>
+                        navigate(String(m.userId) === String(claims.nameid) ? `/profile/me` : `/profile/${m.userId}`)
+                      }
                       sx={{
                         backgroundColor: "rgba(27, 31, 59, 0.9)",
                         color: "white",
@@ -235,13 +241,10 @@ const GroupInfoPage = ({ groups, setGroups }) => {
                         borderRadius: "8px",
                         boxShadow: "0 0 8px rgba(255, 255, 255, 0.1)",
                         p: 2,
-                        transition:
-                          "transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease",
                         "&:hover": {
                           transform: "translateY(-2px) scale(1.01)",
                           backgroundColor: "rgba(27, 31, 59, 0.95)",
                           boxShadow: "0 6px 15px rgba(255, 255, 255, 0.2)",
-                          zIndex: 5,
                         },
                       }}
                     >
@@ -259,7 +262,20 @@ const GroupInfoPage = ({ groups, setGroups }) => {
                     </Paper>
                   ))}
                 </Stack>
-              </Paper>
+              </Box>
+            )}
+              {tabIndex === 1 && (
+              <Box sx={{ p: 3, height: "100%", overflowY: "auto" }}>
+                <Typography variant="h6" gutterBottom>
+                  Description
+                </Typography>
+                <Divider sx={{ borderColor: "#888", my: 1 }} />
+                <Typography sx={{ whiteSpace: "pre-line" }}>
+                  {group.description?.trim() || "No description provided."}
+                </Typography>
+              </Box>
+            )}
+            </Paper>
             </Stack>
           </Box>
 

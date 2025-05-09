@@ -332,6 +332,8 @@ describe('API Service Integration Tests', () => {
         }
     }, 10000);
 });
+
+// TODO Update group endpoint test
 // Helper functions to compare objects with defined test data
 function compareGroups(foundGroup) {
     expect(foundGroup).toBeDefined();

@@ -1,29 +1,38 @@
-import React, { useState, useCallback } from "react";
-import { IconButton, InputBase, Paper } from "@mui/material";
+import { useState, useRef, useCallback } from "react";
+import { Paper, InputBase } from "@mui/material";
 
 const ChatInput = ({ onSend, onTyping, chatId }) => {
   const [message, setMessage] = useState("");
+  const stopTypingTimeoutRef = useRef(null);
+  const lastTypingSentRef = useRef(0);
 
   const handleSend = () => {
     if (message.trim()) {
       onSend(message.trim());
       setMessage("");
+
+      if (onTyping && chatId) {
+          onTyping(chatId, true);
+        }
+      clearTimeout(stopTypingTimeoutRef.current);
     }
   };
 
   const handleChange = (e) => {
-    setMessage(e.target.value);
-    debounceTyping();
-  };
+    const text = e.target.value;
+    setMessage(text);
 
-  const debounceTyping = useCallback(
-    debounce(() => {
-      if (onTyping && chatId) {
-        onTyping(chatId);
-      }
-    }, 1500),
-    [onTyping, chatId]
-  );
+    const now = Date.now();
+    if (onTyping && chatId && now - lastTypingSentRef.current > 1000) {
+      onTyping(chatId, false);
+      lastTypingSentRef.current = now;
+    }
+
+    clearTimeout(stopTypingTimeoutRef.current);
+    stopTypingTimeoutRef.current = setTimeout(() => {
+      onTyping(chatId, true);
+    }, 3000);
+  };
 
   return (
     <Paper
@@ -46,18 +55,9 @@ const ChatInput = ({ onSend, onTyping, chatId }) => {
         placeholder="Type a message..."
         value={message}
         onChange={handleChange}
-        inputProps={{ "aria-label": "type a message" }}
       />
     </Paper>
   );
 };
 
 export default ChatInput;
-
-function debounce(func, delay) {
-  let timeout;
-  return function (...args) {
-    clearTimeout(timeout);
-    timeout = setTimeout(() => func.apply(this, args), delay);
-  };
-}

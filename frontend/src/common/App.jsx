@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 
 import HomePage from "../HomePage";
 import ProfilePage from "../profile/ProfilePage";
@@ -14,12 +14,25 @@ import Layout from "../common/Layout";
 
 import { AuthContext } from "../context/AuthContext";
 import { UserProvider } from "../context/UserContext.jsx";
+import { WebSocketService } from "../services/websocketService";
 import UserProfilePage from "../profile/ProfilePage";
 
 function App() {
   const { isLoggedIn } = useContext(AuthContext);
   const [groups, setGroups] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      const token = localStorage.getItem("token");
+      if (token) {
+        WebSocketService.connect(token);
+      }
+    }
+    return () => {
+      WebSocketService.disconnect();
+    };
+  }, [isLoggedIn]);
 
   const withLayout = (Component, props = {}, hideHeader = false) => (
     <Layout hideHeader={hideHeader}>

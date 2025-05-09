@@ -4,6 +4,12 @@ on:
   push:
     branches:
       - main
+    paths-ignore:
+      - 'README.md'
+      - '.env'
+      - 'frontend/src/services/__tests__'
+      - 'certs/**'
+      - 'LICENSE'
 
 jobs:
   deploy:
@@ -44,19 +50,19 @@ jobs:
           fi
 
           # ENVIRONMENT VARIABLES
-          rm .env  # We makin our own .env
+          rm .env  # Create a new .env file for prod
           touch .env.prod
           echo "ENVIRONMENT=Production" >> .env.prod
-          echo "FRONTEND_BASE_URL=https://gametogether.live:10192/" >> .env.prod
-          echo "VITE_API_BASE=https://gametogether.live:10192/api" >> .env.prod
+          echo "FRONTEND_BASE_URL=https://${{ vars.DOMAIN }}:${{ vars.DB_TYPE }}/" >> .env.prod
+          echo "VITE_API_BASE=https://${{ vars.DOMAIN }}:${{ vars.DB_TYPE }}/api" >> .env.prod
           echo "DB_PASSWORD=${{ secrets.DB_ROOT_PASSWORD }}" >> .env.prod
           echo "DB_NAME=${{ vars.DB_NAME }}" >> .env.prod
           echo "CONNECTION_STRING=Server=${{ vars.DB_TYPE }};Database=${{ vars.DB_NAME }};User=root;Password=${{ secrets.DB_ROOT_PASSWORD }};Port=${{ vars.DB_PORT }};" >> .env.prod
           echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env.prod
-          echo "EMAIL_VERIFICATION_URL=https://gametogether.live:10192/api/auth/verify-email" >> .env.prod
+          echo "EMAIL_VERIFICATION_URL=https://${{ vars.DOMAIN }}:${{ vars.HTTPS_PORT }}/api/auth/verify-email" >> .env.prod
           echo "SMTP_SERVER=${{ vars.SMTP_SERVER }}" >> .env.prod
           echo "SMTP_PORT=${{ vars.SMTP_PORT }}" >> .env.prod
-          echo "SENDER_EMAIL=noreply.gametogether@gmail.com" >> .env.prod
+          echo "SENDER_EMAIL=${{ vars.SMTP_SENDER_ADDRESS }}" >> .env.prod
           echo "SENDER_PASSWORD=${{ secrets.SMTP_PASSWORD }}" >> .env.prod
           echo "ASPNETCORE_URLS=http://+:7191" >> .env.prod
           echo "ASPNETCORE_Kestrel__Certificates__Default__Path=" >> .env.prod

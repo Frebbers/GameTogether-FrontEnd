@@ -53,8 +53,8 @@ jobs:
           rm .env  # Create a new .env file for prod
           touch .env.prod
           echo "ENVIRONMENT=Production" >> .env.prod
-          echo "FRONTEND_BASE_URL=https://${{ vars.DOMAIN }}:${{ vars.DB_TYPE }}/" >> .env.prod
-          echo "VITE_API_BASE=https://${{ vars.DOMAIN }}:${{ vars.DB_TYPE }}/api" >> .env.prod
+          echo "FRONTEND_BASE_URL=https://${{ vars.DOMAIN }}:${{ vars.HTTPS_PORT }}/" >> .env.prod
+          echo "VITE_API_BASE=https://${{ vars.DOMAIN }}:${{ vars.HTTPS_PORT }}/api" >> .env.prod
           echo "DB_PASSWORD=${{ secrets.DB_ROOT_PASSWORD }}" >> .env.prod
           echo "DB_NAME=${{ vars.DB_NAME }}" >> .env.prod
           echo "CONNECTION_STRING=Server=${{ vars.DB_TYPE }};Database=${{ vars.DB_NAME }};User=root;Password=${{ secrets.DB_ROOT_PASSWORD }};Port=${{ vars.DB_PORT }};" >> .env.prod

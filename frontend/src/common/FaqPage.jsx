@@ -27,7 +27,7 @@ const FaqPage = () => {
         {
             question: "Is GameTogether free?",
             answer:
-                "Yes! The core features of GameTogether are free to use. We also offer premium perks like featured session listings, priority matchmaking, and custom profile badges for those who want to enhance their experience."
+                "Yes! The core features of GameTogether are free to use. We may introduce premium features in the future, but the basic matchmaking service will always be free."
         },
         {
             question: "What types of games are supported?",
@@ -58,19 +58,19 @@ const FaqPage = () => {
       <div
   className="custom-container"
   style={{
-    width: '25%',
+    width: '50%',
     background: 'rgba(255, 255, 255, 0.15)',
     backdropFilter: 'blur(10px)',
     WebkitBackdropFilter: 'blur(10px)',
-    borderRadius: '12px',
-    padding: '20px',
+    borderRadius: '1.2%',
+    padding: '2%',
     border: '1px solid rgba(255, 255, 255, 0.3)',
     color: '#fff',
   }}
 >
 
 
-                <h1 className="mb-4">Frequently Asked Questions - GameTogether</h1>
+                <h2 className="mb-4">Frequently Asked Questions - GameTogether</h2>
                 <div className="accordion" id="faqAccordion">
                     {faqItems.map((item, index) => (
                         <div className="accordion-item" key={index}>

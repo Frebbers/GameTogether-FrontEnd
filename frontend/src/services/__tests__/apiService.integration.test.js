@@ -100,8 +100,16 @@ describe('API Service Integration Tests', () => {
 
     // 3. Create User Profile Test
     test('updates a user profile', async () => {
-        if (skipTests || !authToken) return;
-        console.log('logs in with valid credentials test starting...');
+        if (skipTests)
+        {
+            console.log('Skipping update user profile test');
+            return;
+        }
+        if (!authToken) {
+            console.log('Skipping update user profile test - no auth token');
+            return;
+            }
+        console.log('updates a user profile test starting...');
 
         const result = await apiService.updateUserProfile({
             body: JSON.stringify(testProfileData)
@@ -113,8 +121,17 @@ describe('API Service Integration Tests', () => {
 
     // 4. Fetch User Profile Test
     test('fetches user profile', async () => {
-        if (skipTests || !authToken) return;
-        console.log('logs in with valid credentials test starting...');
+        if (skipTests)
+        {
+            console.log('Skipping update user profile test');
+            return;
+        }
+        if (!authToken) {
+            console.log('Skipping update user profile test - no auth token');
+            return;
+        }
+
+        console.log('fetches user profile test starting...');
         const result = await apiService.fetchUserProfile();
         expect(result).toHaveProperty('description');
         expect(result).toHaveProperty('username');
@@ -128,52 +145,107 @@ describe('API Service Integration Tests', () => {
 
     // 5. Create Group Test
     test('create a new group', async () => {
-        if (skipTests || !authToken) return;
+        if (skipTests)
+        {
+            console.log('Skipping new group test');
+            return;
+        }
+        if (!authToken) {
+            console.log('Skipping update new group test - no auth token');
+            return;
+        }
+        console.log('create a new group test starting...');
         const result = await apiService.createGroup(testGroupData);
 
         expect(result).toHaveProperty('message');
         expect(result.message).toBe('Group created successfully!');
-
-        createdGroupId = result.id;
     }, 10000);
 
     // 6. Fetch Groups Test
     test('fetches all groups', async () => {
-        if (skipTests || !authToken) return;
-
+        if (skipTests)
+        {
+            console.log('Skipping fetch groups test');
+            return;
+        }
+        if (!authToken) {
+            console.log('Skipping fetch groups - no auth token');
+            return;
+        }
+        console.log('fetches all groups test starting...');
         const result = await apiService.fetchGroups();
         expect(Array.isArray(result)).toBe(true);
 
         if (createdGroupId) {
             const foundGroup = result.find(group => group.id === createdGroupId);
             expect(foundGroup).toBeDefined();
+            compareGroups(foundGroup);
+            // Save the group ID for later tests
+            createdGroupId = foundGroup.id;
         }
     }, 10000);
 
     // 7. Fetch User Groups Test
     test('fetches user groups', async () => {
-        if (skipTests || !authToken) return;
-
+        if (skipTests)
+        {
+            console.log('Skipping fetch user groups test');
+            return;
+        }
+        if (!authToken) {
+            console.log('Skipping fetch user groups - no auth token');
+            return;
+        }
+        console.log('fetches user groups test starting...');
         const result = await apiService.fetchUserGroups();
         expect(Array.isArray(result)).toBe(true);
         if (createdGroupId) {
             const foundGroup = result.find(group => group.id === createdGroupId);
             expect(foundGroup).toBeDefined();
+            compareGroups(foundGroup);
         }
     }, 10000);
 
     // 8. Fetch Group By ID Test
     test('fetches a specific group by ID', async () => {
-        if (skipTests || !authToken || !createdGroupId) return;
-
+        createdGroupId = localStorage.getItem('groupId');
+        if (skipTests)
+        {
+            console.log('Skipping fetch user groups test');
+            return;
+        }
+        if (!authToken) {
+            console.log('Skipping fetch user groups - no auth token');
+            return;
+        }
+        if (!createdGroupId) {
+            console.log('Skipping fetch user groups test - no group ID saved');
+            return;
+        }
+        console.log('fetches group by ID test starting...');
         const result = await apiService.fetchGroupById(createdGroupId);
         expect(result).toHaveProperty('id');
-        expect(result.id).toBe(createdGroupId);
+        const foundGroup = result.find(group => group.id === createdGroupId);
+        expect(foundGroup).toBeDefined();
+        compareGroups(foundGroup);
+
     }, 10000);
 
     // 9. Leave Group Test
     test('leaves a group', async () => {
-        if (skipTests || !authToken || !createdGroupId) return;
+        if (skipTests)
+        {
+            console.log('Skipping update fetch user groups test');
+            return;
+        }
+        if (!authToken) {
+            console.log('Skipping update fetch user groups test - no auth token');
+            return;
+        }
+        if (!createdGroupId) {
+            console.log('Skipping update fetch user groups test - no group ID saved');
+            return;
+        }
 
         const result = await apiService.leaveGroup(createdGroupId);
         expect(result).toBeDefined();
@@ -181,7 +253,19 @@ describe('API Service Integration Tests', () => {
 
     // 10. Join Group Test
     test('joins a group', async () => {
-        if (skipTests || !authToken || !createdGroupId) return;
+        if (skipTests)
+        {
+            console.log('Skipping joins a group test');
+            return;
+        }
+        if (!authToken) {
+            console.log('Skipping joins a group test - no auth token');
+            return;
+        }
+        if (!createdGroupId) {
+            console.log('Skipping joins a group test - no group ID saved');
+            return;
+        }
 
         const result = await apiService.joinGroup(createdGroupId);
         expect(result).toBeDefined();
@@ -253,3 +337,13 @@ describe('API Service Integration Tests', () => {
         }
     }, 10000);
 });
+
+function compareGroups(foundGroup) {
+    expect(foundGroup).toBeDefined();
+    expect(foundGroup.title).toBe(testGroupData.title);
+    expect(foundGroup.description).toBe(testGroupData.description);
+    expect(foundGroup.isVisible).toBe(testGroupData.isVisible);
+    expect(foundGroup.ageRange).toBe(testGroupData.ageRange);
+    expect(foundGroup.maxMembers).toBe(testGroupData.maxMembers);
+    expect(foundGroup.tags).toEqual(testGroupData.tags);
+}

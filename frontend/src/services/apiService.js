@@ -238,7 +238,7 @@ export const fetchUserProfile = async () => {
  */
 export const fetchProfile = async (userId) => {
     const token =getToken()
-    const response = await fetch(`${API_BASE}/Users/${userId}/profile`, {
+    const response = await fetch(`${API_BASE}/Users/profile/${userId}`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -387,5 +387,21 @@ export const fetchGroupMessages = async (chatId) => {
   
     return await response.json();
   };
+
+  export const getUserIdByName = async (username) => {
+    const token = getToken();
+    const response = await fetch(`${API_BASE}/profile/name/${username}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
+    });
+    if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || "Failed to fetch user ID.");
+    }
+    return await response.json();
+  }
   
   

@@ -143,8 +143,6 @@ const GroupInfoPage = ({ groups, setGroups }) => {
   };
 
   return (
-
-    
     <Box
       sx={{
         minHeight: "100%",
@@ -246,7 +244,7 @@ const GroupInfoPage = ({ groups, setGroups }) => {
                       {isGroupOwner ? "Disband Group" : "Leave Group"}
                     </Button>
                   )}
-                  {isGroupOwner && (
+                  {isGroupOwner && ( // Pending users button
                   <Button
                     variant="outlined"
                     color="warning"
@@ -254,7 +252,7 @@ const GroupInfoPage = ({ groups, setGroups }) => {
                     sx={{ position: "relative" }}
                   >
                     Pending Users
-                    {pendingUsers > 0 && (
+                        {(
                       <Box
                         sx={{
                           position: "absolute",
@@ -392,7 +390,7 @@ const GroupInfoPage = ({ groups, setGroups }) => {
         </Box>
       </Container>
 
-      {isDialogOpen && (
+      {isDialogOpen && ( //Confirm join group dialog
         <Dialog
           title="Join Group"
           message={`Do you want to join session #${groupId}?`}
@@ -408,7 +406,7 @@ const GroupInfoPage = ({ groups, setGroups }) => {
         />
       )}
 
-      {isPendingDialogOpen && (
+      {isPendingDialogOpen && pendingUsers > 0 && ( //only show pending users if there are any
         <Dialog
           title="Pending Users"
           message={

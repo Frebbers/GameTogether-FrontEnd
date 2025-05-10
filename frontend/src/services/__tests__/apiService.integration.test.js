@@ -220,6 +220,8 @@ describe('API Service Integration Tests', () => {
         }
         console.log('fetches group by ID test starting...');
         const result = await apiService.fetchGroupById(createdGroupId);
+        expect(result).toBeDefined();
+        expect(typeof result).toBe('object');
         expect(result).toHaveProperty('id');
         expect(result.id.toString()).toBe(createdGroupId);
         compareGroups(result);

@@ -19,7 +19,7 @@ export const WebSocketService = {
       return;
     }
 
-    const endpoint = `${WS_BASE}/ws/chat?token=${token}`;
+    const endpoint = `${WS_BASE}/ws/events?token=${token}`;
     socket = new WebSocket(endpoint);
 
     socket.onopen = () => {

@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Paper, InputBase } from "@mui/material";
 
 const ChatInput = ({ onSend, onTyping, chatId }) => {
@@ -17,6 +17,16 @@ const ChatInput = ({ onSend, onTyping, chatId }) => {
       clearTimeout(stopTypingTimeoutRef.current);
     }
   };
+
+  //In case a user navigates away from the page and not stuck in "is typing" forever
+  useEffect(() => {
+    return () => {
+      if (onTyping && chatId) {
+        onTyping(chatId, true);
+      }
+      clearTimeout(stopTypingTimeoutRef.current);
+    };
+  }, []);
 
   const handleChange = (e) => {
     const text = e.target.value;

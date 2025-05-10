@@ -233,7 +233,7 @@ describe('API Service Integration Tests', () => {
 
     }, 10000);
 
-    // 10. Join Group Test
+    // 9. Join Group Test
     test('joins a group with user 2', async () => {
         if (skipTests)
         {
@@ -251,6 +251,12 @@ describe('API Service Integration Tests', () => {
         await loginUser(1);
         const result = await apiService.joinGroup(createdGroupId);
         expect(result).toBeDefined();
+        expect(result).toHaveProperty('message');
+        if (result.message == "You are already a member of this group.") {
+            console.warn('Already member of this group, skipping current test');
+            return;
+        }
+        expect(result.message).toBe('Group joined successfully!');
     }, 10000);
 
     // 9. Leave Group Test

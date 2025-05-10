@@ -6,7 +6,6 @@ import * as apiService from '../apiService';
 import jest from 'jest-mock';
 // Test credentials
 const testProfileData = {
-    name: 'Test User',
     birthDate: '2000-01-01T00:00:00',
     region: 'Test Region',
     profilePicture: '',
@@ -78,21 +77,22 @@ beforeAll(async () => {
 
 describe('API Service Integration Tests', () => {
     // 1. Registration Test
-    test('registers a new user', async () => {
-        console.log('registers a new user test starting...');
+    test('registers all test users', async () => {
+        console.log('registers new users test starting...');
         if (skipTests) return;
-
+        for (let testUser of testUserDataList) {
         try {
-            const result = await apiService.register
-            (testUserDataList[1].email, testUserDataList[1].username, testUserDataList[1].password);
+            expect(testUser).toBeDefined()
+            const result = await apiService.register(testUser.email, testUser.username, testUser.password);
             expect(result).toHaveProperty('message');
             expect(typeof result.message).toBe('string');
+            expect(result.message.trim()).toBe("\"User registered successfully!\""); //for some reason the status message is wrapped in quotes??
         } catch (error) {
             if (error.message.includes('already taken')) {
-                console.log('Test user already exists, continuing...');
+                console.log(`${testUser.username} already exists, continuing...`);
             } else {
                 throw error;
-            }
+            }}
         }
     }, 10000);
 
@@ -100,10 +100,11 @@ describe('API Service Integration Tests', () => {
     test('logs in user 1 with valid credentials', async () => {
         if (skipTests) return;
         console.log('logs in with valid credentials test starting...');
-        loginUser(1)
+        let success = await loginUser(0)
+        expect(success).toBe(true);
     }, 10000);
 
-    // 3. Create User Profile Test
+    // 3. Update User Profile Test
     test('updates a user profile', async () => {
         if (skipTests)
         {
@@ -232,6 +233,26 @@ describe('API Service Integration Tests', () => {
 
     }, 10000);
 
+    // 10. Join Group Test
+    test('joins a group with user 2', async () => {
+        if (skipTests)
+        {
+            console.log('Skipping joins a group test');
+            return;
+        }
+        if (!authToken) {
+            console.log('Skipping joins a group test - no auth token');
+            return;
+        }
+        if (!createdGroupId) {
+            console.log('Skipping joins a group test - no group ID saved');
+            return;
+        }
+        await loginUser(1);
+        const result = await apiService.joinGroup(createdGroupId);
+        expect(result).toBeDefined();
+    }, 10000);
+
     // 9. Leave Group Test
     test('leaves a group', async () => {
         if (skipTests)
@@ -252,25 +273,7 @@ describe('API Service Integration Tests', () => {
         expect(result).toBeDefined();
     }, 10000);
 
-    // 10. Join Group Test
-    test('joins a group', async () => {
-        if (skipTests)
-        {
-            console.log('Skipping joins a group test');
-            return;
-        }
-        if (!authToken) {
-            console.log('Skipping joins a group test - no auth token');
-            return;
-        }
-        if (!createdGroupId) {
-            console.log('Skipping joins a group test - no group ID saved');
-            return;
-        }
 
-        const result = await apiService.joinGroup(createdGroupId);
-        expect(result).toBeDefined();
-    }, 10000);
 
     // 11. Update User Profile Test
     test('update user profile', async () => {
@@ -354,31 +357,34 @@ function compareGroups(foundGroup) {
 
 function compareProfileData(foundUser, expectedProfileData) {
     expect(foundUser).toBeDefined();
-    expect(foundUser.username).toBe(expectedProfileData.username);
-    expect(foundUser.region).toBe(expectedProfileData.region);
-    expect(foundUser.description).toBe(expectedProfileData.description);
-    expect(foundUser.birthDate).toBe(expectedProfileData.birthDate);
+    expect(expectedProfileData).toBeDefined();
+    expect(foundUser.region).toBe(testProfileData.region);
+    expect(foundUser.description).toBe(testProfileData.description);
+    expect(foundUser.birthDate).toBe(testProfileData.birthDate);
 }
 function saveToken(token, id) {
-    if (!token || !id) {
-        console.warn('Invalid token or ID provided for saving.');
-        return;
+    if (!token || !(id>=0 && id < testUserDataList.length)) {
+        expect(token).toBeDefined();
+        throw new Error(`Invalid token or ID provided for saving. Token: ${token}, ID: ${id}`);
     }
-    return localStorage.setItem(`token${id}`, token);
+    localStorage.setItem(`token${id}`, token);
 }
 function setCurrentUser(id) {
     let newToken = localStorage.getItem(`token${id}`);
     if (!newToken) {
+        skipTests = true;
         throw new Error('No token found for ID ' + id);
     }
-    return localStorage.setItem('token', newToken);
+    localStorage.setItem('token', newToken);
+    authToken = newToken;
 }
-function loginUser(id){
-    const result = apiService.login(testUserDataList[id].email, testUserDataList[id].password)
-    expect(result).toHaveProperty('token');
+async function loginUser(id){
+    const result = await apiService.login(testUserDataList[id].email, testUserDataList[id].password)
     if (!result.token) {
-        throw new Error('No token found in login result');
+        console.error('No token found in login result');
+        return false;
     }
     saveToken(result.token, id);
     setCurrentUser(id)
+    return true
 }

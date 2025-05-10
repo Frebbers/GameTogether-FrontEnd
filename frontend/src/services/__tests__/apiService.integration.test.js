@@ -5,12 +5,20 @@
 import * as apiService from '../apiService';
 import jest from 'jest-mock';
 // Test credentials
-const testProfileData = {
-    birthDate: '2000-01-01T00:00:00',
-    region: 'Test Region',
-    profilePicture: '',
-    description: 'Test description'
-};
+const testProfileDataList = [
+        {
+            birthDate: '2000-01-01T00:00:00',
+            region: 'Test Region',
+            profilePicture: '',
+            description: 'Test description'
+        },
+        {
+            birthDate: '1995-05-15T00:00:00',
+            region: 'Another Region',
+            profilePicture: '',
+            description: 'Another test user profile description'
+        }
+    ];
 const testUserDataList = [
     {
         email: 'user@example.com',
@@ -97,7 +105,7 @@ describe('API Service Integration Tests', () => {
     }, 10000);
 
     // 2. Login Test
-    test('logs in user 1 with valid credentials', async () => {
+    test('2. logs in user 1 with valid credentials', async () => {
         if (skipTests) return;
         console.log('logs in with valid credentials test starting...');
         let success = await loginUser(0)
@@ -105,7 +113,7 @@ describe('API Service Integration Tests', () => {
     }, 10000);
 
     // 3. Update User Profile Test
-    test('updates a user profile', async () => {
+    test('3. updates test user profiles', async () => {
         if (skipTests)
         {
             console.warn('Skipping update user profile test');
@@ -116,17 +124,19 @@ describe('API Service Integration Tests', () => {
             return;
             }
         console.log('updates a user profile test starting...');
-
-        const result = await apiService.updateUserProfile({
-            body: JSON.stringify(testProfileData)
-        });
-        expect(result).toHaveProperty('message');
-        expect(result.message).toBe('Profile updated successfully!');
+        let i = 0;
+        for (let testUserProfile of testProfileDataList) {
+            loginUser(i);
+            const result = await apiService.updateUserProfile({
+            body: JSON.stringify(testUserProfile)});
+            expect(result).toHaveProperty('message');
+            expect(result.message).toBe('Profile updated successfully!');
+            }
     }, 10000);
 
 
     // 4. Fetch User Profile Test
-    test('fetches user profile', async () => {
+    test('4. fetches user profile', async () => {
         if (skipTests)
         {
             console.warn('Skipping update user profile test');
@@ -138,12 +148,13 @@ describe('API Service Integration Tests', () => {
         }
 
         console.log('fetches user profile test starting...');
+        await loginUser(0);
         const result = await apiService.fetchUserProfile();
-        compareProfileData(result, testProfileData);
+        compareProfileData(result, testProfileDataList[0]);
     }, 10000);
 
     // 5. Create Group Test
-    test('create a new group', async () => {
+    test('5. create a new group', async () => {
         if (skipTests)
         {
             console.warn('Skipping new group test');
@@ -161,7 +172,7 @@ describe('API Service Integration Tests', () => {
     }, 10000);
 
     // 6. Fetch Groups Test
-    test('fetches all groups', async () => {
+    test('6. fetches all groups', async () => {
         if (skipTests)
         {
             console.warn('Skipping fetch groups test');
@@ -187,7 +198,7 @@ describe('API Service Integration Tests', () => {
     }, 10000);
 
     // 7. Fetch User Groups Test
-    test('fetches user groups', async () => {
+    test('7. fetches user groups', async () => {
         if (skipTests)
         {
             console.log('Skipping fetch user groups test');
@@ -208,7 +219,7 @@ describe('API Service Integration Tests', () => {
     }, 10000);
 
     // 8. Fetch Group By ID Test
-    test('fetches a specific group by ID', async () => {
+    test('8. fetches a specific group by ID', async () => {
         createdGroupId = localStorage.getItem('groupId');
         if (skipTests)
         {
@@ -277,29 +288,24 @@ describe('API Service Integration Tests', () => {
 
         const result = await apiService.leaveGroup(createdGroupId);
         expect(result).toBeDefined();
-    }, 10000);
-
-
-
-    // 11. Update User Profile Test
-    test('update user profile', async () => {
-        if (skipTests || !authToken) return;
-        const result = await apiService.updateUserProfile({
-            body: JSON.stringify(testProfileData)
-        });
-
         expect(result).toHaveProperty('message');
-        expect(result.message).toBe('Profile updated successfully!');
+        expect(result.message).toBe("Successfully left the group!");
     }, 10000);
+
 
     // 12. Fetch Profile by ID Test
     test('fetches another user profile by ID', async () => {
+        try {
+            userId = apiService.getUserIdByName(testUserDataList[0].username);
+        }
+        catch (error) {
+            console.error('Failed to get user ID by name:', error);
+        }
         if (skipTests || !authToken || !userId) return;
 
         // This is getting our own profile by ID for simplicity
         const result = await apiService.fetchProfile(userId);
-        expect(result).toHaveProperty('id');
-        expect(result.id).toBe(userId);
+        compareProfileData(result, testProfileDataList[0]);
     }, 10000);
 
     // 13-14. Group Management Tests (Conditional)
@@ -308,14 +314,14 @@ describe('API Service Integration Tests', () => {
 
     test('accepts a user into group (conditional test)', async () => {
         if (skipTests || !authToken || !createdGroupId) {
-            console.log('Skipping accept user test - requires special setup');
+            console.warn('Skipping accept user test - requires special setup');
             return;
         }
 
         // Only run if there's another userId to test with (would need separate setup)
         const otherUserId = process.env.TEST_OTHER_USER_ID;
         if (!otherUserId) {
-            console.log('Skipping accept/reject user tests - no test user ID provided');
+            console.warn('Skipping accept/reject user tests - no test user ID provided');
             return;
         }
 
@@ -324,7 +330,7 @@ describe('API Service Integration Tests', () => {
             expect(result).toBeDefined();
         } catch (error) {
             // This may fail if user isn't in pending state
-            console.log('Accept user test failed, likely due to test preconditions');
+            console.warn('Accept user test failed, likely due to test preconditions');
         }
     }, 10000);
 
@@ -364,11 +370,11 @@ function compareGroups(foundGroup) {
 function compareProfileData(foundUser, expectedProfileData) {
     expect(foundUser).toBeDefined();
     expect(expectedProfileData).toBeDefined();
-    expect(foundUser.region).toBe(testProfileData.region);
-    expect(foundUser.description).toBe(testProfileData.description);
-    expect(foundUser.birthDate).toBe(testProfileData.birthDate);
+    expect(foundUser.region).toBe(expectedProfileData.region);
+    expect(foundUser.description).toBe(expectedProfileData.description);
+    expect(foundUser.birthDate).toBe(expectedProfileData.birthDate);
 }
-function saveToken(token, id) {
+/*function saveToken(token, id) {
     if (!token || !(id>=0 && id < testUserDataList.length)) {
         expect(token).toBeDefined();
         throw new Error(`Invalid token or ID provided for saving. Token: ${token}, ID: ${id}`);
@@ -383,14 +389,16 @@ function setCurrentUser(id) {
     }
     localStorage.setItem('token', newToken);
     authToken = newToken;
-}
+}*/
 async function loginUser(id){
     const result = await apiService.login(testUserDataList[id].email, testUserDataList[id].password)
     if (!result.token) {
         console.error('No token found in login result');
+        console.error(result.message);
         return false;
     }
-    saveToken(result.token, id);
-    setCurrentUser(id)
+    localStorage.setItem('token', result.token);
+    authToken = result.token;
+    console.log('new token saved');
     return true
 }

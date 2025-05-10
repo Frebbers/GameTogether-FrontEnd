@@ -5,9 +5,6 @@
 import * as apiService from '../apiService';
 import jest from 'jest-mock';
 // Test credentials
-const testEmail = 'user@example.com';
-const testUsername = 'TestUser';
-const testPassword = 'TestPassword123!';
 const testProfileData = {
     name: 'Test User',
     birthDate: '2000-01-01T00:00:00',
@@ -15,6 +12,18 @@ const testProfileData = {
     profilePicture: '',
     description: 'Test description'
 };
+const testUserDataList = [
+    {
+        email: 'user@example.com',
+        username: 'TestUser',
+        password: 'TestPassword123!',
+    },
+    {
+        email: 'user1@example.com',
+        username: 'TestUser1',
+        password: 'TestPassword123!',
+    }
+];
 const testGroupData = {
     title: `Test Group ${Date.now()}`,
     isVisible: true,
@@ -74,7 +83,8 @@ describe('API Service Integration Tests', () => {
         if (skipTests) return;
 
         try {
-            const result = await apiService.register(testEmail, testUsername, testPassword);
+            const result = await apiService.register
+            (testUserDataList[1].email, testUserDataList[1].username, testUserDataList[1].password);
             expect(result).toHaveProperty('message');
             expect(typeof result.message).toBe('string');
         } catch (error) {
@@ -87,16 +97,10 @@ describe('API Service Integration Tests', () => {
     }, 10000);
 
     // 2. Login Test
-    test('logs in with valid credentials', async () => {
+    test('logs in user 1 with valid credentials', async () => {
         if (skipTests) return;
         console.log('logs in with valid credentials test starting...');
-        const result = await apiService.login(testEmail, testPassword);
-        expect(result).toHaveProperty('token');
-
-        // Save for other tests
-        authToken = result.token;
-        userId = result.userId;
-        localStorage.setItem('token', authToken);
+        loginUser(1)
     }, 10000);
 
     // 3. Create User Profile Test
@@ -134,7 +138,7 @@ describe('API Service Integration Tests', () => {
 
         console.log('fetches user profile test starting...');
         const result = await apiService.fetchUserProfile();
-        compareUsers(result);
+        compareProfileData(result, testProfileData);
     }, 10000);
 
     // 5. Create Group Test
@@ -346,10 +350,35 @@ function compareGroups(foundGroup) {
     expect(foundGroup.maxMembers).toBe(testGroupData.maxMembers);
     expect(foundGroup.tags).toEqual(testGroupData.tags);
 }
-function compareUsers(foundUser) {
+
+
+function compareProfileData(foundUser, expectedProfileData) {
     expect(foundUser).toBeDefined();
-    expect(foundUser.username).toBe(testUsername);
-    expect(foundUser.region).toBe(testProfileData.region);
-    expect(foundUser.description).toBe(testProfileData.description);
-    expect(foundUser.birthDate).toBe(testProfileData.birthDate);
+    expect(foundUser.username).toBe(expectedProfileData.username);
+    expect(foundUser.region).toBe(expectedProfileData.region);
+    expect(foundUser.description).toBe(expectedProfileData.description);
+    expect(foundUser.birthDate).toBe(expectedProfileData.birthDate);
+}
+function saveToken(token, id) {
+    if (!token || !id) {
+        console.warn('Invalid token or ID provided for saving.');
+        return;
+    }
+    return localStorage.setItem(`token${id}`, token);
+}
+function setCurrentUser(id) {
+    let newToken = localStorage.getItem(`token${id}`);
+    if (!newToken) {
+        throw new Error('No token found for ID ' + id);
+    }
+    return localStorage.setItem('token', newToken);
+}
+function loginUser(id){
+    const result = apiService.login(testUserDataList[id].email, testUserDataList[id].password)
+    expect(result).toHaveProperty('token');
+    if (!result.token) {
+        throw new Error('No token found in login result');
+    }
+    saveToken(result.token, id);
+    setCurrentUser(id)
 }

@@ -8,6 +8,7 @@ import ChatBox from "../components/ChatBox";
 import {  Box,  Paper,  Typography,  Chip,  Button,  Divider,  Stack,  Container, Tab, Tabs} from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import CircularProgress from '@mui/material/CircularProgress';
+import { useWebSocketEvents } from "../context/WebSocketEventContext";
 
 const GroupInfoPage = ({ groups, setGroups }) => {
   const { groupId, ownerId } = useParams();
@@ -19,10 +20,48 @@ const GroupInfoPage = ({ groups, setGroups }) => {
   const [isPendingMember, setIsPendingMember] = useState(false);
   const [isAcceptedMember, setIsAcceptedMember] = useState(false);
   const [tabIndex, setTabIndex] = useState(0);
+  const { groupAcceptedData } = useWebSocketEvents();
+  const { pendingRequests, setPendingRequests } = useWebSocketEvents();
 
   const claims = jwtDecode(localStorage.getItem("token"));
   const isGroupOwner = claims.nameid === ownerId;
 
+  useEffect(() => {
+    if (
+      groupAcceptedData?.groupId === Number(groupId) &&
+      groupAcceptedData?.userId === Number(claims.nameid)
+    ) {
+      fetchGroupById(groupId)
+        .then((updated) => {
+          setGroup(updated);
+          setIsAcceptedMember(true);
+          setIsPendingMember(false);
+        })
+        .catch(console.error);
+    }
+  }, [groupAcceptedData]);
+
+  const latestPendingRequest = pendingRequests
+    .filter(req => req.groupId === Number(groupId))
+    .slice(-1)[0];
+
+  useEffect(() => {
+    if (
+      latestPendingRequest &&
+      String(claims.nameid) === String(ownerId)
+    ) {
+      fetchGroupById(groupId)
+        .then(setGroup)
+        .catch(console.error);
+    }
+  }, [pendingRequests]);
+
+  useEffect(() => {
+    if (isPendingDialogOpen) {
+      setPendingRequests(prev => prev.filter(r => r.groupId !== Number(groupId)));
+    }
+  }, [isPendingDialogOpen]);
+  
   useEffect(() => {
     fetchGroupById(groupId).then(setGroup).catch(console.error);
   }, [groupId]);
@@ -90,6 +129,8 @@ const GroupInfoPage = ({ groups, setGroups }) => {
     group.members?.find((m) => String(m.userId) === String(ownerId))?.username ||
     "Unknown";
 
+    const pendingUsers = group?.members?.filter(m => m.groupStatus === 0).length || 0;
+
   const paperStyle = {
     p: { xs: 2, md: 4 },
     backgroundColor: "rgba(27, 31, 59, 0.9)",
@@ -102,8 +143,6 @@ const GroupInfoPage = ({ groups, setGroups }) => {
   };
 
   return (
-
-    
     <Box
       sx={{
         minHeight: "100%",
@@ -202,17 +241,39 @@ const GroupInfoPage = ({ groups, setGroups }) => {
                   )}
                   {isAcceptedMember && (
                     <Button variant="outlined" color="error" onClick={handleLeave}>
-                      Leave Group
+                      {isGroupOwner ? "Disband Group" : "Leave Group"}
                     </Button>
                   )}
-                  {isGroupOwner && (
-                    <Button
-                      variant="outlined"
-                      color="warning"
-                      onClick={() => setIsPendingDialogOpen(true)}
-                    >
-                      Pending Users
-                    </Button>
+                  {isGroupOwner && ( // Pending users button
+                  <Button
+                    variant="outlined"
+                    color="warning"
+                    onClick={() => setIsPendingDialogOpen(true)}
+                    sx={{ position: "relative" }}
+                  >
+                    Pending Users
+                        {(
+                      <Box
+                        sx={{
+                          position: "absolute",
+                          top: 8,
+                          right: 8,
+                          bgcolor: "red",
+                          color: "white",
+                          borderRadius: "50%",
+                          width: 18,
+                          height: 18,
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          fontSize: "0.75rem",
+                          fontWeight: "bold",
+                        }}
+                      >
+                        {pendingUsers}
+                      </Box>
+                    )}
+                </Button>
                   )}
                 </Box>
               </Box>
@@ -329,7 +390,7 @@ const GroupInfoPage = ({ groups, setGroups }) => {
         </Box>
       </Container>
 
-      {isDialogOpen && (
+      {isDialogOpen && ( //Confirm join group dialog
         <Dialog
           title="Join Group"
           message={`Do you want to join session #${groupId}?`}
@@ -345,7 +406,7 @@ const GroupInfoPage = ({ groups, setGroups }) => {
         />
       )}
 
-      {isPendingDialogOpen && (
+      {isPendingDialogOpen && pendingUsers > 0 && ( //only show pending users if there are any
         <Dialog
           title="Pending Users"
           message={

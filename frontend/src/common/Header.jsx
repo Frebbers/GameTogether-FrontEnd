@@ -4,7 +4,7 @@ import { useUser } from "../context/UserContext";
 import logo from "../images/sitelogo.png";
 import profile from "../images/profileimage.png";
 
-function Header({ setFilterTag }) {
+function Header() {
     const navigate = useNavigate();
     const { user } = useUser();
 
@@ -16,7 +16,6 @@ function Header({ setFilterTag }) {
             role="button"
             onClick={() => {
               navigate("/");
-              setFilterTag("All Games");
             }}
           >
             <img src={logo} alt="GameTogether Logo" height="40" />

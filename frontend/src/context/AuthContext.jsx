@@ -20,7 +20,6 @@ export function AuthProvider({ children }) {
     localStorage.removeItem("token");
     setIsLoggedIn(false);
     setShowWarning(false);
-    console.log("is logged out...?");
   }, []);
 
   const cancelLogout = () => {

@@ -390,10 +390,10 @@ const GroupInfoPage = ({ groups, setGroups }) => {
         </Box>
       </Container>
 
-      {isDialogOpen && ( //Confirm join group dialog
+      {isDialogOpen && ( 
         <Dialog
           title="Join Group"
-          message={`Do you want to join session #${groupId}?`}
+          message={`Do you want to join ${group?.title}?`}
           onClose={() => setIsDialogOpen(false)}
           actions={
             <>
@@ -406,7 +406,7 @@ const GroupInfoPage = ({ groups, setGroups }) => {
         />
       )}
 
-      {isPendingDialogOpen && pendingUsers > 0 && ( //only show pending users if there are any
+      {isPendingDialogOpen && pendingUsers > 0 && (
         <Dialog
           title="Pending Users"
           message={

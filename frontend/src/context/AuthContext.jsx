@@ -1,4 +1,5 @@
 import { createContext, useState, useEffect, useCallback } from "react";
+import { validateToken } from "../services/apiService";
 import { useIdleLogoutTimer } from "../hooks/useIdleLogoutTimer";
 import Modal from "../components/Modal";
 
@@ -19,6 +20,7 @@ export function AuthProvider({ children }) {
     localStorage.removeItem("token");
     setIsLoggedIn(false);
     setShowWarning(false);
+    console.log("is logged out...?");
   }, []);
 
   const cancelLogout = () => {
@@ -46,11 +48,27 @@ export function AuthProvider({ children }) {
   );
 
   useEffect(() => {
-    const checkToken = () => setIsLoggedIn(!!localStorage.getItem("token"));
-    window.addEventListener("storage", checkToken);
-    return () => window.removeEventListener("storage", checkToken);
-  }, []);
-
+    const checkTokenValidity = async () => {
+      const isValid = await validateToken();
+      if (!isValid) {
+        logout();
+      }
+    };
+  
+    checkTokenValidity();
+  
+    const syncLoginStatus = async () => {
+      const isValid = await validateToken();
+      if (!isValid) {
+        logout();
+      }
+    };
+  
+    window.addEventListener("storage", syncLoginStatus);
+    return () => window.removeEventListener("storage", syncLoginStatus);
+  }, [logout]);
+  
+  
   return (
     <AuthContext.Provider value={{ isLoggedIn, login, logout }}>
       {children}

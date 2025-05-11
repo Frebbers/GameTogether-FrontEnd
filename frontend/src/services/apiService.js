@@ -54,6 +54,29 @@ export const login = async (email, password) => {
 };
 
 /**
+ * Validates the current JWT token by checking with the backend.
+ * @returns {Promise<boolean>} True if token is valid, false otherwise.
+ */
+export const validateToken = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) return false;
+
+    try {
+        const res = await fetch(`${API_BASE}/auth/validate-token`, {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        });
+
+        return res.ok;
+    } catch (err) {
+        console.error("Token validation error:", err);
+        return false;
+    }
+};
+
+/**
  * Creates a new group.
  * @param {Object} groupData
  * @returns {Promise<Object>} Response message from the server.

@@ -1,31 +1,40 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { createGroup, fetchUserProfile } from "../services/apiService";
+import { Stack } from "@mui/material";
 import background from "../images/background.jpg";
 import Modal from "../components/Modal";
 
 const predefinedTags = ["D&D", "Other Game"];
 
+const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
+
 const CreateGroupPage = ({ setGroups }) => {
   const navigate = useNavigate();
   const [userName, setUserName] = useState("");
   const [groupName, setGroupName] = useState("");
-  const [maxMembers, setMaxMembers] = useState(10);
+  const [maxMembers, setMaxMembers] = useState("10");
   const [members, setMembers] = useState([]);
   const [description, setDescription] = useState("");
   const [tags, setTags] = useState([]);
   const [showDialog, setShowDialog] = useState(false);
   const [newMemberName, setNewMemberName] = useState("");
+  const [messageDialog, setMessageDialog] = useState({ open: false, message: "" });
 
   const [isVisible, setIsVisible] = useState(true);
-  const [ageFrom, setAgeFrom] = useState(0);
-  const [ageTo, setAgeTo] = useState(99);
+  const [ageFrom, setAgeFrom] = useState("");
+  const [ageTo, setAgeTo] = useState("");
+
+  const showMessage = (msg) => {
+    setMessageDialog({ open: true, message: msg });
+  };
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
         const user = await fetchUserProfile();
         setUserName(user.username);
+        setMembers([user.username]);
       } catch (err) {
         console.error("Failed to fetch user", err);
       }
@@ -34,8 +43,8 @@ const CreateGroupPage = ({ setGroups }) => {
   }, []);
 
   const AddMember = () => {
-    if (members.length >= maxMembers) {
-      alert("Maximum number of members reached.");
+    if (members.length >= parseInt(maxMembers || "0", 10)) {
+      showMessage("Maximum number of members reached.");
       return;
     }
     setNewMemberName("");
@@ -43,8 +52,9 @@ const CreateGroupPage = ({ setGroups }) => {
   };
 
   const handleAddMember = () => {
-    if (newMemberName.trim()) {
-      setMembers((prev) => [...prev, newMemberName.trim()]);
+    const name = newMemberName.trim();
+    if (name && !members.includes(name)) {
+      setMembers((prev) => [...prev, name]);
     }
     setShowDialog(false);
   };
@@ -56,24 +66,38 @@ const CreateGroupPage = ({ setGroups }) => {
   };
 
   const CreateGroup = async () => {
+    const from = parseInt(ageFrom, 10);
+    const to = parseInt(ageTo, 10);
+    const max = parseInt(maxMembers, 10);
+
     if (!groupName.trim()) {
-      alert("Group name cannot be empty.");
+      showMessage("Group name cannot be empty.");
       return;
     }
 
-    if (ageFrom > ageTo) {
-      alert("Minimum age cannot be greater than maximum age.");
+    if (isNaN(from) || isNaN(to) || isNaN(max)) {
+      showMessage("Please enter valid numbers for age range and max members.");
+      return;
+    }
+
+    if (from > to) {
+      showMessage("Minimum age cannot be greater than maximum age.");
+      return;
+    }
+
+    if (from < 12 || to > 130 || max > 199) {
+      showMessage("One or more values are out of allowed bounds.");
       return;
     }
 
     const groupData = {
       title: groupName,
-      isVisible: isVisible,
-      ageRange: `${ageFrom} - ${ageTo}`,
-      maxMembers: maxMembers,
-      description: description,
-      tags: tags,
-      nonUserMembers: members,
+      isVisible,
+      ageRange: `${from} - ${to}`,
+      maxMembers: max,
+      description,
+      tags,
+      nonUserMembers: members.filter((m) => m !== userName),
     };
 
     try {
@@ -82,7 +106,7 @@ const CreateGroupPage = ({ setGroups }) => {
       navigate("/");
     } catch (error) {
       console.error("Error creating group:", error);
-      alert("Failed to create group. Please try again");
+      showMessage("Failed to create group. Please try again.");
     }
   };
 
@@ -143,12 +167,7 @@ const CreateGroupPage = ({ setGroups }) => {
             <label className="form-label">Visibility:</label>
             <select
               className="form-select"
-              style={{
-                backgroundColor: "#4A4E54",
-                color: "white",
-                border: "none",
-                width: "250px", // fixed width for better alignment
-              }}
+              style={{ backgroundColor: "#4A4E54", color: "white", border: "none", width: "250px" }}
               value={isVisible}
               onChange={(e) => setIsVisible(e.target.value === "true")}
             >
@@ -163,10 +182,20 @@ const CreateGroupPage = ({ setGroups }) => {
             <div className="d-flex align-items-center" style={{ gap: "10px" }}>
               <input
                 type="number"
-                min="0"
-                max="100"
                 value={ageFrom}
-                onChange={(e) => setAgeFrom(Number(e.target.value))}
+                onChange={(e) => setAgeFrom(e.target.value)}
+                onBlur={() => {
+                  if (ageFrom !== "") {
+                    const clamped = clamp(parseInt(ageFrom), 12, 130);
+                    setAgeFrom(clamped.toString());
+
+                    const currentMax = parseInt(ageTo);
+                    if (!isNaN(currentMax) && currentMax < clamped) {
+                      setAgeTo(clamped.toString());
+                    }
+                  }
+                }}
+                placeholder="Min"
                 style={{
                   width: "70px",
                   backgroundColor: "#4A4E54",
@@ -181,10 +210,16 @@ const CreateGroupPage = ({ setGroups }) => {
               to
               <input
                 type="number"
-                min="0"
-                max="100"
                 value={ageTo}
-                onChange={(e) => setAgeTo(Number(e.target.value))}
+                onChange={(e) => setAgeTo(e.target.value)}
+                onBlur={() => {
+                  if (ageTo !== "") {
+                    const min = parseInt(ageFrom) || 12;
+                    const clamped = clamp(parseInt(ageTo), min, 130);
+                    setAgeTo(clamped.toString());
+                  }
+                }}
+                placeholder="Max"
                 style={{
                   width: "70px",
                   backgroundColor: "#4A4E54",
@@ -204,10 +239,17 @@ const CreateGroupPage = ({ setGroups }) => {
             <label className="form-label">Max Members:</label>
             <input
               type="number"
-              className="form-control"
               value={maxMembers}
-              onChange={(e) => setMaxMembers(Number(e.target.value))}
-              min="1"
+              onChange={(e) => setMaxMembers(e.target.value)}
+              onBlur={() => {
+                const parsed = parseInt(maxMembers);
+                if (isNaN(parsed)) {
+                  setMaxMembers("1");
+                } else {
+                  setMaxMembers(clamp(parsed, 1, 199).toString());
+                }
+              }}              
+              placeholder="Max members"
               style={{
                 width: "200px",
                 backgroundColor: "#4A4E54",
@@ -221,7 +263,7 @@ const CreateGroupPage = ({ setGroups }) => {
             />
           </div>
         </div>
-        
+
         <textarea
           style={{ marginBottom: "10px", minHeight: "150px", fontSize: "12px" }}
           value={description}
@@ -233,11 +275,39 @@ const CreateGroupPage = ({ setGroups }) => {
           Add Member
         </button>
 
-        <ul className="list-unstyled text-center mb-2 d-flex gap-2">
+        <Stack direction="row" spacing={1} flexWrap="wrap" justifyContent="center" mb={2}>
           {members.map((member, index) => (
-            <li key={index}>{member}</li>
+            <button
+              key={index}
+              onClick={() => {
+                if (member !== userName) {
+                  setMembers((prev) => prev.filter((m) => m !== member));
+                }
+              }}
+              disabled={member === userName}
+              style={{
+                backgroundColor: member === userName ? "rgba(255,255,255,0.1)" : "rgba(255,255,255,0.08)",
+                color: "white",
+                padding: "6px 12px",
+                borderRadius: "8px",
+                border: "1px solid rgba(255,255,255,0.2)",
+                cursor: member === userName ? "default" : "pointer",
+                fontSize: "14px",
+                fontStyle: member === userName ? "italic" : "normal",
+                boxShadow: member === userName ? "none" : "0 2px 6px rgba(0,0,0,0.2)",
+                transition: "transform 0.1s ease-in-out",
+              }}
+              onMouseEnter={(e) => {
+                if (member !== userName) e.currentTarget.style.transform = "scale(1.03)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = "scale(1)";
+              }}
+            >
+              {member === userName ? `${member} (You)` : member}
+            </button>
           ))}
-        </ul>
+        </Stack>
 
         <div className="mb-2">
           <strong>Select Tags:</strong>
@@ -254,17 +324,17 @@ const CreateGroupPage = ({ setGroups }) => {
           </div>
         </div>
 
-        <div className="group-post-btns">
-          <button className="btn btn-primary d-block" onClick={CreateGroup}>
-            Create Group
-          </button>
-          <button className="btn btn-danger d-block" onClick={() => navigate(-1)}>
+        <div className="group-post-btns d-flex justify-content-between">
+          <button className="btn btn-danger" onClick={() => navigate(-1)}>
             Go Back
+          </button>
+          <button className="btn btn-primary" onClick={CreateGroup}>
+            Create Group
           </button>
         </div>
       </div>
 
-      {/* Modal for adding member */}
+      {/* Add Member Modal */}
       {showDialog && (
         <Modal
           title="Add New Member"
@@ -283,6 +353,20 @@ const CreateGroupPage = ({ setGroups }) => {
                 Add
               </button>
             </>
+          }
+        />
+      )}
+
+      {/* Message Modal */}
+      {messageDialog.open && (
+        <Modal
+          title="Notice"
+          message={messageDialog.message}
+          onClose={() => setMessageDialog({ open: false, message: "" })}
+          actions={
+            <button className="btn btn-primary" onClick={() => setMessageDialog({ open: false, message: "" })}>
+              OK
+            </button>
           }
         />
       )}

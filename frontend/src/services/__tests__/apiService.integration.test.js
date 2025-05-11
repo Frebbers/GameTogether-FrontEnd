@@ -376,10 +376,9 @@ describe('API Service Integration Tests', () => {
             }
 
     }, 10000);
-});
 
-// 10. Delete Group Test
-test('deletes a group', async () => {
+        // 10. Delete Group Test
+    test('deletes a group', async () => {
         if (skipTests)
         {
             console.warn('Skipping delete group test');
@@ -404,6 +403,9 @@ test('deletes a group', async () => {
         const foundGroup = groups.find(group => group.id === createdGroupId);
         expect(foundGroup).toBeUndefined();
     }, 10000);
+}); //end of test suite
+
+
 
 
 // Helper functions to compare objects with defined test data

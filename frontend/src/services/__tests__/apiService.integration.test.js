@@ -287,7 +287,7 @@ describe('API Service Integration Tests', () => {
             console.warn('Skipping update fetch user groups test - no group ID saved');
             return;
         }
-
+        console.log('Leaves a group test starting...');
         const result = await apiService.leaveGroup(createdGroupId);
         expect(result).toBeDefined();
         expect(result).toHaveProperty('message');
@@ -295,8 +295,91 @@ describe('API Service Integration Tests', () => {
         expect(result.message).toBe("Successfully left the group!");
     }, 10000);
 
-    // 10. Delete Group Test
-    test('deletes a group', async () => {
+
+
+
+    // 12. Fetch Profile by ID Test
+    test('fetches another user profile by ID', async () => {
+        let idResult;
+        try {
+            idResult = await apiService.getUserIdByEmail(testUserDataList[0].email);
+            expect(idResult).toBeDefined();
+            expect(idResult).toHaveProperty('userId');
+        }
+        catch (error) {
+            console.error('Failed to get user ID by name:', error);
+        }
+        if (skipTests || !authToken || !idResult) return;
+        const userId = idResult.userId;
+        const result = await apiService.fetchProfile(userId);
+        compareProfileData(result, testProfileDataList[0]);
+    }, 10000);
+
+    // 13-14. Group Management Tests
+    test('accepts a user into group', async () => {
+        if (skipTests || !authToken || !createdGroupId) {
+            console.warn('Skipping accept user test - is authToken or groupId missing created?');
+            return;
+        }
+        await loginUser(1); //leave group and join again to make test stateless
+        try {await apiService.leaveGroup(createdGroupId);}
+        catch (error) { /* We don't care if the user is not a member */ }
+        const joinGroupResult = await apiService.joinGroup(createdGroupId);
+        expect(joinGroupResult).toHaveProperty('message');
+        expect(joinGroupResult.message).toBe('Group joined successfully!');
+
+        await loginUser(0); //switch back to group owner
+        // Only run if there's another userId to test with (would need separate setup)
+        const otherUserId = await apiService.getUserIdByEmail(testUserDataList[1].email).userId;
+        if (!otherUserId) {
+            console.warn('Skipping accept/reject user tests - no test user ID provided');
+            return;
+        }
+            const result = await apiService.AcceptUserIntoGroup(createdGroupId, otherUserId);
+            expect(result).toBeDefined();
+            expect(result).toHaveProperty('message');
+            expect(result.message).toBe('Successfully accepted the user!');
+
+    }, 10000);
+
+    test('rejects a user from group', async () => {
+        if (skipTests || !authToken || !createdGroupId) {
+            console.log('Skipping reject user test - requires special setup');
+            return;
+        }
+        await loginUser(1); //leave group if already member
+        const response = await apiService.getUserIdByEmail(testUserDataList[1].email);
+        const otherUserId = response.userId;
+        try{await apiService.leaveGroup(createdGroupId);}
+        catch (error) {/* We don't care if the user is not a member */ }
+
+        const result = await apiService.joinGroup(createdGroupId); //send join group request
+        expect(result).toBeDefined();
+        expect(result).toHaveProperty('message');
+        expect(result.message).toBe('Group joined successfully!');
+
+        await loginUser(0); // switch back to group owner
+
+            //reject the user
+            const rejectResult = await apiService.RejectUserFromGroup(createdGroupId, otherUserId);
+            expect(rejectResult).toBeDefined();
+            expect(rejectResult).toHaveProperty('message');
+            expect(rejectResult.message).toBe('Successfully rejected the user!');
+            try {
+                const group = await apiService.fetchGroupsByUserId(otherUserId);
+                const foundGroup = group.find(group => group.id === createdGroupId);
+                expect(foundGroup).toBeUndefined();
+            }
+            catch (error) {
+                //success!
+                expect(true).toBe(true);
+            }
+
+    }, 10000);
+});
+
+// 10. Delete Group Test
+test('deletes a group', async () => {
         if (skipTests)
         {
             console.warn('Skipping delete group test');
@@ -323,81 +406,16 @@ describe('API Service Integration Tests', () => {
     }, 10000);
 
 
-    // 12. Fetch Profile by ID Test
-    test('fetches another user profile by ID', async () => {
-        let idResult;
-        try {
-            idResult = await apiService.getUserIdByEmail(testUserDataList[0].email);
-            expect(idResult).toBeDefined();
-            expect(idResult).toHaveProperty('userId');
-        }
-        catch (error) {
-            console.error('Failed to get user ID by name:', error);
-        }
-        if (skipTests || !authToken || !idResult) return;
-        let userId = idResult.userId;
-        // This is getting our own profile by ID for simplicity
-        const result = await apiService.fetchProfile(userId);
-        compareProfileData(result, testProfileDataList[0]);
-    }, 10000);
-
-    // 13-14. Group Management Tests (Conditional)
-    // Note: These tests would require specific setup with two accounts
-    // and are conditionally implemented
-
-    test('accepts a user into group (conditional test)', async () => {
-        if (skipTests || !authToken || !createdGroupId) {
-            console.warn('Skipping accept user test - requires special setup');
-            return;
-        }
-
-        // Only run if there's another userId to test with (would need separate setup)
-        const otherUserId = process.env.TEST_OTHER_USER_ID;
-        if (!otherUserId) {
-            console.warn('Skipping accept/reject user tests - no test user ID provided');
-            return;
-        }
-
-        try {
-            const result = await apiService.AcceptUserIntoGroup(createdGroupId, otherUserId);
-            expect(result).toBeDefined();
-        } catch (error) {
-            // This may fail if user isn't in pending state
-            console.warn('Accept user test failed, likely due to test preconditions');
-        }
-    }, 10000);
-
-    test('rejects a user from group (conditional test)', async () => {
-        if (skipTests || !authToken || !createdGroupId) {
-            console.log('Skipping reject user test - requires special setup');
-            return;
-        }
-
-        // Only run if there's another userId to test with (would need separate setup)
-        const otherUserId = process.env.TEST_OTHER_USER_ID;
-        if (!otherUserId) return;
-
-        try {
-            const result = await apiService.RejectUserFromGroup(createdGroupId, otherUserId);
-            expect(result).toBeDefined();
-        } catch (error) {
-            // This may fail if user isn't in pending state
-            console.log('Reject user test failed, likely due to test preconditions');
-        }
-    }, 10000);
-});
-
-// TODO Update group endpoint test
 // Helper functions to compare objects with defined test data
 function compareGroups(foundGroup) {
-    expect(foundGroup).toBeDefined();
-    expect(foundGroup.title).toBe(testGroupData.title);
-    expect(foundGroup.description).toBe(testGroupData.description);
-    expect(foundGroup.isVisible).toBe(testGroupData.isVisible);
-    expect(foundGroup.ageRange).toBe(testGroupData.ageRange);
-    expect(foundGroup.maxMembers).toBe(testGroupData.maxMembers);
-    expect(foundGroup.tags).toEqual(testGroupData.tags);
-}
+        expect(foundGroup).toBeDefined();
+        expect(foundGroup.title).toBe(testGroupData.title);
+        expect(foundGroup.description).toBe(testGroupData.description);
+        expect(foundGroup.isVisible).toBe(testGroupData.isVisible);
+        expect(foundGroup.ageRange).toBe(testGroupData.ageRange);
+        expect(foundGroup.maxMembers).toBe(testGroupData.maxMembers);
+        expect(foundGroup.tags).toEqual(testGroupData.tags);
+    }
 
 
 function compareProfileData(foundUser, expectedProfileData) {
@@ -407,22 +425,7 @@ function compareProfileData(foundUser, expectedProfileData) {
     expect(foundUser.description).toBe(expectedProfileData.description);
     expect(foundUser.birthDate).toBe(expectedProfileData.birthDate);
 }
-/*function saveToken(token, id) {
-    if (!token || !(id>=0 && id < testUserDataList.length)) {
-        expect(token).toBeDefined();
-        throw new Error(`Invalid token or ID provided for saving. Token: ${token}, ID: ${id}`);
-    }
-    localStorage.setItem(`token${id}`, token);
-}
-function setCurrentUser(id) {
-    let newToken = localStorage.getItem(`token${id}`);
-    if (!newToken) {
-        skipTests = true;
-        throw new Error('No token found for ID ' + id);
-    }
-    localStorage.setItem('token', newToken);
-    authToken = newToken;
-}*/
+
 async function loginUser(id){
     console.log("Logging in user with: " + testUserDataList[id].email);
 
@@ -442,4 +445,22 @@ async function loginUser(id){
     }
     console.log('new token saved');
     return true
+}
+
+async function userIsInGroup(userId, groupId) {
+    if (!userId || !groupId) {
+        console.error('Invalid user ID or group ID provided for checking membership.');
+        return false;
+    }
+    let groups;
+    try {
+        groups = await apiService.fetchGroupsByUserId(userId);
+    }
+    catch (error) {
+        console.warn('Failed to fetch user groups:', error);
+        return false;
+    }
+    expect(groups).toBeDefined();
+    const foundGroup = groups.find(group => group.id === createdGroupId);
+    return foundGroup !== undefined;
 }

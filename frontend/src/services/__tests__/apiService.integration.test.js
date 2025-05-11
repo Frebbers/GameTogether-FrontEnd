@@ -126,11 +126,12 @@ describe('API Service Integration Tests', () => {
         console.log('updates a user profile test starting...');
         let i = 0;
         for (let testUserProfile of testProfileDataList) {
-            loginUser(i);
+            await loginUser(i);
             const result = await apiService.updateUserProfile({
             body: JSON.stringify(testUserProfile)});
             expect(result).toHaveProperty('message');
             expect(result.message).toBe('Profile updated successfully!');
+            i++;
             }
     }, 10000);
 
@@ -148,7 +149,8 @@ describe('API Service Integration Tests', () => {
         }
 
         console.log('fetches user profile test starting...');
-        await loginUser(0);
+        let loginSuccess = await loginUser(0);
+        expect(loginSuccess).toBe(true);
         const result = await apiService.fetchUserProfile();
         compareProfileData(result, testProfileDataList[0]);
     }, 10000);
@@ -274,35 +276,66 @@ describe('API Service Integration Tests', () => {
     test('leaves a group', async () => {
         if (skipTests)
         {
-            console.log('Skipping update fetch user groups test');
+            console.warn('Skipping update fetch user groups test');
             return;
         }
         if (!authToken) {
-            console.log('Skipping update fetch user groups test - no auth token');
+            console.warn('Skipping update fetch user groups test - no auth token');
             return;
         }
         if (!createdGroupId) {
-            console.log('Skipping update fetch user groups test - no group ID saved');
+            console.warn('Skipping update fetch user groups test - no group ID saved');
             return;
         }
 
         const result = await apiService.leaveGroup(createdGroupId);
         expect(result).toBeDefined();
         expect(result).toHaveProperty('message');
+        await loginUser(1);
         expect(result.message).toBe("Successfully left the group!");
+    }, 10000);
+
+    // 10. Delete Group Test
+    test('deletes a group', async () => {
+        if (skipTests)
+        {
+            console.warn('Skipping delete group test');
+            return;
+        }
+        if (!authToken) {
+            console.warn('Skipping delete group test - no auth token');
+            return;
+        }
+        if (!createdGroupId) {
+            console.warn('Skipping delete group test - no group ID saved');
+            return;
+        }
+        console.log('deletes a group test starting...');
+        await loginUser(0);
+        const result = await apiService.leaveGroup(createdGroupId);
+        expect(result).toBeDefined();
+        expect(result).toHaveProperty('message');
+        expect(result.message).toBe('Successfully left the group!');
+        // Check if the group is deleted
+        const groups = await apiService.fetchGroups();
+        const foundGroup = groups.find(group => group.id === createdGroupId);
+        expect(foundGroup).toBeUndefined();
     }, 10000);
 
 
     // 12. Fetch Profile by ID Test
     test('fetches another user profile by ID', async () => {
+        let idResult;
         try {
-            userId = apiService.getUserIdByName(testUserDataList[0].username);
+            idResult = await apiService.getUserIdByEmail(testUserDataList[0].email);
+            expect(idResult).toBeDefined();
+            expect(idResult).toHaveProperty('userId');
         }
         catch (error) {
             console.error('Failed to get user ID by name:', error);
         }
-        if (skipTests || !authToken || !userId) return;
-
+        if (skipTests || !authToken || !idResult) return;
+        let userId = idResult.userId;
         // This is getting our own profile by ID for simplicity
         const result = await apiService.fetchProfile(userId);
         compareProfileData(result, testProfileDataList[0]);
@@ -391,14 +424,22 @@ function setCurrentUser(id) {
     authToken = newToken;
 }*/
 async function loginUser(id){
+    console.log("Logging in user with: " + testUserDataList[id].email);
+
+    localStorage.removeItem('token');
     const result = await apiService.login(testUserDataList[id].email, testUserDataList[id].password)
     if (!result.token) {
         console.error('No token found in login result');
         console.error(result.message);
         return false;
     }
+    let oldToken = localStorage.getItem('token');
     localStorage.setItem('token', result.token);
     authToken = result.token;
+    if (oldToken === localStorage.getItem('token')) {
+        console.error('Token change was unsuccessful!');
+        return false;
+    }
     console.log('new token saved');
     return true
 }

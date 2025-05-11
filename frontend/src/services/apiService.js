@@ -34,6 +34,7 @@ export const register = async (email, username, password) => {
  * @param {string} email
  * @param {string} password
  * @returns {Promise<Object>} Response data with token.
+ * @throws {Error} If the login fails.
  */
 export const login = async (email, password) => {
     const response = await fetch(`${API_BASE}/auth/login`, {
@@ -388,9 +389,9 @@ export const fetchGroupMessages = async (chatId) => {
     return await response.json();
   };
 
-  export const getUserIdByName = async (username) => {
+  export const getUserIdByEmail = async (email) => {
     const token = getToken();
-    const response = await fetch(`${API_BASE}/profile/name/${username}`, {
+    const response = await fetch(`${API_BASE}/users/profile/e-mail/${email}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

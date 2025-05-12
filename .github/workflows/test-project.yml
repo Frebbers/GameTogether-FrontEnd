@@ -22,34 +22,14 @@ jobs:
         with:
           version: 'latest'
 
-      - name: Cache Docker images
-        uses: actions/cache@v3
-        with:
-          path: /tmp/docker-cache
-          key: ${{ runner.os }}-docker-${{ hashFiles('**/compose.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-docker-
-
-      - name: Pull and cache Docker images
-        run: |
-          docker pull mysql:latest
-          mkdir -p /tmp/docker-cache
-          docker save mysql:latest -o /tmp/docker-cache/mysql.tar
-
-      - name: Load cached Docker images
-        run: |
-          if [ -f /tmp/docker-cache/mysql.tar ]; then
-            docker load -i /tmp/docker-cache/mysql.tar
-          fi
-
-      - name: Run integration tests
+      - name: Run frontend tests
         id: frontend-test
         continue-on-error: true
         run: |
           /usr/bin/docker compose up test --exit-code-from test
           echo "status=$?" >> $GITHUB_OUTPUT
 
-      - name: Run backend unit tests
+      - name: Run backend tests
         id: backend-test
         continue-on-error: true
         run: |

@@ -148,7 +148,7 @@ const EditGroupPage = ({ setGroups }) => {
           padding: "2rem",
           color: "white",
           boxShadow: "0 0 20px rgba(0,0,0,0.5)",
-          scale: "0.8"
+          scale: "0.9"
         }}
       >
         <h1 className="text-center mb-3">Edit Group</h1>
@@ -352,7 +352,7 @@ const EditGroupPage = ({ setGroups }) => {
             onClick={SaveChanges}
             sx={{ minWidth: 120}}
         >
-             Create Group
+             Save Changes
         </Button>
         </div>
       </div>

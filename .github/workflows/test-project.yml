@@ -19,11 +19,19 @@ jobs:
         with:
           version: 'latest'
 
-      - name: Run tests and capture exit code
-        id: test-run
+      - name: Run frontend tests
+        id: frontend-test
+        continue-on-error: true
         run: |
           /usr/bin/docker compose up test --exit-code-from test
-          echo "exit_code=$?" >> $GITHUB_OUTPUT
+          echo "status=$?" >> $GITHUB_OUTPUT
+
+      - name: Run backend tests
+        id: backend-test
+        continue-on-error: true
+        run: |
+          /usr/bin/docker compose up unittest --exit-code-from unittest
+          echo "status=$?" >> $GITHUB_OUTPUT
 
       - name: Upload test results
         if: always()
@@ -32,8 +40,14 @@ jobs:
           name: test-results
           path: |
             frontend/test-results/
-          # backend/test-results/ We currently do not have working backend unit tests
+            backend/test-results/
 
-      - name: Fail workflow if tests failed
-        if: steps.test-run.outputs.exit_code != 0
-        run: exit ${{ steps.test-run.outputs.exit_code }}
+      - name: Fail workflow if any tests failed
+        run: |
+          frontend_status=${{ steps.frontend-test.outputs.status }}
+          backend_status=${{ steps.backend-test.outputs.status }}
+          if [ "$frontend_status" != "0" ] || [ "$backend_status" != "0" ]; then
+            echo "Frontend tests exit code: $frontend_status"
+            echo "Backend tests exit code: $backend_status"
+            exit 1
+          fi

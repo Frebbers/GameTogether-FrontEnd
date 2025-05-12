@@ -35,6 +35,7 @@ services:
     ports: ["5173:5173"]
     networks:
       - app-network
+    restart: unless-stopped
 
   # MySQL Database
   mysql:
@@ -52,6 +53,7 @@ services:
       - mysql-data:/var/lib/mysql
     networks:
       - app-network
+    restart: unless-stopped
 
 # Backend (ASP.NET Core)
   api:
@@ -76,6 +78,8 @@ services:
       retries: 2
     networks:
       - app-network
+    restart: unless-stopped
+
 
   # Migration service to run db migrations
   migrate:
@@ -111,6 +115,7 @@ services:
       - api
     networks:
       - app-network
+    restart: unless-stopped
 
   test:
     build:
@@ -134,9 +139,21 @@ services:
 
     working_dir: /app
     command: npm run testci
-
     networks:
       - app-network
+  unittest:
+    build:
+      context: ./backend
+      args:
+        - ENVIRONMENT=${ENVIRONMENT}
+      target: build
+    volumes:
+      - ./backend/test-results:/src/test-results
+    environment: *common-env
+    working_dir: /src
+    command: dotnet test --logger:"trx;LogFileName=test-results.trx" --results-directory:/src/test-results
+
+
 
 volumes:
   mysql-data:

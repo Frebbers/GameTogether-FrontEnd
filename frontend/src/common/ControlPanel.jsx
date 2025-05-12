@@ -4,7 +4,7 @@ const ControlPanel = ({ NumberOfGroups, filterTag, setFilterTag, searchTerm, set
   const navigate = useNavigate();
   
   return (
-    <div className="container py-4" style={{borderBottom: "2px solid rgb(255, 255, 255)"}}>
+    <div className="container py-5" style={{borderBottom: "2px solid rgb(255, 255, 255)"}}>
       <div className="row g-3 align-items-center justify-content-between">
         <div className="col-md-3">
           <select

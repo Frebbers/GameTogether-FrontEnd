@@ -1,5 +1,5 @@
 # Build Stage
-FROM node:18-alpine AS build
+FROM node:20-alpine AS build
 WORKDIR /app
 
 # Add environment args
@@ -17,7 +17,7 @@ RUN npm run build
 RUN npm install --save-dev jest-junit
 
 # Production Stage
-FROM node:18-alpine AS production
+FROM node:20-alpine AS production
 WORKDIR /app
 
 # Install the `serve` package globally

@@ -55,13 +55,13 @@ const NotifySnackBar = () => {
         >
             <Alert
                 onClick={() =>
-                    navigate(`/group/${notification.groupId}/${notification.ownerId || ""}`)
+                    navigate(`/group/${notification.groupId}`)
                 }
                 severity={notification.type === "pendingJoinRequest" ? "info" : "success"}
                 sx={{ width: "100%", cursor: "pointer" }}
                 >
                 {notification.type === "pendingJoinRequest"
-                    ? `${notification.requesterName} requested to join your group #${notification.groupId}`
+                    ? `${notification.requesterName} requested to join your group #${notification.title}`
                     : `You've been accepted into the group “${notification.groupName || notification.name}”! Click to view.`}
             </Alert>
         </Snackbar>

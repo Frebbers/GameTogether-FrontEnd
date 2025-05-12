@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { updateUserProfile } from "../services/apiService.js";
 import { useUser } from "../context/UserContext"; 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Button } from "@mui/material";
 import background from "../images/background.jpg";
 import defaultProfileIcon from '../images/default-profile-icon.png';
 
@@ -116,7 +117,7 @@ const EditProfilePage = () => {
                     alignItems: "center"
                 }}
             >
-                <div className="edit-profile-container fade-in-down">
+                <div style={{marginTop: "8em"}} className="edit-profile-container fade-in-down">
                     <h1>Edit Profile</h1>
 
                     <div className="edit-profile-content">
@@ -184,14 +185,25 @@ const EditProfilePage = () => {
                                 </div>
                             )}
 
-                            <button
-                                type="submit"
-                                className="save-changes-button"
-                                disabled={saving}
-                                style={{ opacity: saving ? 0.7 : 1 }}
-                            >
-                                {saving ? "Saving..." : "Save Changes"}
-                            </button>
+                            <div style={{ display: "flex", gap: "1rem", marginTop: "1rem", flexWrap: "wrap" }}>
+                                <Button
+                                    variant="outlined"
+                                    color="error"
+                                    onClick={() => navigate(-1)}
+                                    sx={{ minWidth: 120 }}
+                                >
+                                    Cancel
+                                </Button>
+                                <Button
+                                    type="submit"
+                                    variant="contained"
+                                    color="primary"
+                                    disabled={saving}
+                                    sx={{ minWidth: 120, opacity: saving ? 0.7 : 1 }}
+                                >
+                                    {saving ? "Saving..." : "Save Changes"}
+                                </Button>
+                            </div>
                         </form>
                     </div>
                 </div>

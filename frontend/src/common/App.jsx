@@ -2,9 +2,9 @@ import { Routes, Route } from "react-router-dom";
 import { useState, useContext, useEffect } from "react";
 
 import HomePage from "../HomePage";
-import ProfilePage from "../profile/ProfilePage";
 import GroupInfoPage from "../groups/GroupInfoPage";
 import CreateGroupPage from "../groups/CreateGroupPage";
+import EditGroupPage from "../groups/EditGroupPage";
 import EditProfilePage from "../profile/EditProfilePage";
 import FaqPage from "../common/FaqPage";
 import AboutPage from "../common/AboutPage";
@@ -40,8 +40,9 @@ function App() {
           />
         <Route path="/profile/:userId" element={withLayout(UserProfilePage)} />
         <Route path="/edit-profile" element={withLayout(EditProfilePage)} />
-        <Route path="/group/:groupId/:ownerId" element={withLayout(GroupInfoPage, { groups, setGroups })} />
-        <Route path="/create" element={withLayout(CreateGroupPage, { setGroups })} />
+        <Route path="/group/:groupId" element={withLayout(GroupInfoPage, { groups, setGroups })} />
+        <Route path="/create-group" element={withLayout(CreateGroupPage, { setGroups })} />
+        <Route path="/edit-group/:groupId" element={withLayout(EditGroupPage, { setGroups })} />
         <Route path="/faq" element={withLayout(FaqPage)} />
         <Route path="/about" element={withLayout(AboutPage)} />
         <Route path="/support" element={withLayout(SupportPage)} />

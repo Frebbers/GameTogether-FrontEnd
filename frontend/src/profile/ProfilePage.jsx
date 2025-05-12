@@ -1,7 +1,7 @@
 import { useUser } from "../context/UserContext";
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { fetchUserGroups, fetchProfile, fetchGroupById, fetchGroupsByUserId } from "../services/apiService";
+import { fetchUserGroups, fetchProfile, fetchGroupsByUserId } from "../services/apiService";
 import defaultProfileIcon from "../images/default-profile-icon.png";
 import background from "../images/background.jpg";
 import { Tabs, Tab, Box, Button, CircularProgress } from "@mui/material";
@@ -20,9 +20,7 @@ const UserProfilePage = () => {
   useEffect(() => {
     const fetchData = async () => {
       if (userId === "me") {
-        if (!user) {
-          return; // user still loading
-        }
+        if (!user) return;
         setProfileData(user);
         try {
           const userGroups = await fetchUserGroups();
@@ -35,26 +33,24 @@ const UserProfilePage = () => {
       } else {
         try {
           const data = await fetchProfile(userId);
-          setProfileData({
-            username: data.username,
-            region: data.region,
-            birthDate: data.birthDate,
-            description: data.description,
-            profilePicture: data.profilePicture?.startsWith("data:image")
-              ? data.profilePicture
-              : defaultProfileIcon,
-          });
-
+            setProfileData({
+              userId: data.userId,
+              username: data.username,
+              region: data.region,
+              birthDate: data.birthDate,
+              description: data.description,
+              profilePicture: data.profilePicture?.startsWith("data:image")
+                ? data.profilePicture
+                : defaultProfileIcon,
+            });
           try {
             const otherUserGroups = await fetchGroupsByUserId(userId);
-            // Only keep groups that are visible (public)
             const visibleGroups = otherUserGroups.filter((g) => g.isVisible);
             setGroups(visibleGroups);
           } catch (groupError) {
             console.error("Failed to fetch user groups:", groupError);
             setGroups([]);
           }
-
         } catch (error) {
           console.error("Failed to fetch profile:", error);
           setProfileData(null);
@@ -96,8 +92,37 @@ const UserProfilePage = () => {
         backgroundRepeat: "no-repeat",
         minHeight: "100vh",
         padding: "2rem",
+        position: "relative",
       }}
     >
+      {/* Go Back Button */}
+          <Button
+            variant="contained"
+            color="error"
+            onClick={() => navigate(-1)}
+            sx={{
+              position: "fixed",
+              top: "4rem",
+              left: "2rem",
+              background: "#2f394f",
+              px: 2,
+              textTransform: "none",
+              fontWeight: 500,
+              borderRadius: "20px",
+              boxShadow: 2,
+              fontSize: "14px",
+              transition: "transform 0.2s ease-in-out",
+              "&:hover": {
+                background: "#3b4761",
+                transform: "translateX(-3px)",
+              },
+              "&:active": {
+                transform: "translateX(3px)",
+              }
+            }}
+          >
+            ← Go Back
+          </Button>
       {loading ? (
         <div
           className="custom-container"
@@ -144,9 +169,22 @@ const UserProfilePage = () => {
             width: "100%",
             background: "rgba(27, 31, 59, 0.9)",
             color: "white",
+            position: "relative",
+            paddingBottom: "4rem",
           }}
         >
-          <Box sx={{ borderBottom: 1, borderColor: "divider", marginBottom: 2 }}>
+          <Box
+            sx={{
+              borderBottom: 1,
+              borderColor: "divider",
+              marginBottom: 2,
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              flexWrap: "wrap",
+              gap: 1,
+            }}
+          >
             <Tabs
               value={tabIndex}
               onChange={handleTabChange}
@@ -159,6 +197,25 @@ const UserProfilePage = () => {
               <Tab label="About Me" />
               <Tab label="Groups" />
             </Tabs>
+            {userId === "me" && (
+              <Button
+                variant="contained"
+                color="info"
+                onClick={() =>
+                  navigate("/edit-profile", {
+                    state: {
+                      username: profileData.username,
+                      region: profileData.region,
+                      profilePicture: profileData.profilePicture,
+                      description: profileData.description,
+                      birthDate: profileData.birthDate,
+                    },
+                  })
+                }
+              >
+                <i className="bi bi-pencil me-1"></i> EDIT
+              </Button>
+            )}
           </Box>
 
           {tabIndex === 0 && (
@@ -173,26 +230,6 @@ const UserProfilePage = () => {
                 <div>
                   <h3 className="mb-0">{profileData.username}</h3>
                 </div>
-                {userId === "me" && (
-                  <div className="ms-auto">
-                    <button
-                      className="btn btn-info text-white"
-                      onClick={() =>
-                        navigate("/edit-profile", {
-                          state: {
-                            username: profileData.username,
-                            region: profileData.region,
-                            profilePicture: profileData.profilePicture,
-                            description: profileData.description,
-                            birthDate: profileData.birthDate,
-                          },
-                        })
-                      }
-                    >
-                      <i className="bi bi-pencil me-1"></i> EDIT
-                    </button>
-                  </div>
-                )}
               </div>
 
               <hr />
@@ -217,10 +254,16 @@ const UserProfilePage = () => {
           )}
 
           {tabIndex === 1 && (
-            <Box>
-              <p style={{ whiteSpace: "pre-wrap" }}>
-                {profileData.description || "No description provided."}
-              </p>
+            <Box
+              className="description"
+              sx={{
+                maxHeight: "300px",
+                overflowY: "auto",
+                whiteSpace: "pre-wrap",
+                marginBottom: "5rem", 
+              }}
+            >
+              {profileData.description || "No description provided."}
             </Box>
           )}
 
@@ -229,7 +272,7 @@ const UserProfilePage = () => {
               {groups.length > 0 ? (
                 <ul className="list-group mt-3">
                   {groups.map((group) => {
-                    const activeMembers = group.members?.filter(m => m.groupStatus === 1) ?? [];
+                    const activeMembers = group.members?.filter((m) => m.groupStatus === 1) ?? [];
                     const guestCount = group.nonUserMembers?.length ?? 0;
                     const max = group.maxMembers ?? "?";
                     const total = activeMembers.length + guestCount;
@@ -247,7 +290,7 @@ const UserProfilePage = () => {
                           cursor: "pointer",
                           boxShadow: "0 0 8px rgba(255, 255, 255, 0.15)",
                         }}
-                        onClick={() => navigate(`/group/${group.id}/${group.ownerId}`)}
+                        onClick={() => navigate(`/group/${group.id}/`)}
                       >
                         <Box display="flex" justifyContent="space-between" alignItems="center">
                           <span>{group.title}</span>

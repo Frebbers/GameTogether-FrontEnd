@@ -139,9 +139,21 @@ services:
 
     working_dir: /app
     command: npm run testci
-
     networks:
       - app-network
+  unittest:
+    build:
+      context: ./backend
+      args:
+        - ENVIRONMENT=${ENVIRONMENT}
+      target: build
+    volumes:
+      - ./backend/test-results:/src/test-results
+    environment: *common-env
+    working_dir: /src
+    command: dotnet test --logger:"trx;LogFileName=test-results.trx" --results-directory:/src/test-results
+
+
 
 volumes:
   mysql-data:

@@ -33,16 +33,16 @@ const UserProfilePage = () => {
       } else {
         try {
           const data = await fetchProfile(userId);
-          setProfileData({
-            username: data.username,
-            region: data.region,
-            birthDate: data.birthDate,
-            description: data.description,
-            profilePicture: data.profilePicture?.startsWith("data:image")
-              ? data.profilePicture
-              : defaultProfileIcon,
-          });
-
+            setProfileData({
+              userId: data.userId,
+              username: data.username,
+              region: data.region,
+              birthDate: data.birthDate,
+              description: data.description,
+              profilePicture: data.profilePicture?.startsWith("data:image")
+                ? data.profilePicture
+                : defaultProfileIcon,
+            });
           try {
             const otherUserGroups = await fetchGroupsByUserId(userId);
             const visibleGroups = otherUserGroups.filter((g) => g.isVisible);
@@ -277,7 +277,7 @@ const UserProfilePage = () => {
                           cursor: "pointer",
                           boxShadow: "0 0 8px rgba(255, 255, 255, 0.15)",
                         }}
-                        onClick={() => navigate(`/group/${group.id}/${group.ownerId}`)}
+                        onClick={() => navigate(`/group/${group.id}/`)}
                       >
                         <Box display="flex" justifyContent="space-between" alignItems="center">
                           <span>{group.title}</span>

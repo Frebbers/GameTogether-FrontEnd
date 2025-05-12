@@ -33,7 +33,7 @@ const ControlPanel = ({ NumberOfGroups, filterTag, setFilterTag, searchTerm, set
         </div>
 
         <div className="col-md-2 text-end">
-          <button className="btn btn-primary w-100" onClick={() => navigate("/create")}>
+          <button className="btn btn-primary w-100" onClick={() => navigate("/create-group")}>
             Create
           </button>
         </div>

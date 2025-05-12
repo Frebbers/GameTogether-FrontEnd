@@ -36,7 +36,7 @@ export const UserProvider = ({ children }) => {
         : defaultProfileIcon;
 
       setUser({
-        id: profile.id,
+        id: profile.userId,
         username: profile.username,
         email: profile.email,
         region: profile.region,
@@ -53,6 +53,8 @@ export const UserProvider = ({ children }) => {
     } catch (error) {
       console.error("Failed to reload user profile:", error);
       setUser(null);
+    } finally {
+      setLoading(false)
     }
   };
 

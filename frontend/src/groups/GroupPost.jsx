@@ -39,7 +39,7 @@ const GroupPost = ({
           color: "white",
           padding: "1rem"
         }}
-        onClick={() => navigate(`/group/${id}/${ownerId}`)}
+        onClick={() => navigate(`/group/${id}`)}
       >
         <div className="card-body d-flex flex-column h-100" style={{ color: "white" }}>
           <h5

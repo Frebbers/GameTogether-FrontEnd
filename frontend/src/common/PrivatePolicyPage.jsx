@@ -37,7 +37,7 @@ const PrivatePolicyPage = () => {
         {
             question: "6. Your Rights",
             answer:
-                "You may have rights to access, correct, or delete your data. Contact us at [insert email] to make a request."
+                "You may have rights to access, correct, or delete your data. Contact us at support@gametogether.dk to make a request."
         },
         {
             question: "7. Changes to This Policy",
@@ -47,7 +47,7 @@ const PrivatePolicyPage = () => {
         {
             question: "8. Contact Us",
             answer:
-                "If you have questions about this Privacy Policy, please reach out at [insert email]."
+                "If you have questions about this Privacy Policy, please reach out at support@gametogether.dk."
         }
     ];
 
@@ -65,19 +65,19 @@ const PrivatePolicyPage = () => {
           justifyContent: 'center',
         }}
       >
-      <div
-  className="custom-container"
-  style={{
-    width: '50%',
-    background: 'rgba(255, 255, 255, 0.15)',
-    backdropFilter: 'blur(10px)',
-    WebkitBackdropFilter: 'blur(10px)',
-    borderRadius: '1.2%',
-    padding: '2%',
-    border: '1px solid rgba(255, 255, 255, 0.3)',
-    color: '#fff',
-  }}
->
+     <div
+        className="custom-container"
+        style={{
+            width: '50%',
+            background: 'rgb(29 37 62 / 80%)',
+            borderRadius: '1.2%',
+            padding: '2%',
+            border: '1px solid rgba(255, 255, 255, 0.3)',
+            color: '#fff',
+            minHeight: "80vh",
+            height:"max-content"
+        }}
+        >
 
 
                 <h2 className="mb-4">Private Policy - GameTogether</h2>

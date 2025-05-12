@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { Button } from "@mui/material";
 import { fetchGroupById, fetchUserProfile, updateGroup } from "../services/apiService";
 import { Stack } from "@mui/material";
 import background from "../images/background.jpg";
@@ -147,6 +148,7 @@ const EditGroupPage = ({ setGroups }) => {
           padding: "2rem",
           color: "white",
           boxShadow: "0 0 20px rgba(0,0,0,0.5)",
+          scale: "0.8"
         }}
       >
         <h1 className="text-center mb-3">Edit Group</h1>
@@ -335,12 +337,23 @@ const EditGroupPage = ({ setGroups }) => {
         </div>
 
         <div className="group-post-btns d-flex justify-content-between">
-          <button className="btn btn-danger" onClick={() => navigate(-1)}>
+          <Button
+            variant="outlined"
+            color="error"
+            onClick={() => navigate(-1)}
+            sx={{ minWidth: 120 }}
+        >
             Cancel
-          </button>
-          <button className="btn btn-primary" onClick={SaveChanges}>
-            Save Changes
-          </button>
+        </Button>
+        <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            onClick={SaveChanges}
+            sx={{ minWidth: 120}}
+        >
+             Create Group
+        </Button>
         </div>
       </div>
 

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { createGroup, fetchUserProfile } from "../services/apiService";
+import { Button } from "@mui/material";
 import { Stack } from "@mui/material";
 import background from "../images/background.jpg";
 import Modal from "../components/Modal";
@@ -326,12 +327,23 @@ const CreateGroupPage = ({ setGroups }) => {
         </div>
 
         <div className="group-post-btns d-flex justify-content-between">
-          <button className="btn btn-danger" onClick={() => navigate(-1)}>
-            Go Back
-          </button>
-          <button className="btn btn-primary" onClick={CreateGroup}>
-            Create Group
-          </button>
+          <Button
+            variant="outlined"
+            color="error"
+            onClick={() => navigate(-1)}
+            sx={{ minWidth: 120 }}
+        >
+            Cancel
+        </Button>
+        <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            onClick={CreateGroup}
+            sx={{ minWidth: 120}}
+        >
+             Create Group
+        </Button>
         </div>
       </div>
 

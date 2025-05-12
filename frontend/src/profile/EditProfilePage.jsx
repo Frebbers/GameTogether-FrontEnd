@@ -187,6 +187,14 @@ const EditProfilePage = () => {
 
                             <div style={{ display: "flex", gap: "1rem", marginTop: "1rem", flexWrap: "wrap" }}>
                                 <Button
+                                    variant="outlined"
+                                    color="error"
+                                    onClick={() => navigate(-1)}
+                                    sx={{ minWidth: 120 }}
+                                >
+                                    Cancel
+                                </Button>
+                                <Button
                                     type="submit"
                                     variant="contained"
                                     color="primary"
@@ -194,15 +202,6 @@ const EditProfilePage = () => {
                                     sx={{ minWidth: 120, opacity: saving ? 0.7 : 1 }}
                                 >
                                     {saving ? "Saving..." : "Save Changes"}
-                                </Button>
-
-                                <Button
-                                    variant="outlined"
-                                    color="error"
-                                    onClick={() => navigate(-1)}
-                                    sx={{ minWidth: 120 }}
-                                >
-                                    Cancel
                                 </Button>
                             </div>
                         </form>

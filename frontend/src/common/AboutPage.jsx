@@ -51,18 +51,18 @@ const AboutPage = () => {
         }}
       >
       <div
-  className="custom-container"
-  style={{
-    width: '50%',
-    background: 'rgba(255, 255, 255, 0.15)',
-    backdropFilter: 'blur(10px)',
-    WebkitBackdropFilter: 'blur(10px)',
-    borderRadius: '1.2%',
-    padding: '2%',
-    border: '1px solid rgba(255, 255, 255, 0.3)',
-    color: '#fff',
-  }}
->
+        className="custom-container"
+        style={{
+            width: '50%',
+            background: 'rgb(29 37 62 / 80%)',
+            borderRadius: '1.2%',
+            padding: '2%',
+            border: '1px solid rgba(255, 255, 255, 0.3)',
+            color: '#fff',
+            minHeight: "80vh",
+            height:"max-content"
+        }}
+        >
 
 
                 <h2 className="mb-4">About - GameTogether</h2>

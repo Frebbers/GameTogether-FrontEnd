@@ -169,15 +169,28 @@ const GroupInfoPage = () => {
             variant="contained"
             color="error"
             onClick={() => navigate(-1)}
-            style={{
+            sx={{
               position: "fixed",
               top: "4rem",
               left: "2rem",
-              padding: "10px",
-              textAlign: "center",
+              background: "#2f394f",
+              px: 2,
+              textTransform: "none",
+              fontWeight: 500,
+              borderRadius: "20px",
+              boxShadow: 2,
+              fontSize: "14px",
+              transition: "transform 0.2s ease-in-out",
+              "&:hover": {
+                background: "#3b4761",
+                transform: "translateX(-3px)",
+              },
+              "&:active": {
+                transform: "translateX(3px)",
+              }
             }}
           >
-            Go Back
+            ← Go Back
           </Button>
       <Container maxWidth="lg" sx={{ mt: 0 }}>
         <Box

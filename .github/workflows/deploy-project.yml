@@ -46,7 +46,7 @@ jobs:
           else
             echo "Repository not found. Cloning..."
             git clone --branch $BRANCH_NAME --recurse-submodules https://github.com/Frebbers/GameTogether-FrontEnd
-            cd GameTogether-FrontEnd
+            git pull --recurse-submodules
           fi
 
           # ENVIRONMENT VARIABLES

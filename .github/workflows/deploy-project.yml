@@ -43,6 +43,7 @@ jobs:
             git checkout $BRANCH_NAME
             git pull origin $BRANCH_NAME
             git submodule update --init --recursive
+            git pull --recurse-submodules
           else
             echo "Repository not found. Cloning..."
             git clone --branch $BRANCH_NAME --recurse-submodules https://github.com/Frebbers/GameTogether-FrontEnd

@@ -1,6 +1,20 @@
 import { Box, Paper, Typography } from "@mui/material";
 
-const ChatMessage = ({ senderName, messageText, isCurrentUser }) => {
+const ChatMessage = ({ senderName, messageText, isCurrentUser, timeStamp }) => {
+  
+  const safeTimestamp = (ts) => {
+    if (typeof ts === "string" && !ts.endsWith("Z") && !ts.includes("+")) {
+      return ts + "Z"; // assume it's UTC without marker
+    }
+    return ts;
+  };
+  const timeString = new Date(safeTimestamp(timeStamp)).toLocaleString("da-DK", {
+    dateStyle: "medium",
+    timeStyle: "short",
+    timeZone: "Europe/Copenhagen",
+  });
+  
+
   return (
     <Box
       sx={{
@@ -35,9 +49,10 @@ const ChatMessage = ({ senderName, messageText, isCurrentUser }) => {
         }}
         elevation={3}
       >
-        <Typography variant="body1">
+        <Typography variant="body2">
           {messageText}
         </Typography>
+        <Typography color="textPrimary" fontSize={11.5} variant="caption">{timeString}</Typography>
       </Paper>
     </Box>
   );

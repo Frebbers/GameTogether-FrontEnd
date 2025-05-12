@@ -11,78 +11,88 @@ const ChatBox = ({ groupId, chatId, currentUserId, canChat, participants = [] })
   const typingTimeoutsRef = useRef({});
   const messagesEndRef = useRef(null);
 
-  const loadMessages = async () => {
-    try {
-      const msgs = await fetchGroupMessages(chatId);
-      setMessages(msgs);
-    } catch (err) {
-      console.error("Error loading chat messages:", err.message);
-    }
-  };
-
   useEffect(() => {
+    const loadMessages = async () => {
+      try {
+        const msgs = await fetchGroupMessages(chatId);
+        setMessages(msgs);
+      } catch (err) {
+        console.error("Error loading chat messages:", err.message);
+      }
+    };
     loadMessages();
   }, [chatId]);
 
   useEffect(() => {
-    if (!canChat) return;
-  
-    const token = localStorage.getItem("token");
-  
-    WebSocketService.disconnect();
-    WebSocketService.connect(token, {
-      chatId,
-      onMessage: (data) => {
-        try {
-          const raw = JSON.parse(data);
-          const isCorrectChat = Number(raw.chatId) === Number(chatId);
-  
-          if (!isCorrectChat) return;
-  
-          if (raw.type === "typing") {
-            const userId = Number(raw.userId);
-            setTypingUserIds((prev) => {
-              if (!prev.includes(userId)) {
-                return [...prev, userId];
-              }
-              return prev;
-            });
-          
-            clearTimeout(typingTimeoutsRef.current[userId]);
-            typingTimeoutsRef.current[userId] = setTimeout(() => {
-              setTypingUserIds((prev) => prev.filter(id => id !== userId));
-            }, 5000);
-            return;
-          }
-  
-          if (raw.type === "message") {
-            const msg = {
-              messageId: raw.messageId,
-              senderId: raw.senderId,
-              senderName: raw.senderName,
-              content: raw.content,
-              timeStamp: raw.timeStamp,
-              chatId: raw.chatId
-            };
-  
-            setMessages(prev => {
-              const exists = prev.some(m => m.messageId === msg.messageId);
-              if (exists) return prev;
-              return [...prev, msg];
-            });
-          }
-        } catch (err) {
-          console.warn("Invalid WebSocket message format:", data);
-        }
-      }
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
+  const handleTyping = (raw) => {
+    if (Number(raw.chatId) !== Number(chatId)) return;
+    if (raw.userId === Number(currentUserId)) return;
+
+    const { userId, username } = raw;
+    if (!username) return;
+
+    setTypingUserIds((prev) => (prev.includes(userId) ? prev : [...prev, userId]));
+  };
+
+  const handleStopTyping = (raw) => {
+    if (Number(raw.chatId) !== Number(chatId)) return;
+    const userId = Number(raw.userId);
+
+    setTypingUserIds((prev) => prev.filter((id) => id !== userId));
+    clearTimeout(typingTimeoutsRef.current[userId]);
+  };
+
+  const handleMessage = (raw) => {
+    if (Number(raw.chatId) !== Number(chatId)) return;
+
+    const msg = {
+      messageId: raw.messageId,
+      senderId: raw.senderId,
+      senderName: raw.senderName,
+      content: raw.content,
+      timeStamp: raw.timeStamp,
+      chatId: raw.chatId,
+    };
+
+    setMessages((prev) => {
+      const exists = prev.some((m) => m.messageId === msg.messageId);
+      return exists ? prev : [...prev, msg];
     });
+  };
+
+  //Subscribe to websocket events
+  useEffect(() => {
+    // This prevents issues where typing events might still show up after leaving a group especially if canChat updates later than expected.
+    // tldr; ensure we only send a leave event if we actually sent a join
+    let joined = false;
   
-    return () => WebSocketService.disconnect();
+    if (canChat) {
+      WebSocketService.send({ type: "join", chatId });
+      joined = true;
+  
+      const unsubTyping = WebSocketService.subscribe("typing", handleTyping);
+      const unsubStopTyping = WebSocketService.subscribe("stopTyping", handleStopTyping);
+      const unsubMessage = WebSocketService.subscribe("message", handleMessage);
+  
+      return () => {
+        if (joined) {
+          WebSocketService.send({ type: "leave", chatId });
+        }
+        unsubTyping();
+        unsubStopTyping();
+        unsubMessage();
+      };
+    }
+  
+    // if canChat was false then no join happened so no leave should happen either. Nothing happens lol
+    return () => {};
   }, [chatId, canChat]);
 
   const handleSend = async (message) => {
     if (!message.trim()) return;
-
     try {
       await sendGroupMessage(groupId, { content: message });
     } catch (err) {
@@ -91,10 +101,9 @@ const ChatBox = ({ groupId, chatId, currentUserId, canChat, participants = [] })
   };
 
   const typingUsernames = typingUserIds
-  .filter(id => id !== Number(currentUserId))
-  .map(id => participants.find(p => Number(p.userId) === id)?.username)
-  .filter(Boolean);
-    
+    .filter((id) => id !== Number(currentUserId))
+    .map((id) => participants.find((p) => Number(p.userId) === id)?.username)
+    .filter(Boolean);
 
   return (
     <Box sx={{ height: "55vh", display: "flex", flexDirection: "column" }}>
@@ -122,9 +131,11 @@ const ChatBox = ({ groupId, chatId, currentUserId, canChat, participants = [] })
                   senderName={isOwn ? "You" : msg.senderName}
                   messageText={msg.content}
                   isCurrentUser={isOwn}
+                  timeStamp={msg.timeStamp}
                 />
               );
             })}
+          <div ref={messagesEndRef} />
           </Stack>
         </Box>
       </Paper>
@@ -133,18 +144,17 @@ const ChatBox = ({ groupId, chatId, currentUserId, canChat, participants = [] })
       {canChat ? (
         <>
           {typingUsernames.length > 0 && (
-            <Typography variant="caption" sx={{ color:"#000dff",fontSize: "11px",fontWeight: "600", px: 0.5, pt: 0.5, width: "100%" }}>
+            <Typography variant="caption" sx={{ color:"#000dff", fontSize: "11px", fontWeight: "600", px: 0.5, pt: 0.5, width: "100%" }}>
               {typingUsernames.join(", ")} {typingUsernames.length === 1 ? "is" : "are"} typing...
             </Typography>
           )}
           <ChatInput
             onSend={handleSend}
-            onTyping={(chatId) => {
-              if (WebSocketService.isConnected()) {
-                WebSocketService.send({ type: "typing", chatId });
-              } else {
-                console.warn("WebSocket is not ready");
-              }
+            onTyping={(chatId, stop = false) => {
+              if (!canChat) return;
+              const type = stop ? "stopTyping" : "typing";
+              const msg = { type, chatId };
+              WebSocketService.send(msg);
             }}
             chatId={chatId}
           />

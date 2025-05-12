@@ -34,6 +34,7 @@ export const register = async (email, username, password) => {
  * @param {string} email
  * @param {string} password
  * @returns {Promise<Object>} Response data with token.
+ * @throws {Error} If the login fails.
  */
 export const login = async (email, password) => {
     const response = await fetch(`${API_BASE}/auth/login`, {
@@ -50,6 +51,29 @@ export const login = async (email, password) => {
     }
 
     return await response.json();
+};
+
+/**
+ * Validates the current JWT token by checking with the backend.
+ * @returns {Promise<boolean>} True if token is valid, false otherwise.
+ */
+export const validateToken = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) return false;
+
+    try {
+        const res = await fetch(`${API_BASE}/auth/validate-token`, {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        });
+
+        return res.ok;
+    } catch (err) {
+        console.error("Token validation error:", err);
+        return false;
+    }
 };
 
 /**
@@ -70,7 +94,7 @@ export const createGroup = async (groupData) => {
 
     if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to create group.");
+        throw new Error(errorData.message || "Failed to create group.");
     }
 
     return await response.json();
@@ -92,7 +116,7 @@ export const joinGroup = async (groupId) => {
 
     if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to join group.");
+        throw new Error(errorData.message || "Failed to join group.");
     }
 
     return await response.json();
@@ -104,7 +128,7 @@ export const joinGroup = async (groupId) => {
  * @returns {Promise<Object>} Response message from the server.
  */
 export const leaveGroup = async (groupId) => {
-    const token =getToken()
+    const token = getToken()
     const response = await fetch(`${API_BASE}/Groups/${groupId}/leave`, {
         method: "DELETE",
         headers: {
@@ -114,7 +138,8 @@ export const leaveGroup = async (groupId) => {
 
     if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to leave group.");
+        throw new Error (errorData.message || "Failed to leave group.");
+
     }
 
     return await response.json();
@@ -137,7 +162,7 @@ export const fetchGroups = async () => {
 
     if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to fetch groups.");
+        throw new Error(errorData.message || "Failed to fetch groups.");
     }
 
     return await response.json();
@@ -160,7 +185,8 @@ export const fetchGroupsByUserId = async (userId) => {
 
     if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || `Failed to fetch groups for user ${userId}.`);
+        console.error(errorData || `Failed to fetch groups for user ${userId}.`);
+        return []; // Return an empty array on error
     }
 
     return await response.json();
@@ -182,7 +208,7 @@ export const fetchUserGroups = async () => {
 
     if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to fetch user's sessions.");
+        throw new Error(errorData.message || "Failed to fetch user's sessions.");
     }
 
     return await response.json();
@@ -204,7 +230,7 @@ export const fetchGroupById = async (groupId) => {
 
     if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || `Failed to fetch group of ID ${groupId}`);
+        throw new Error(errorData.message || `Failed to fetch group of ID ${groupId}`);
     }
 
     return await response.json();
@@ -226,7 +252,7 @@ export const fetchUserProfile = async () => {
 
     if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to fetch profile data.");
+        throw new Error(errorData.message || "Failed to fetch profile data.");
     }
 
     return await response.json();
@@ -238,7 +264,7 @@ export const fetchUserProfile = async () => {
  */
 export const fetchProfile = async (userId) => {
     const token =getToken()
-    const response = await fetch(`${API_BASE}/Users/${userId}/profile`, {
+    const response = await fetch(`${API_BASE}/Users/profile/${userId}`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -250,7 +276,7 @@ export const fetchProfile = async (userId) => {
 
     if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || `Failed to fetch profile data of user ${userId}.`);
+        throw new Error(errorData.message || `Failed to fetch profile data of user ${userId}.`);
     }
 
     return await response.json();
@@ -277,7 +303,7 @@ export const updateUserProfile = async (profileData) => {
 
     if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to update profile.");
+        throw new Error(errorData.message || "Failed to update profile.");
     }
 
     return await response.json();
@@ -301,7 +327,7 @@ export const AcceptUserIntoGroup = async (groupId, userId) => {
 
     if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to accept user.");
+        throw new Error(errorData.message || "Failed to accept user.");
     }
 
     return await response.json();
@@ -324,7 +350,7 @@ export const RejectUserFromGroup = async (groupId, userId) => {
 
     if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to accept user.");
+        throw new Error(errorData.message || "Failed to accept user.");
     }
 
     return await response.json();
@@ -387,5 +413,21 @@ export const fetchGroupMessages = async (chatId) => {
   
     return await response.json();
   };
+
+  export const getUserIdByEmail = async (email) => {
+    const token = getToken();
+    const response = await fetch(`${API_BASE}/users/profile/e-mail/${email}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
+    });
+    if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || "Failed to fetch user ID.");
+    }
+    return await response.json();
+  }
   
   

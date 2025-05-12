@@ -143,11 +143,24 @@ const ChatBox = ({ groupId, chatId, currentUserId, canChat, participants = [] })
       <Box sx={{ display: "flex",flexDirection: "column", alignItems: "center", pt: 0.5 }}>
       {canChat ? (
         <>
-          {typingUsernames.length > 0 && (
-            <Typography variant="caption" sx={{ color:"#000dff", fontSize: "11px", fontWeight: "600", px: 0.5, pt: 0.5, width: "100%" }}>
-              {typingUsernames.join(", ")} {typingUsernames.length === 1 ? "is" : "are"} typing...
-            </Typography>
-          )}
+          <Typography
+            variant="caption"
+            sx={{
+              color: "#000dff",
+              fontSize: "11px",
+              fontWeight: 600,
+              px: 0.5,
+              pt: 0.5,
+              width: "100%",
+              lineHeight: "14px",
+              minHeight: "14px",
+            }}
+          >
+            {typingUsernames.length > 0
+              ? `${typingUsernames.join(", ")} ${typingUsernames.length === 1 ? "is" : "are"} typing...`
+              : "\u00A0"}
+          </Typography>
+
           <ChatInput
             onSend={handleSend}
             onTyping={(chatId, stop = false) => {

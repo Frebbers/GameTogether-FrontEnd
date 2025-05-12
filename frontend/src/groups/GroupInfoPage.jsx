@@ -177,6 +177,21 @@ const GroupInfoPage = () => {
         py: 6,
       }}
     >
+      {/* Go Back Button */}
+          <Button
+            variant="contained"
+            color="error"
+            onClick={() => navigate(-1)}
+            style={{
+              position: "fixed",
+              top: "4rem",
+              left: "2rem",
+              padding: "10px",
+              textAlign: "center",
+            }}
+          >
+            Go Back
+          </Button>
       <Container maxWidth="lg" sx={{ mt: 0 }}>
         <Box
           sx={{

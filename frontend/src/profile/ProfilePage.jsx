@@ -95,6 +95,21 @@ const UserProfilePage = () => {
         position: "relative",
       }}
     >
+      {/* Go Back Button */}
+          <Button
+            variant="contained"
+            color="error"
+            onClick={() => navigate(-1)}
+            style={{
+              position: "fixed",
+              top: "4rem",
+              left: "2rem",
+              padding: "10px",
+              textAlign: "center",
+            }}
+          >
+            Go Back
+          </Button>
       {loading ? (
         <div
           className="custom-container"
@@ -281,20 +296,6 @@ const UserProfilePage = () => {
               )}
             </Box>
           )}
-
-          {/* Go Back Button */}
-          <Button
-            variant="contained"
-            color="error"
-            onClick={() => navigate(-1)}
-            style={{
-              position: "absolute",
-              bottom: "1rem",
-              left: "1rem",
-            }}
-          >
-            Go Back
-          </Button>
         </div>
       )}
     </div>

@@ -49,7 +49,9 @@ const RegisterForm = ({ onRegisterSuccess, onShowLogin }) => {
 
   const handleCloseDialog = () => {
     setShowDialog(false);
-    onRegisterSuccess();
+    if(success){
+      onRegisterSuccess();
+    }
   };
 
   return (

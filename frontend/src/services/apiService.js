@@ -101,6 +101,31 @@ export const createGroup = async (groupData) => {
 };
 
 /**
+ * Updates a group's information.
+ * @param {number} groupId
+ * @param {Object} groupData - Must match UpdateGroupRequestDTO
+ * @returns {Promise<Object>} Response message from the server.
+ */
+export const updateGroup = async (groupId, groupData) => {
+    const token = getToken();
+    const response = await fetch(`${API_BASE}/Groups/${groupId}`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify(groupData)
+    });
+
+    if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to update group.");
+    }
+
+    return await response.json();
+};
+
+/**
  * Joins an existing group.
  * @param {number} groupId
  * @returns {Promise<Object>} Response message from the server.
@@ -271,8 +296,6 @@ export const fetchProfile = async (userId) => {
             "Authorization": `Bearer ${token}`
         }
     });
-
-    console.log(response);
 
     if (!response.ok) {
         const errorData = await response.json();

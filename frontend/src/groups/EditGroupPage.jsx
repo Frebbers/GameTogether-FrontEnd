@@ -1,16 +1,17 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { createGroup, fetchUserProfile } from "../services/apiService";
+import { useNavigate, useParams } from "react-router-dom";
+import { fetchGroupById, fetchUserProfile, updateGroup } from "../services/apiService";
 import { Stack } from "@mui/material";
 import background from "../images/background.jpg";
 import Modal from "../components/Modal";
 
 const predefinedTags = ["D&D", "Other Game"];
-
 const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
 
-const CreateGroupPage = ({ setGroups }) => {
+const EditGroupPage = ({ setGroups }) => {
+  const { groupId } = useParams();
   const navigate = useNavigate();
+
   const [userName, setUserName] = useState("");
   const [groupName, setGroupName] = useState("");
   const [maxMembers, setMaxMembers] = useState("10");
@@ -30,17 +31,28 @@ const CreateGroupPage = ({ setGroups }) => {
   };
 
   useEffect(() => {
-    const fetchUser = async () => {
+    const loadData = async () => {
       try {
         const user = await fetchUserProfile();
         setUserName(user.username);
-        setMembers([user.username]);
+
+        const group = await fetchGroupById(groupId);
+        setGroupName(group.title);
+        setIsVisible(group.isVisible);
+        const [from, to] = group.ageRange.split("-").map((v) => v.trim());
+        setAgeFrom(from);
+        setAgeTo(to);
+        setMaxMembers(group.maxMembers.toString());
+        setDescription(group.description);
+        setTags(group.tags || []);
+        setMembers([user.username, ...(group.nonUserMembers || [])]);
       } catch (err) {
-        console.error("Failed to fetch user", err);
+        console.error("Failed to fetch group or user data", err);
+        showMessage("Failed to load group data.");
       }
     };
-    fetchUser();
-  }, []);
+    loadData();
+  }, [groupId]);
 
   const AddMember = () => {
     if (members.length >= parseInt(maxMembers || "0", 10)) {
@@ -65,7 +77,7 @@ const CreateGroupPage = ({ setGroups }) => {
     );
   };
 
-  const CreateGroup = async () => {
+  const SaveChanges = async () => {
     const from = parseInt(ageFrom, 10);
     const to = parseInt(ageTo, 10);
     const max = parseInt(maxMembers, 10);
@@ -101,12 +113,14 @@ const CreateGroupPage = ({ setGroups }) => {
     };
 
     try {
-      const group = await createGroup(groupData);
-      setGroups((prevGroups) => [...prevGroups, group]);
+      const updated = await updateGroup(groupId, groupData);
+      setGroups((prevGroups) =>
+        prevGroups.map((g) => (g.id === updated.id ? updated : g))
+      );
       navigate("/");
     } catch (error) {
-      console.error("Error creating group:", error);
-      showMessage("Failed to create group. Please try again.");
+      console.error("Error updating group:", error);
+      showMessage("Failed to update group. Please try again.");
     }
   };
 
@@ -133,10 +147,9 @@ const CreateGroupPage = ({ setGroups }) => {
           padding: "2rem",
           color: "white",
           boxShadow: "0 0 20px rgba(0,0,0,0.5)",
-          scale: "0.8"
         }}
       >
-        <h1 className="text-center mb-3">Create A New Group</h1>
+        <h1 className="text-center mb-3">Edit Group</h1>
 
         <div className="group-post-header mb-2 d-flex flex-column align-items-center">
           <input
@@ -163,7 +176,6 @@ const CreateGroupPage = ({ setGroups }) => {
         </div>
 
         <div className="mb-2 w-100" style={{ textAlign: "left" }}>
-          {/* Visibility */}
           <div className="mb-2">
             <label className="form-label">Visibility:</label>
             <select
@@ -177,7 +189,6 @@ const CreateGroupPage = ({ setGroups }) => {
             </select>
           </div>
 
-          {/* Age Range */}
           <div className="mb-2">
             <label className="form-label">Age Range:</label>
             <div className="d-flex align-items-center" style={{ gap: "10px" }}>
@@ -189,7 +200,6 @@ const CreateGroupPage = ({ setGroups }) => {
                   if (ageFrom !== "") {
                     const clamped = clamp(parseInt(ageFrom), 12, 130);
                     setAgeFrom(clamped.toString());
-
                     const currentMax = parseInt(ageTo);
                     if (!isNaN(currentMax) && currentMax < clamped) {
                       setAgeTo(clamped.toString());
@@ -235,9 +245,8 @@ const CreateGroupPage = ({ setGroups }) => {
             </div>
           </div>
 
-          {/* Max Members */}
           <div className="mb-2">
-            <label style={{marginRight: "6px"}} className="form-label">Max Members:</label>
+            <label className="form-label">Max Members:</label>
             <input
               type="number"
               value={maxMembers}
@@ -249,7 +258,7 @@ const CreateGroupPage = ({ setGroups }) => {
                 } else {
                   setMaxMembers(clamp(parsed, 1, 199).toString());
                 }
-              }}              
+              }}
               placeholder="Max members"
               style={{
                 width: "200px",
@@ -327,15 +336,14 @@ const CreateGroupPage = ({ setGroups }) => {
 
         <div className="group-post-btns d-flex justify-content-between">
           <button className="btn btn-danger" onClick={() => navigate(-1)}>
-            Go Back
+            Cancel
           </button>
-          <button className="btn btn-primary" onClick={CreateGroup}>
-            Create Group
+          <button className="btn btn-primary" onClick={SaveChanges}>
+            Save Changes
           </button>
         </div>
       </div>
 
-      {/* Add Member Modal */}
       {showDialog && (
         <Modal
           title="Add New Member"
@@ -358,7 +366,6 @@ const CreateGroupPage = ({ setGroups }) => {
         />
       )}
 
-      {/* Message Modal */}
       {messageDialog.open && (
         <Modal
           title="Notice"
@@ -375,4 +382,4 @@ const CreateGroupPage = ({ setGroups }) => {
   );
 };
 
-export default CreateGroupPage;
+export default EditGroupPage;

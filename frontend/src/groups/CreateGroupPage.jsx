@@ -133,6 +133,7 @@ const CreateGroupPage = ({ setGroups }) => {
           padding: "2rem",
           color: "white",
           boxShadow: "0 0 20px rgba(0,0,0,0.5)",
+          scale: "0.8"
         }}
       >
         <h1 className="text-center mb-3">Create A New Group</h1>
@@ -236,7 +237,7 @@ const CreateGroupPage = ({ setGroups }) => {
 
           {/* Max Members */}
           <div className="mb-2">
-            <label className="form-label">Max Members:</label>
+            <label style={{marginRight: "6px"}} className="form-label">Max Members:</label>
             <input
               type="number"
               value={maxMembers}

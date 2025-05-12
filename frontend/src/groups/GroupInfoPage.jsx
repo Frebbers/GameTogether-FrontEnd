@@ -208,6 +208,7 @@ const GroupInfoPage = () => {
                       display: "flex",
                       justifyContent: "space-between",
                       flexDirection: "column",
+                      overflowY: "auto"
                     }}
                   >
                     <Box sx={{ display: "flex", flexDirection: "column", gap: "4px" }}>

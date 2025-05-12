@@ -96,7 +96,7 @@ const HomePage = ({ searchTerm, setSearchTerm }) => {
 
       <div
         className="flex-grow-1 overflow-auto position-relative"
-        style={{ padding: "1rem", overflowY: "auto", height: "75vh" }}
+        style={{ padding: "0.2rem", overflowY: "auto", height: "75vh" }}
       >
         <GroupList
           filterTag={filterTag}

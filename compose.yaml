@@ -153,8 +153,6 @@ services:
     working_dir: /src
     command: dotnet test --logger:"trx;LogFileName=test-results.trx" --results-directory:/src/test-results
 
-
-
 volumes:
   mysql-data:
 

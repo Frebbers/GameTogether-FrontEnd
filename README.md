@@ -6,7 +6,7 @@ How to run the project:
 ### Steps
 1. Clone project or make sure it is up to date
     - `git clone https://github.com/Frebbers/GameTogether-FrontEnd`
-    - `git pull --recurse-submodules`
+    - `git submodule update --init --recursive`
 2. Add a smtp password to .env to allow sending emails
 3. `docker compose up frontend -d --build`
 

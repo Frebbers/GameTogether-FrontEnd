@@ -42,13 +42,15 @@ jobs:
             git fetch origin
             git checkout $BRANCH_NAME
             git pull origin $BRANCH_NAME
+            # Update and initialize submodules to match the root repository's tracked commit
             git submodule update --init --recursive
-            git pull --recurse-submodules
+            cd backend
+            # Ensure the backend submodule is checked out to the commit specified in the root repository
+            git checkout $(git rev-parse HEAD)
           else
             echo "Repository not found. Cloning..."
             git clone --branch $BRANCH_NAME --recurse-submodules https://github.com/Frebbers/GameTogether-FrontEnd
             cd GameTogether-FrontEnd
-            git pull --recurse-submodules
           fi
 
           # ENVIRONMENT VARIABLES

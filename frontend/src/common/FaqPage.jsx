@@ -10,7 +10,7 @@ const FaqPage = () => {
 
     const faqItems = [
         {
-            question: "What is GameTogether?",
+            question: "This is a test for our exam presentation",
             answer:
                 "GameTogether is a platform designed to help players find teammates for co-op, competitive, and casual gaming sessions. Whether you play Dungeons & Dragons, Valorant, or Among Us, GameTogether makes it easy to match with like-minded players based on your interests, schedule, and skill level."
         },

@@ -15,9 +15,12 @@ const RegisterForm = ({ onRegisterSuccess, onShowLogin }) => {
   const [showDialog, setShowDialog] = useState(false);
   const [dialogTitle, setDialogTitle] = useState("");
   const [dialogMessage, setDialogMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleRegister = async (e) => {
     e.preventDefault();
+    if(loading) return;
+
     setError("");
     setSuccess("");
     setShowDialog(false);
@@ -119,7 +122,7 @@ const RegisterForm = ({ onRegisterSuccess, onShowLogin }) => {
           />
 
           <InputTextField
-            label="Confirm Password" // NEW FIELD
+            label="Confirm Password"
             type="password"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
@@ -131,8 +134,15 @@ const RegisterForm = ({ onRegisterSuccess, onShowLogin }) => {
             </Typography>
           )}
 
-          <Button type="submit" variant="contained" fullWidth size="large" sx={{ fontWeight: "bold" }}>
-            Register
+          <Button
+            type="submit"
+            variant="contained"
+            fullWidth
+            size="large"
+            sx={{ fontWeight: "bold" }}
+            disabled={loading}
+          >
+            {loading ? "Registering..." : "Register"}
           </Button>
         </form>
 

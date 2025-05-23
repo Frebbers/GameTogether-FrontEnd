@@ -79,5 +79,5 @@ jobs:
           docker compose up nginx -d --build
           echo "finished"
 
-          # CLEANUP
-          docker system prune -af
+          # Clean up images. Temporarily disabled to save time on deployment
+          # docker system prune -af

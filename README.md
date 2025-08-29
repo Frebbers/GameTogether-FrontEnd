@@ -1,3 +1,4 @@
+Please see https://github.com/Frebbers/GameTogether-Backend for REST based backend.
 How to run the project:
 
 ### Requirements
@@ -16,3 +17,4 @@ Website can then be accessed on http://localhost:443/
 - Check status of containers with `docker ps`
 - Turn off the project with `docker compose down`
 - Rebuild the project after making changes with `docker compose down && docker compose up frontend -d --build`
+

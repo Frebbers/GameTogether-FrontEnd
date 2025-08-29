@@ -1,8 +1,9 @@
 Please see https://github.com/Frebbers/GameTogether-Backend for REST based backend.
-How to run the project:
+
+## Starting the project
 
 ### Requirements
-- Docker/Docker Compose installed
+- Docker is the only recommended way to start this project. Please make sure it is installed.
 
 ### Steps
 1. Clone project or make sure it is up to date
